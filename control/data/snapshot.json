@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T02:51:28.795Z",
+  "generatedAt": "2026-10-22T03:14:11.485Z",
   "head": {
-    "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
-    "date": "2026-10-22T05:45:35+03:00",
-    "subject": "chore(harness): ready and next say a process review is due; the coordinator starts it (#895)"
+    "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
+    "date": "2026-10-22T06:13:34+03:00",
+    "subject": "docs(adr): ADR-0020 §1.11 names the part lookup order and the 27 names only the web IDE has (#901)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T02:51:28.795Z",
+      "fetchedAt": "2026-10-22T03:14:11.485Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 28,
-        "ready": 1,
-        "inProgress": 1,
+        "ready": 3,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -190,9 +190,9 @@
         },
         "title": "Epic: core — headless core",
         "subIssues": {
-          "completed": 26,
-          "percentCompleted": 86,
-          "total": 30
+          "completed": 27,
+          "percentCompleted": 87,
+          "total": 31
         }
       },
       {
@@ -306,16 +306,13 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 33,
-        "ready": 1,
-        "inProgress": 30,
+        "ready": 0,
+        "inProgress": 31,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 32,
         "filedElsewhere": [],
-        "next": {
-          "number": 874,
-          "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model"
-        },
+        "next": null,
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
           "completed": 9,
@@ -418,9 +415,14 @@
         "project": "harness"
       },
       {
-        "number": 874,
-        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
-        "project": "upkeep"
+        "number": 903,
+        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "project": "foundation"
+      },
+      {
+        "number": 905,
+        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
+        "project": "foundation"
       }
     ],
     "dormant": {
@@ -465,18 +467,34 @@
         "reason": null
       },
       {
-        "number": 874,
-        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
+        "number": 903,
+        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
         "labels": [
-          "project:upkeep",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:1",
+          "fidelity",
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 905,
+        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2462,6 +2480,23 @@
         "reason": "needs-human"
       },
       {
+        "number": 874,
+        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 878,
         "title": "A pin width far beyond any evaluable bus passes the parser and the registry",
         "labels": [
@@ -2504,47 +2539,13 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 901,
-        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [
-          903,
-          206
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 903,
-        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#901"
       }
     ],
     "byProject": {
       "foundation": [
         338,
+        903,
+        905,
         151,
         184,
         325,
@@ -2569,9 +2570,7 @@
         728,
         742,
         773,
-        878,
-        901,
-        903
+        878
       ],
       "harness": [
         257,
@@ -2589,41 +2588,6 @@
         677,
         870,
         889
-      ],
-      "upkeep": [
-        874,
-        229,
-        256,
-        788,
-        789,
-        790,
-        791,
-        792,
-        793,
-        794,
-        795,
-        796,
-        797,
-        798,
-        799,
-        800,
-        807,
-        808,
-        809,
-        827,
-        828,
-        829,
-        830,
-        831,
-        832,
-        833,
-        834,
-        835,
-        839,
-        848,
-        849,
-        859,
-        867
       ],
       "spine": [
         165,
@@ -2671,6 +2635,41 @@
         218,
         219,
         284
+      ],
+      "upkeep": [
+        229,
+        256,
+        788,
+        789,
+        790,
+        791,
+        792,
+        793,
+        794,
+        795,
+        796,
+        797,
+        798,
+        799,
+        800,
+        807,
+        808,
+        809,
+        827,
+        828,
+        829,
+        830,
+        831,
+        832,
+        833,
+        834,
+        835,
+        839,
+        848,
+        849,
+        859,
+        867,
+        874
       ],
       "horizon": [
         230,
@@ -2742,6 +2741,33 @@
       }
     ],
     "merged": [
+      {
+        "number": 904,
+        "title": "test(core): pin the part lookup order and the 27 names only the web IDE has, ADR-0020 §1.11 rules 2, 4, 5 (#901)",
+        "url": "https://github.com/mezivillager/hacer/pull/904",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "test/901-lookup-order",
+        "isDraft": false,
+        "createdAt": "2026-10-22T03:02:00Z",
+        "mergedAt": "2026-10-22T03:13:34Z",
+        "closes": [
+          901
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T03:11:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/904#issuecomment-6331748076"
+          }
+        ]
+      },
       {
         "number": 902,
         "title": "chore(harness): ready and next say a process review is due; the coordinator starts it",
@@ -4239,31 +4265,6 @@
         "mergedAt": "2026-10-16T01:09:50Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 754,
-        "title": "test(core): the legacy writer's documents, official Project 1 vectors and L-001 (#377, PR 3 of 3)",
-        "url": "https://github.com/mezivillager/hacer/pull/754",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:2",
-          "project:foundation"
-        ],
-        "headRefName": "test/377c-writer-corpus",
-        "isDraft": false,
-        "createdAt": "2026-10-15T23:00:00Z",
-        "mergedAt": "2026-10-15T23:25:37Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-15T23:19:57Z",
-            "url": "https://github.com/mezivillager/hacer/pull/754#issuecomment-6204310722"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5083,10 +5084,36 @@
         }
       },
       {
+        "number": 874,
+        "ref": "refs/heads/claim/874",
+        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
+        "state": "OPEN",
+        "title": "Inbox review: FID-031 · Grading names the reference's first cause when an earlier part or wire has a per-part cause the check does not model",
+        "url": "https://github.com/mezivillager/hacer/issues/874",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "chore/inbox-fid-031",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T03:12:10Z",
+          "url": "https://github.com/mezivillager/hacer/issues/874#issuecomment-6331755480"
+        }
+      },
+      {
         "number": 901,
         "ref": "refs/heads/claim/901",
         "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
         "url": "https://github.com/mezivillager/hacer/issues/901",
         "labels": [
@@ -5096,7 +5123,7 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5109,7 +5136,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6976,7 +7003,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-15",
-        "merges": 2
+        "merges": 1
       },
       {
         "date": "2026-10-16",
@@ -6992,20 +7019,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 10
+        "merges": 11
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T02:51:28.795Z",
-      "merged": 100,
+      "since": "2026-10-08T03:14:11.485Z",
+      "merged": 101,
       "openToMergeHours": {
         "median": 0.3,
-        "p90": 1.9
+        "p90": 1.8
       },
       "blockedOnce": {
         "count": 7,
-        "of": 85,
+        "of": 86,
         "prs": [
           700,
           725,
@@ -7018,8 +7045,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 70,
-          "withVerdict": 70,
+          "merged": 71,
+          "withVerdict": 71,
           "without": []
         },
         "nonCode": {
@@ -11126,11 +11153,10 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T02:33:06.483Z",
+        "at": "2026-10-22T02:51:28.795Z",
         "byProject": {
           "foundation": [
             338,
-            901,
             151,
             184,
             325,
@@ -11155,7 +11181,9 @@
             728,
             742,
             773,
-            878
+            878,
+            901,
+            903
           ],
           "harness": [
             257,
@@ -11172,12 +11200,9 @@
             607,
             677,
             870,
-            889,
-            895
+            889
           ],
           "upkeep": [
-            859,
-            867,
             874,
             229,
             256,
@@ -11208,7 +11233,9 @@
             835,
             839,
             848,
-            849
+            849,
+            859,
+            867
           ],
           "spine": [
             165,
@@ -11303,11 +11330,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b9b7dbf74c1774c960b6344cf928c511947ea15d",
+        "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39713141588/job/119608928176",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39715669959/job/119617056873",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -18854,18 +18881,24 @@
         ]
       },
       {
-        "id": "#816",
+        "id": "#820",
         "kind": "github",
         "citedBy": [
           "ADR-0020"
         ]
       },
       {
-        "id": "#206",
+        "id": "#901",
         "kind": "github",
         "citedBy": [
-          "ADR-0020",
-          "R763"
+          "ADR-0020"
+        ]
+      },
+      {
+        "id": "#816",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020"
         ]
       },
       {
@@ -18882,6 +18915,14 @@
         "citedBy": [
           "ADR-0020",
           "R512"
+        ]
+      },
+      {
+        "id": "#206",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R763"
         ]
       },
       {
