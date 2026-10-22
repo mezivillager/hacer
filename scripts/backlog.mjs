@@ -9,7 +9,11 @@
 //                                               session records and the merged PRs it already reads; then
 //                                               `main: <workflow> failing`, `<n> in a row since <time> (run <id>)`,
 //                                               for each active workflow whose newest completed run on main failed,
-//                                               each read on its own, or `main: workflows green`
+//                                               each read on its own, or `main: workflows green`; then
+//                                               `process review due: <n> days since <cycle>` from 14 days after the
+//                                               newest cycle with a SYNTHESIS.md, `process review open: cycle <date>,
+//                                               <k> reviews` while the newest has none, or `process review: …`, from
+//                                               the paths under origin/main's docs/harness/reviews/ (#895)
 //   node scripts/backlog.mjs next     [--json]   the head of ready's pick order, with ready's stderr; exit 3 when
 //                                               nothing is pickable
 //   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick, `over cap` past 12
@@ -157,6 +161,12 @@ const retroInputs = (fetchMergedPrs) => ({
   now: Date.now(),
 })
 
+/** What processReviewLine reads: the paths under docs/harness/reviews/ on origin/main. */
+const processReviewInputs = () => ({
+  paths: git('ls-tree', '-r', '--name-only', 'origin/main', '--', backlog.REVIEWS_PATH).split('\n').filter(Boolean),
+  now: Date.now(),
+})
+
 const mainRuns = (...args) => ghJsonAsync('run', 'list', '-R', REPO, '--branch', 'main',
   '--json', 'databaseId,workflowName,status,conclusion,createdAt', ...args)
 
@@ -268,7 +278,8 @@ async function view(name, slug, flags) {
     for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
       backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)),
       gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`,
-      backlog.readRetroLine(() => retroInputs(fetchMergedPrs)), ...main]) if (line) console.error(line)
+      backlog.readRetroLine(() => retroInputs(fetchMergedPrs)), ...main,
+      backlog.readProcessReviewLine(processReviewInputs)]) if (line) console.error(line)
   }
   if (name === 'next') {
     const { exitCode, stdout, stderr } = backlog.reportNext(readyPlan(), flags)

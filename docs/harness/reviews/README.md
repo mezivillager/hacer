@@ -15,8 +15,8 @@ non-uniform sacttered review docs, especially given this will happen every two w
 
 | Step | Who | Writes |
 |---|---|---|
-| 1. Issue the brief | the coordinator | `<cycle>/BRIEF.md`: this cycle's measured evidence, the runs since the last cycle, and the coordinator's hypotheses in both directions. It is issued over the standing brief, `docs/harness/process-review-brief.md`. |
-| 2. Review | one fresh session per reviewer, on any model or tool the owner picks | one file each, `<cycle>/reviews/<n>.md`, in the standing brief's report format. Raw output goes in `<cycle>/evidence/<n>-<topic>.md`. |
+| 1. Issue the brief | the coordinator, on the `process review due:` line that `node scripts/backlog.mjs ready` prints | `<cycle>/BRIEF.md`: this cycle's measured evidence, the runs since the last cycle, and the coordinator's hypotheses in both directions. It is issued over the standing brief, `docs/harness/process-review-brief.md`. |
+| 2. Review | one fresh-context session per reviewer, which the coordinator starts with the launch line in `docs/harness/process-review-brief.md` §7; the default is two reviewers on Opus. Never through `multi-review`, whose reviewers have no `gh` and no write path. The owner may pick other models or tools, or start a reviewer himself | one file each, `<cycle>/reviews/<n>.md`, in the standing brief's report format. Raw output goes in `<cycle>/evidence/<n>-<topic>.md`. |
 | 3. Consolidate | the coordinator | `<cycle>/SYNTHESIS.md`: every finding once, deduplicated across reviews, with its validity, the decision, and the issue, PR or ruling that carries it. |
 | 4. Follow through | the loop | the issues and rulings SYNTHESIS.md names. The next cycle's brief starts from what landed. |
 

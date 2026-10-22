@@ -37,6 +37,12 @@ A `main: <workflow> failing` line from `ready` or `next` means that workflow's n
 on `main` failed: before the first claim, open that run (`gh run view <id>`), then fix it or file it
 unless an open issue or PR already covers it. `main: unread (…)` is not green.
 
+A `process review due:` line from `ready` means issue the next cycle's `BRIEF.md` (step 1 of <!-- allow-missing-path -->
+`docs/harness/reviews/README.md`), then dispatch its step 2 reviewers before the first claim;
+`process review open:` means finish that cycle, dispatching the reviewers still missing unless an
+open PR already adds one, and writing its `SYNTHESIS.md` once they have landed. <!-- allow-missing-path -->
+The reviewers count toward the three-subagents-at-once cap, and their tokens join this run's total (§6).
+
 Also surface **open claims** and any `docs/harness/sessions/*-handoff.md` files: read the latest
 claim comment on each claimed issue (format in §2). `ready` never offers a claimed issue: it prints
 `claimed`, or `stale-claim` under the 48 h rule in §2. A stale or `paused:…` claim is not an active

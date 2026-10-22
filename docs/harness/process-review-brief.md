@@ -98,7 +98,8 @@ directories. You may describe it by path and purpose.
   - Search exhaustively with `command grep -r` or `rg -uuu`.
   - Write conventional commits, with no AI attribution.
 - **Budget.** The owner names a ceiling at launch. Without one, stop 10 points of the weekly meter
-  above your first reading. A ceiling ends the review.
+  above your first reading. A reviewer the coordinator starts gets its ceiling in the launch line,
+  because a subagent cannot read the weekly meter. A ceiling ends the review.
 
 ## 6. The report
 
@@ -136,11 +137,25 @@ reviewed, at which commit, what it ran on (optional), and the budget used. Then 
 
 ## 7. Launching a cycle
 
-The coordinator issues `docs/harness/reviews/<YYYY-MM-DD>/BRIEF.md`. The first cycle's brief
+On the `process review due:` line from `node scripts/backlog.mjs ready` (`ha-next` §1), the
+coordinator issues `docs/harness/reviews/<YYYY-MM-DD>/BRIEF.md`. The first cycle's brief
 (`docs/harness/reviews/2026-09-26/BRIEF.md`) is the worked example, and its
-`docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs` re-measures the GitHub numbers. Then the owner starts each
-reviewer in a fresh session, from the workspace root:
+`docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs` re-measures the GitHub numbers.
+
+Then the coordinator starts each reviewer, two on Opus by default, as a fresh-context agent given
+the launch line below, with paths from the workspace root, and with:
+
+- `gh` read access from the coordinator's environment;
+- §5's one write;
+- its docs-only PR.
+
+This reverses the 2026-09-27 default "the owner starts each cycle" (`docs/harness/sessions/2026-09-27.md`
+§6), under HRN-016 (#834). A reviewer is never started through `multi-review`, whose reviewers have
+no `gh` and no write path. The owner may pick other models or tools, or start a reviewer himself.
 
 > Read `hacer/docs/harness/process-review-brief.md` and the cycle brief <!-- allow-missing-path -->
 > `hacer/docs/harness/reviews/<YYYY-MM-DD>/BRIEF.md`, and carry out the review they describe.
-> Stop at N% weekly usage.
+> Stop at `<ceiling>`.
+
+The owner's ceiling may be N% weekly usage; the coordinator's is one the reviewer can keep without
+the meter (§5).
