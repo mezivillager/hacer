@@ -1,6 +1,7 @@
 /**
  * What the grading path refuses that compileHDL accepts and the reference does not build, in the reference's order:
- * a `_` in a name (its grammar), then a part input reading a chip OUT or a subscripted internal pin (`chip/builder.ts`).
+ * a `_` in a name (its grammar), then a part reading and writing disjoint bits of one name, and a part input reading
+ * a chip OUT or a subscripted internal pin (`chip/builder.ts`).
  */
 import type { ChipRegistry } from '../chips/registry'
 import type { ChipDefinition } from '../chips/types'
@@ -26,16 +27,28 @@ function underscored(chip: HDLChip): string | null {
 const sideOf = (def: ChipDefinition, pin: string): 'in' | 'out' | null =>
   def.inputs.some((p) => p.name === pin) ? 'in' : def.outputs.some((p) => p.name === pin) ? 'out' : null
 
-/** The reference's `Looping wire`, checked over a whole part before any of its wires. */
-function loops(part: HDLPart, def: ChipDefinition): boolean {
+/** The name of the reference's `Looping wire`, checked over a whole part before any of its wires. */
+function loopingName(part: HDLPart, def: ChipDefinition): string | null {
   const bound = { in: new Set<string>(), out: new Set<string>() }
   for (const { internal, external } of part.connections) {
     const side = sideOf(def, internal)
     if (side === null) continue
-    if (bound[side === 'in' ? 'out' : 'in'].has(external)) return true
+    if (bound[side === 'in' ? 'out' : 'in'].has(external)) return external
     bound[side].add(external)
   }
-  return false
+  return null
+}
+
+const overlaps = (a: HDLSlice | undefined, b: HDLSlice | undefined): boolean => a === undefined || b === undefined || (a.start <= b.end && b.start <= a.end)
+
+/** Whether the part reads a bit of `name` that it also writes, an unsliced binding being every bit. */
+function readsWhatItWrites(part: HDLPart, def: ChipDefinition, name: string): boolean {
+  const slices = { in: [] as (HDLSlice | undefined)[], out: [] as (HDLSlice | undefined)[] }
+  for (const { internal, external, externalSlice } of part.connections) {
+    const side = sideOf(def, internal)
+    if (side !== null && external === name) slices[side].push(externalSlice)
+  }
+  return slices.in.some((read) => slices.out.some((written) => overlaps(read, written)))
 }
 
 const WHOLE = -1
@@ -65,7 +78,10 @@ function miswired(chip: HDLChip, parts: ChipRegistry): string | null {
   for (const part of chip.parts) {
     // Where the reference refuses something else first, compileHDL names it.
     const def = part.name === chip.name ? undefined : parts.get(part.name)
-    if (def === undefined || loops(part, def)) return null
+    if (def === undefined) return null
+    const looping = loopingName(part, def)
+    // compileHDL refuses a loop on shared bits per bit, and accepts one on disjoint bits.
+    if (looping !== null) return readsWhatItWrites(part, def, looping) ? null : atLine(part, `Looping wire ${looping}`)
     const partInsBound = new Map<string, Set<number>>()
     for (const { internal, internalSlice, external, externalSlice } of part.connections) {
       const side = sideOf(def, internal)
