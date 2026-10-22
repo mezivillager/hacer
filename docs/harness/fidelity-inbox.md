@@ -638,7 +638,7 @@ A definition whose source has a `BUILTIN` body declares the pins of the builtin 
   - The 3 that differ are exactly the unsliced wide `true`s printed with the default registry. `W32(a=true)` reads hi 0, where HACER reads 65535. `W17(a=true)` reads top 0, where HACER reads 1. `W2(a=true, b=true)` reads ahi 0 and bhi 0, where HACER reads 65535 and 15. The reference's `true` is a 16-bit `ConstantBus` (`../web-ide/simulator/src/chip/chip.ts:180`).
   - ADR-0020 §1.10 item 10 records that such a binding prints as written. §1.10.9 makes no exception: "The export windows such a binding (rule 10), so the web IDE reads the same value from it". Nothing records that the web IDE reads only 16 bits there, and no open issue tracks it (nit 1 of #922's verifier).
   - It is not reachable today: `printSpec` has no caller outside tests, and the user registry is empty (#206). It becomes reachable once #386 exports a document whose part is a user chip and the caller passes no registry that holds that chip.
-- **Review note:** the fidelity digest comment on PR #922 (2026-10-22)
+- **Review note:** PR #922 issuecomment-6337349284 (the fidelity digest of #914, #920, #921 and #922)
 
 **Draft issue body** (an addition to #722)
 ## Goal
@@ -675,7 +675,7 @@ The `nand2tetris` export never prints a `true` binding that the web IDE reads as
     - HACER's `compileHDL`, `compileSpec` and `evaluateChip` build both shapes and read `OUT a` as `IN a`: 1 when `a` is 1. Grading refuses both, as `Duplicate pin name: "a"`.
   - Of these shapes, the acceptance corpus (`conformance/acceptance/hdl-shapes.json`) holds only the looping `in-and-out-same-name`. ADR-0020 records none of the others.
   - No learner reaches this today: the spec path waits for the editor (#386) and the user registry (#206). `compileHDL` and `compileSpec` are public core API, so an agent reaches both now.
-- **Review note:** the fidelity digest comment on PR #922 (2026-10-22)
+- **Review note:** PR #922 issuecomment-6337349284 (the fidelity digest of #914, #920, #921 and #922)
 
 **Draft issue body**
 ## Goal
