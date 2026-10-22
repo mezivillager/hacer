@@ -41,6 +41,7 @@ One row per retro run. The next run's window starts at the last row's `to` time.
 |---|---|---|---|---|---|---|
 | 2026-10-15 (first) | the three latest session records: 2026-09-29T09:00Z → 09-29T23:59Z, 2026-10-01T21:20Z → 10-02T03:00Z, 2026-10-04T16:50Z → 10-04T23:59Z | `1737e290` | 75 (65 + 10 dependabot) | median reviewable 73 · 2 BLOCK · 0 overturned · 0 reruns | mechanise HRN-001–004 · policy HRN-005–009 | three, listed below |
 | 2026-10-21 | 2026-10-04T23:59Z → 2026-10-21T15:00Z, from the last row's `to`: 16.6 days, far past the cadence (below) | `204aa0b2` | 63 (49 + 14 dependabot) | median reviewable 66 · 9 BLOCK on 7 PRs · 0 overturned · 0 reruns | mechanise HRN-010–014 · policy HRN-015–017 | eight, listed below |
+| 2026-10-22 | 2026-10-21T15:00Z → 2026-10-22T08:37Z, from the last row's `to` to this run's start | `d2f58ea0` | 51 (48 + 3 records PRs; 0 dependabot) | median reviewable 69 · 0 BLOCK · 0 overturned (candidates: #826, #886, #910, #914, #917) · 0 reruns | mechanise HRN-021–022 · policy HRN-023–027 | six, listed below |
 
 ### First run: 2026-10-15
 
@@ -135,6 +136,81 @@ and not proposed. The first quarterly prune, in the week of 2026-12-18, can star
 
 **Not measured:** owner minutes, tokens per merged PR, and local re-run counts, as above. Also not
 measured: whether any review counted here ran on a different tier from the one it names.
+
+### Third run: 2026-10-22
+
+**Window.** The first run under HRN-009's cadence: `node scripts/backlog.mjs ready` printed
+`retro due: 51 merges since 2026-10-21T15:00Z (run closed: docs/harness/sessions/2026-10-21.md)` at
+the first orient after the record landed. The window holds the 2026-10-21 run less #817, which merged
+at 14:54Z, inside the last window. `to` is this run's start, from `date -u`.
+
+**Numbers.** Each is `measured` with its command, `inferred`, or `unmeasured`.
+
+| Number | Value | How |
+|---|---|---|
+| merged PRs | 51: 48 work PRs and the three records PRs #925–#927; 0 dependabot | measured: `node scripts/run-prs.mjs --from 2026-10-21T15:00:00Z --to 2026-10-22T08:37:45Z` |
+| median reviewable lines | **69** (the 48 work PRs: 68); largest #917 (380); over 400: 0. The records PR #924 failed `pr-hygiene` at 845, closed unmerged, and was split into #925 (345), #926 (308) and #927 (192) | measured: the first run's script (`docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`) over the paginated files of the 51 PRs |
+| verdicts | 51 of 51 have a verdict heading the script reads; **0 BLOCK** (the last window: 9 on 7 PRs). 25 Opus verifier verdicts, one carried by tree identity (#841, from #837's), 11 Sonnet, 14 coordinator reviews. Mission Control counts four of these without a verdict: #913, #925, #926 and #927 open `## Verdict: PASS` (HRN-021) | measured: verdict headings and `Verified on:` lines in each PR's comments, same script |
+| overturned | **0**: the label has never been applied. Candidates: #826, #886, #910, #914 and #917. Each PASS named a reproduced defect in the PR's own new lines as a nit, and a later PR fixed it: #843, #890, #921, #922 and #923 (HRN-024). Not listed: four PASSes that a panel's FID decision later changed, #818 (FID-025, #885), #853 (FID-029, #914), #862 (FID-030, #908) and #869 (FID-031, #911) | measured: `gh pr list --state all --label overturned --limit 200` printed `[]`; candidates from the verdicts and the window's issues |
+| escaped defects | **1, inferred:** #907 (`sev:critical`) is in `src/core/testing/gradingRefusal.ts:44-46`, which #869 added (`6ee66227`); its verifier and its fidelity review passed, and the #867 panel found it after the merge. Five more defects in the window's own PRs were known at merge, as verifier nits: #836, #887, #912, #916 and #918. #855, #868 and #878 name defects that were on `main` before the window | inferred: reading the window's 55 issues |
+| tokens per merged PR | **381,277** as 2026-10-21 §2 reports it: 18,682,568 over 119 agents, divided by 49. Under README § *What to measure* it is `unmeasured`, because the sum leaves out the 32 `run-reviews` launches, which report no count (HRN-027) | measured: 2026-10-21 §2 |
+| owner minutes per merged PR | **unmeasured**. Proxy: 1 `needs-human` issue opened, #870 | measured: `gh issue list --state all --search "created:2026-10-21..2026-10-22 label:needs-human"` |
+| follow-up volume | 55 issues opened, 5 still open (#870, #878, #879, #889, #907). 16 are inbox-review issues, all closed; 39 others, 5 open. #928–#930 were filed seconds after `to` | measured: `gh issue list --state all --search "created:2026-10-21..2026-10-22" --limit 200`, filtered to the window's times |
+| flake reruns | **0** re-runs in 1,352 workflow runs: 764 from 2026-10-21T15:00:00Z to the day's end, and 588 on 2026-10-22 to `to`; neither query reached the cap. The record names four load failures in three verifiers' local runs, each passing alone: the collects test in #842's and #860's, and `src/core/spec/parseSpec.partIds.test.ts` (184.6 ms against 100) and `scripts/backlog.logic.test.mjs` (5 s) in #908's (2026-10-21 §3). No local re-run count | measured: the brief's `actions/runs?created=<range>` query, one per day part |
+| stalled reviews | **0**: the three `proposed` entries, HRN-018 to HRN-020, are dated 2026-10-22 | measured: `node scripts/inbox.mjs list --status proposed` |
+| Mission Control `metrics.flow` | 14 days from 2026-10-08T08:42Z, 114 merges: open-to-merge median 0.3 h, p90 1.6 h; `blockedOnce` 7 of 95, none in this window; verdict coverage, code 79 of 79, non-code 16 of 35 (the 19 without are 14 dependabot PRs, #775, and #913, #925, #926 and #927). `belowTier` is empty | measured: `node scripts/mission-control/collect.mjs --json` |
+| premises | 5 hold, 1 expired, 1 unverifiable, 1 manual, as last run. P-001 is still expired, with #569 open | measured: `node scripts/lineage.mjs verify` |
+
+**Recurrences.**
+- A merged PR whose verdict the collector cannot read is seen twice: #775 (last run's Held) and
+  #913, #925, #926 and #927. It is HRN-021.
+- A test that runs a child process synchronously timed out on a loaded laptop twice in the 2026-10-21
+  run: the collects test, which #877 fixed in that file, and `scripts/backlog.logic.test.mjs`. L049's
+  decision has no check. It is HRN-022.
+- Policy: the fidelity review waived by ruling 14 times (HRN-023), reproduced defects passed as nits
+  (HRN-024), four standing rules outside the committed briefs (HRN-025), the meter rule (HRN-026), and
+  the token figure's gap (HRN-027).
+- HRN-018 to HRN-020 already cover the run's other recurrences. Times written from estimates add no
+  occurrence in a committed file, so the Held line above stands.
+
+**For the entries under review.** This is evidence only; their text is unchanged.
+- **HRN-019 (#929):** every PR has a red commit that fails on purpose (`implementer-brief.md` step
+  2), and the rebase-only ruleset puts each on `main`. #917's `7e62d857` records
+  `scripts/layer-ratchet.logic.test.mjs` failing, a file `pnpm run test:run` runs. Option (a)'s trigger,
+  a `test(` title with more than one commit, would also have refused #904 (two commits), #917 (two)
+  and #923 (four), which merged on green.
+- **HRN-020 (#930):** `node scripts/lineage.mjs parse --github` still exits 1 at `d2f58ea0`.
+- **HRN-018 (#928):** nothing new; one coordinator ran in the window.
+
+**For the filed entries.**
+- **HRN-009 (#873, PR #880):** the cadence fired at the first orient after a run's close, as built.
+- **HRN-008 (#870):** this run was dispatched again as a general-purpose agent handed the role file.
+- **HRN-011 (#884, PR #894):** Mission Control's `belowTier` list is empty.
+- **HRN-017 (#898, PR #900):** no query reached the cap, so nothing was split.
+- **HRN-005 (#850, PR #854)** and **HRN-006 (#852, PR #858)** were first applied in this window;
+  HRN-027 and HRN-024 report what that showed.
+
+**Prune check:** the per-PR Cursor second opinion again. Its audit log still has 14 rows, the last
+on 2026-09-21T09:52Z, and none for this window's 51 merges, 33 of them `risk:1` or `risk:2`
+(measured). That is two windows unexercised. This is not a quarter's first run; the first quarterly
+prune, in the week of 2026-12-18, can start from it.
+
+**Held** (found, but no entry this run):
+
+- **Records PRs over the size budget:** #750 (709, `size-override`, the 2026-10-14 run) and #924 (845,
+  split into #925–#927 instead of a self-applied override). `pr-hygiene` caught both. The split cost
+  two more merges of records that the coordinator reviews itself either way. It ranks below the five.
+- **README § *Budgets*' "~2M" subagent tokens per run:** this run used 18.7M under the owner's "until
+  70%", which the row's "unless the owner asked for a longer run" allows. Every run since 2026-10-14
+  has stopped on the meter instead. It ranks below the five.
+- **#907 is the first `bot-filed` issue.** It waits for the owner as ADR-0018 §4 designs, once.
+- **A fidelity digest is owed** for #914, #920, #921 and #922, which merged after the run's digest
+  (ADR-0018 §5). It is the next coordinator's step, not a proposal; HRN-023 cites it.
+- **#878 and #889** are open follow-ups that need shaping: picks, not proposals.
+- **P-001**, expired since 2026-09-22 with #569 open, as last run.
+
+**Not measured:** owner minutes; the tokens of the 32 `run-reviews` launches; local re-run counts;
+this retro's own tokens, which join the next run's total.
 
 ## Queue
 
@@ -688,3 +764,233 @@ knows what the `Decisions:` line may hold.
 `pnpm exec vitest run scripts/lineage.logic.test.mjs scripts/skills.logic.test.mjs`
 ## Blocked by
 —
+
+### HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read
+- **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - The rule: `verifier-brief.md` says the heading `## Verifier verdict: PASS | BLOCK` "is what a
+    verdict collector counts, so a differently worded PASS/BLOCK is invisible to it". `ha-next`'s
+    docs exception posts the coordinator's review "with the verdict heading".
+  - First occurrence: #775 merged with no verdict at all (the 2026-10-21 run's Numbers and Held).
+  - Second: #913, #925, #926 and #927 carry `## Verdict: PASS`, the coordinator's reviews at 04:30Z
+    and 06:39Z, while its #822 carries `## Verifier verdict: PASS`. Mission Control lists all four
+    without a verdict (`metrics.flow.coverage.nonCode.without`, measured), because the `VERDICT`
+    pattern in `scripts/mission-control/collect.logic.mjs` reads only the brief's heading.
+  - Nothing at merge looks: `scripts/merge-on-green.mjs` reads the PR's checks, never its comments.
+  - No open issue covers it (searched "verdict"; #201 and #584 are other things).
+- **Cost if wrong:** one paginated comment read per merge. A PR merged by hand outside the tool
+  still escapes, and dependabot PRs, which get no verdict, must stay exempt.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`)
+## Goal
+A PR merges only when a verdict the collectors can count says PASS.
+## Acceptance criteria
+- `VERDICT` is exported from `scripts/mission-control/collect.logic.mjs`, so the collector and the
+  merge read one pattern.
+- A pure function in `scripts/merge-on-green.logic.mjs` takes the PR's author and comments and
+  returns `pass`, `missing` (no comment opens with the heading) or `block` (the newest verdict is a
+  BLOCK). A dependabot PR returns `pass`. Tests:
+  - `## Verifier verdict: PASS` is `pass`;
+  - `## Verdict: PASS` alone is `missing`;
+  - a BLOCK after a PASS is `block`, and a PASS after a BLOCK is `pass`;
+  - a dependabot PR with no comment is `pass`.
+- `merge-on-green` reads the comments before it updates the branch. On `missing` or `block` it exits
+  4 with its outcome line naming the reason, and touches nothing.
+## Verification command
+`pnpm exec vitest run scripts/merge-on-green.logic.test.mjs scripts/mission-control/collect.logic.test.mjs`
+## Blocked by
+—
+
+### HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it
+- **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - L049's decision is "explicit per-test timeouts, sized from measurement, never the 5s default".
+    #313 and #434 applied it to the seven tests they measured. Nothing applies it to a new test.
+  - First occurrence: `scripts/mission-control/vitest-collects.cli.test.mjs` timed out in #842's
+    verifier run, at a load of 45 to 130, and in #860's (2026-10-21 §3). Its `execFileSync` blocked
+    the worker, so its 45 s limit could not fire. #877 (#861) made it asynchronous with a child kill,
+    and gave `scripts/release-config.test.mjs` 30 s (its commit message).
+  - Second: `scripts/backlog.logic.test.mjs` ("ready and next print the line after the retro…")
+    timed out at 5 s in #908's verifier run and passed alone (#908's verdict). Its `runBacklog`
+    helper calls `spawnSync` under the 5 s default.
+  - What it cost: #861's builder reproduced the collects timeout by running 40 `yes` spinners on the
+    owner's laptop (L074).
+  - Six test files call `spawnSync` and name no time limit: `scripts/backlog.logic.test.mjs`,
+    `scripts/case-collisions.logic.test.mjs`, `scripts/hooks/docPathExists.logic.test.mjs`,
+    `scripts/inbox.logic.test.mjs`, `scripts/peer-range.logic.test.mjs` and
+    `scripts/sync-vectors.cli.test.mjs` (measured: `command grep` for the calls and for `timeout`).
+  - #435 asks for a way to see a test getting slower, which is a different gap.
+- **Cost if wrong:** a lint and six files' limits. A limit sized too generously hides a slowdown,
+  which is #435's point.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`)
+## Goal
+A test that runs a child process has room on a loaded laptop, and a hung child cannot hang the run.
+## Acceptance criteria
+- A pure function in a new `scripts/test-timeouts.logic.mjs` takes a test file's source. It returns each `it` or `test` that reaches `spawnSync`, `execFileSync` or `execSync`, directly or through a helper defined in the same file, with no test limit, or whose child call passes no `timeout` option. <!-- allow-missing-path -->
+- Its tests: a bare `spawnSync` in an `it` is reported; one with a test limit and a child `timeout`
+  is not; a helper defined in the file and called from an `it` is followed.
+- `pnpm run lint` runs it over the test files under `src/`, `scripts/` and `conformance/`. The six
+  files it reports today are fixed in the same PR, each limit sized from a measured run as L049
+  asks, or listed in a shrink-only baseline.
+## Verification command
+`pnpm exec vitest run scripts/test-timeouts.logic.test.mjs` <!-- allow-missing-path -->
+## Blocked by
+—
+
+### HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - The rule: ADR-0018 §2, "A PR that changes semantics under `src/core/**` or `src/simulation/**`
+    gets one before merge". `ha-next` dispatches it. Neither names an exception.
+  - The practice: of the 2026-10-21 run's 20 semantic core PRs, 6 had the review (#818, #826, #845,
+    #853, #862, #869). The other 14 merged on their verifier alone, each by its own ruling: R860,
+    R862–R864, R867, R869, R871–R874, R876, R877 and R879 (2026-10-21 §2). That is 13 of the run's
+    28 rulings. The reason repeats: the builder, the verifier or a panel had already run the web IDE
+    at `91ef428`, so a reviewer "would run the same check a third time" (R864), or the change touched
+    no evaluation (R867, R871).
+  - What the reviews found: each of the six produced at least one FID entry, FID-025 to FID-031, and
+    the panels turned six of them into issues the run built (#882, #901, #903, #905, #906, #909).
+    The one digest, after #911, found the ten waived PRs before it sound, and filed FID-032 (#919,
+    built as #920).
+  - What none covered: #914, #920, #921 and #922 merged after the digest, and ADR-0018 §5's digest
+    has not run for them. R879 says the web IDE's reading of a pin declared twice "was not measured".
+  - One defect passed both gates: #907 (`sev:critical`) is in code #869 added. #869 had its verifier
+    and its fidelity review (FID-031), and the #867 panel found the defect after the merge.
+  - Tokens: a fidelity review cost 198,805 on average over the six, and the digest 194,955
+    (measured from the run's per-agent list, the source of 2026-10-21 §2's total). At that rate the
+    14 waivers saved about 2.8M (inferred).
+- **Proposal:**
+  - **(a)** ADR-0018 §2 gains the exception the run used, stated once. A semantic core PR may merge
+    on its verifier when two agents (the builder or a panel, and the verifier) each ran the
+    reference at a pinned commit on every claim the PR makes about it, cited in the PR; or when it
+    changes no evaluation. The coordinator names the case in the merge line instead of writing a
+    ruling, and the digest covers each such PR before the run's records PR.
+  - **(b)** §2 stands. Every semantic core PR gets its review, and only the owner waives one.
+- **Cost if wrong:** with (a), a divergence a review would have found waits for the digest; all six
+  reviews that ran found something. With (b), about 200k tokens and one more serial step per core
+  PR, for a check that repeats what two agents measured.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - The rule: `verifier-brief.md` § *Verdict rules* gives a BLOCK "only with `file:line` plus a
+    failing command or a concrete input/output", and says nits "never block". It does not say when
+    a reproduced defect must block.
+  - The practice: the window's 51 PRs had 0 BLOCKs; the last window had 9 on 7 PRs. Five PASSes named
+    a reproduced defect in lines the PR added as a nit, and a later PR fixed each:
+    - #826 (issuecomment-6320423980, nit 1): `compileHDL` never returns on a registry whose `get`
+      returns a fresh object, "200,001 calls in 1.6 s"; #836, fixed by #843.
+    - #886 (issuecomment-6329377996, nit 1): a symlinked `hacer-scratch` makes `wt-new` empty a
+      worktree, its git file included; #887, fixed by #890.
+    - #910 (nit 3): `samePins` collapses a repeated pin name through a registry view; #912, fixed by
+      #921.
+    - #914 (nit 1): a sliced wide `true` on a chip the registry lacks exports as written, which the
+      verifier says breaks ADR-0020 §1.5; #916, fixed by #922.
+    - #917 (nits 1 and 2): the harness copies `runTst` and installs with no lockfile; #918, fixed by
+      #923.
+  - Two verdicts argue why the defect was not reachable: #826's "No registry in the repo does this",
+    and #886's, that on macOS "the only realistic way to get there is the user's own symlink". Each
+    fix then cost a claim, a builder and a verifier, 163,730 and 146,993 tokens on average in the run
+    (measured from the per-agent list).
+  - The overturn definition (`verifier-brief.md` § *Overturned verdicts*) excludes a defect in a path
+    marked `unproven` or listed under `Not covered`. A nit is neither, so all five are candidates, and
+    the coordinator classifies each by hand.
+- **Proposal:**
+  - **(a)** The verdict rules say a reproduced defect in lines the PR adds is a BLOCK when a caller
+    on `main` reaches it, and a nit when the verifier shows none does, with that argument in the
+    nit. The overturn definition adds the nit case to what is not overturned.
+  - **(b)** Any reproduced defect in lines the PR adds is a BLOCK, fixed in the same PR by a fixer
+    and passed by a fresh verifier.
+- **Cost if wrong:** with (a), a wrong reachability argument lands the defect on `main`; #886's held
+  only where `TMPDIR` is private to the user. With (b), a fixer round for defects nobody reaches
+  today, and PRs that grow past their issue.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - R868 runs PRD reviews with `--models opus:read-only,grok`. `inbox-panel-brief.md` §2 still
+    launches `--models opus,grok` for every entry. L075 is `partly` for this reason: "The committed
+    panel brief still says `--models opus,grok`".
+  - R865 files an approved entry's step on the owner's machine `needs-human`. The brief's step 5
+    still files every approved entry "`agent-ready` at any risk".
+  - L068 (check for vitest workers with PPID 1 before reporting) and L074 (never generate artificial
+    CPU load) each say "The committed briefs do not say it yet". Neither `implementer-brief.md` nor
+    `verifier-brief.md` names them (measured: `command grep` for `PPID` and `artificial` over
+    `docs/harness/` and `.claude/agents/`). 2026-10-21 §5 carries both as resume steps, as three
+    earlier records carried L068 to L070.
+  - A ruling binds one run, and a change that outlives it lands as an amendment (README § *How this
+    process changes*, path 3). #677, a standing-rules file, has waited on the owner since
+    2026-10-02 and covers the general case, not these four lines.
+- **Proposal:** the panel decides each of the four: adopt it into the brief named, pinned in
+  `scripts/skills.logic.mjs`, or let it lapse with the run. Adopted, §2 gives PRD entries
+  `opus:read-only`; step 5 files an owner's-machine step `needs-human` and any in-repo part
+  `agent-ready`; the implementer and verifier briefs each gain the two lines.
+- **Cost if wrong:** four pinned lines and one launch flag. Left as it is, a PRD reviewer in verify
+  mode can render the 3D canvas on the laptop again (L075), and a builder can load the laptop again
+  (L074).
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - The rule: README § *Budgets*, "Run length": "A meter that will not read is retried once; if it
+    is still unreadable, dispatch stops and in-flight work finishes" (R741, R747).
+  - At 20:49Z the read failed twice, on a permission prompt nobody could answer; the next reading was
+    51% at 21:37Z (2026-10-21 §1). In between, #800 and #871 were claimed (claim comments at
+    21:18:04Z and 21:32:06Z), and #799's panel ran (verdict at 21:17:24Z).
+  - At 03:26Z the read failed on a bot-check page. #906 was claimed at 03:26:06Z, and its builder
+    opened #908 at 03:39:46Z, before the next reading, 62% at 03:45Z.
+  - The coordinator worked from an estimate each time, the last reading plus its rate: 47% and 62%.
+    Both were within about two points of the readings either side (inferred). At 20:49Z the run had
+    about 20 points left before R852's no-new-chain line at 67%.
+  - The meter went dark for good at about 06:10Z, when no new chain was planned, so the rule cost
+    nothing there.
+- **Proposal:**
+  - **(a)** After a failed read and one retry, dispatch continues on a labelled estimate, the last
+    reading plus the run's measured rate, while the estimate is more than three points below the
+    run's no-new-chain line (R852's margin). Otherwise dispatch stops until a read succeeds.
+  - **(b)** The rule stands, and the coordinator stops dispatching until a read succeeds.
+- **Cost if wrong:** with (a), a run can pass its stop if the rate jumps while the meter is dark; it
+  ran from about 1 to 2.8 points an hour in this run. With (b), a run waits on a browser prompt
+  with most of its budget left, as it would have at 20:49Z.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it
+- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
+- **Status:** proposed
+- **Evidence:**
+  - The rule: README § *What to measure* counts "every subagent usage report in the run (builders,
+    verifiers, fixers, reviewers, panels, retros, …)", and "A sum missing any dispatched agent's
+    count is `unmeasured`, never a partial figure".
+  - The first record to report it, 2026-10-21 §2, gives 381,277 per merged PR (18,682,568 over 119
+    agents, divided by 49). It names the gap: "The reviewers of the 32 inbox reviews ran through
+    `run-reviews`, which reports no count", nor does the records builder's second phase. Each launch
+    runs an Opus reviewer, a Grok reviewer and a Claude combiner (`inbox-panel-brief.md` §2).
+  - The launcher's manifest has no usage field (measured: the keys of one of the run's manifests).
+    The launcher belongs to the `multi-review` skill, outside this repo, as for L073.
+  - The size of the gap, inferred: if an Opus (verify) reviewer costs what a verifier did (146,993
+    on average over 37), the 32 add about 4.7M, a quarter of the reported sum.
+  - The denominator is 49; the run merged 52 with its records PRs (README: merged PRs less
+    dependabot). The coordinator's per-agent list later added the records builder's second phase and
+    the split, 55,990 and 14,061, so it reads 18,752,619 over 121 (measured).
+- **Proposal:**
+  - **(a)** README names `run-reviews` launches as outside the figure. A record reports their count
+    beside it, as in "plus 32 `run-reviews` launches, uncounted", and divides by the run's merges,
+    records PRs included.
+  - **(b)** The figure stays `unmeasured` until the launcher reports usage. That is a change to the
+    `multi-review` skill, which is the owner's, since no `agent-ready` issue here can make it.
+- **Cost if wrong:** with (a), the figure reads below the run's cost, by a share the count beside it
+  flags but does not size. With (b), the number #850 made reportable goes back to `unmeasured` for
+  every run with inbox reviews.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
