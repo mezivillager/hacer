@@ -1,0 +1,15 @@
+# node docs/harness/reviews/2026-10-22/evidence/brief-measure-flow.mjs, run 2026-10-22T08:48:16Z at origin/main d2f58ea0
+MERGED 2026-09-26T00:00:00Z..2026-10-22T08:35:00Z: 229 PRs (204 non-Dependabot, 25 Dependabot)
+  by run: 09-27 review follow-through 24 · 09-29 loop-60 36 · 10-02 loop-92 27 · 10-04 loop-20 12 · 10-14 loop-50 38 · 10-15 loop-reset 20 · 10-17 loop-to-20 4 · 10-21 loop-to-70 52 · outside the runs 16
+  by project label (non-Dependabot): project:harness 95 · project:foundation 69 · project:upkeep 9 · project:mission-control 7 · project:core 4 · project:lineage 4 · project:spine 2 · project:verify 1
+  by files touched (non-Dependabot): tooling (scripts/, .github/, conformance/) 57 · engine (src/core, src/simulation) 48 · docs only 36 · other src/ 28 · other non-src 26 · mission-control app 9
+  project:spine: #739 (10-15) #730 (10-15)
+  open -> merge hours: median 0.2 · p90 1.6
+VERDICTS (non-Dependabot; "## Verifier verdict:" is the #492 contract, "## Verdict:" is counted apart)
+  contract heading 181 · only "## Verdict:" 4 (#927 #926 #925 #913) · neither #775 #640 #638 #582 #580 #578 #576 #574 #571 #553 #543 #534 #532 #529 #527 #526 #525 #524 #517
+  PASS 182 · BLOCK 12 · PRs blocked at least once 10: #774 #753 #743 #732 #727 #725 #700 #634 #586 #566
+FIDELITY (non-test files under src/core or src/simulation; reviewed = a "## Fidelity verdict:" comment on the PR)
+  by run, reviewed/total: 09-29 loop-60 0/5 · 10-02 loop-92 1/1 · 10-14 loop-50 7/12 · 10-15 loop-reset 1/5 · 10-21 loop-to-70 7/20
+  without one: #922 #921 #920 #917 #914 #910 #908 #885 #876 #865 #863 #860 #843 #774 #770 #764 #751 #748 #739 #735 #731 #727 #630 #619 #614 #606 #589
+ISSUES 2026-09-26..2026-10-22: opened 175 · closed 206
+  open now: 121 · agent-ready 22 · needs-human 2 · idea 0 · in-progress 1 · bot-filed 1 · sev:critical 1
