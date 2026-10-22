@@ -139,6 +139,20 @@ describe('ChipRegistry', () => {
     })).toThrow('width must be a finite integer >= 1')
   })
 
+  it('rejects chip with a pin wider than MAX_PIN_WIDTH (#878)', () => {
+    const reg = createChipRegistry()
+    const chipWithInput = (name: string, width: number): ChipDefinition => ({
+      name,
+      inputs: [{ name: 'a', width }],
+      outputs: [{ name: 'out', width: 1 }],
+      implementation: { type: 'builtin', evaluate: () => ({ out: 0 }) },
+    })
+    expect(() => reg.register(chipWithInput('Bad', 33))).toThrow(
+      new Error('Invalid chip "Bad": Pin "a" width 33 is wider than 32 bits, the widest bus HACER evaluates'),
+    )
+    expect(() => reg.register(chipWithInput('Wide', 32))).not.toThrow()
+  })
+
   it('rejects chip with whitespace-padded name', () => {
     const reg = createChipRegistry()
     expect(() => reg.register({
