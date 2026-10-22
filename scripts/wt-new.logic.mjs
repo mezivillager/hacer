@@ -5,6 +5,7 @@
 // Node CLI for the two decidable steps this module owns: parsing the `<type>/<topic>` spec, and
 // judging the evidence gathered along the way into one verdict.
 
+import { createHash } from 'node:crypto'
 import path from 'node:path'
 
 const SPEC_RE = /^([a-z][a-z0-9]*)\/([a-z0-9][a-z0-9._-]*)$/
@@ -105,8 +106,9 @@ export function formatFreshness(behind, ahead) {
 const trimTrailingSlashes = (dir) => dir.replace(/\/+$/, '')
 
 /**
- * A linked worktree's own scratch folder, `<tmpDir>/hacer-scratch/<worktree id>`, keyed by the last
- * segment of its git dir. Refuses the main checkout (git dir is the common dir) and any relative input.
+ * A linked worktree's own scratch folder, `<tmpDir>/hacer-scratch/<worktree id>-<repo hash>`: the last
+ * segment of its git dir and 8 hex of a hash of the common git dir, so two clones never share one.
+ * Refuses the main checkout (git dir is the common dir) and any relative input.
  * @returns {{ok: true, path: string} | {ok: false, reason: string}}
  */
 export function scratchFolder(tmpDir, gitDir, commonDir) {
@@ -120,5 +122,6 @@ export function scratchFolder(tmpDir, gitDir, commonDir) {
   if (id === '' || id === '.' || id === '..') {
     return { ok: false, reason: `${JSON.stringify(gitDir)} has no worktree id as its last segment` }
   }
-  return { ok: true, path: path.join(tmpDir, 'hacer-scratch', id) }
+  const repoHash = createHash('sha256').update(trimTrailingSlashes(commonDir)).digest('hex').slice(0, 8)
+  return { ok: true, path: path.join(tmpDir, 'hacer-scratch', `${id}-${repoHash}`) }
 }
