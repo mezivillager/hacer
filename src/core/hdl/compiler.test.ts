@@ -1220,6 +1220,10 @@ describe("compileHDL — a BUILTIN body declares the builtin's own pins (#919)",
     })
   })
 
+  it('refuses Foo declaring IN in, in over BUILTIN Not, whose IN is in once (#912)', () => {
+    expect(compile('CHIP Foo { IN in, in; OUT out; BUILTIN Not; }')).toEqual({ success: false, errors: [{ message: 'Foo declares IN in, in, but builtin Not declares IN in' }] })
+  })
+
   it('accepts Foo declaring IN in and OUT out over BUILTIN Not, and an Outer over it gives o = ¬a', () => {
     const foo = 'CHIP Foo { IN in; OUT out; BUILTIN Not; }'
     expect(compile(foo).success).toBe(true)
