@@ -1,5 +1,12 @@
-import { serializeCircuit } from '@/core/serialization'
-import { useCircuitStore } from '@/store/circuitStore'
+import {
+  deserializeCircuit,
+  serializeCircuit,
+  type DeserializedCircuit,
+  type DeserializeResult,
+  type SerializedCircuit,
+} from '@/core/serialization'
+import { notify } from '@/lib/notify'
+import { circuitActions, useCircuitStore } from '@/store/circuitStore'
 import { debounce, type DebouncedFunction } from '@/utils/debounce'
 import { AUTOSAVE_KEY } from './storageKeys'
 
@@ -39,8 +46,50 @@ export function subscribeAutosave(): void {
 
 export type Announce = (show: () => void) => void
 
-export function restoreAutosave(_announce: Announce = (show) => show()): void {
-  throw new Error('not implemented')
+function readAutosave(): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    return window.localStorage.getItem(AUTOSAVE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function deserializeAutosave(raw: string): DeserializeResult | null {
+  try {
+    return deserializeCircuit(JSON.parse(raw) as SerializedCircuit)
+  } catch {
+    return null
+  }
+}
+
+const isEmptyCircuit = (c: DeserializedCircuit): boolean =>
+  [c.gates, c.wires, c.inputNodes, c.outputNodes, c.junctions, c.busComponents].every((slice) => slice.length === 0)
+
+/** Loads the autosave slot into the store and evaluates it; `announce` decides when its one toast shows. */
+export function restoreAutosave(announce: Announce = (show) => show()): void {
+  const raw = readAutosave()
+  if (!raw) return
+  const result = deserializeAutosave(raw)
+  if (!result?.document) {
+    const reason = result?.warnings[0]?.message ?? 'the saved data is not a circuit.'
+    announce(() => notify.warning(`Could not restore your last circuit: ${reason}`))
+    return
+  }
+  const restored = result.document
+  if (isEmptyCircuit(restored)) return
+  useCircuitStore.setState((s) => {
+    s.gates = restored.gates
+    s.wires = restored.wires
+    s.inputNodes = restored.inputNodes
+    s.outputNodes = restored.outputNodes
+    s.junctions = restored.junctions
+    s.busComponents = restored.busComponents
+  }, false, 'restoreAutosave')
+  circuitActions.simulationTick()
+  const skipped = result.warnings.length
+  const description = `Skipped ${String(skipped)} ${skipped === 1 ? 'entry' : 'entries'} this build could not read.`
+  announce(() => notify.info('Restored your last circuit', skipped > 0 ? { description } : undefined))
 }
 
 export function isAutosaveSubscribed(): boolean {
