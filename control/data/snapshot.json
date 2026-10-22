@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T01:28:08.009Z",
+  "generatedAt": "2026-10-22T01:29:46.585Z",
   "head": {
     "sha": "0c81e05e01ee1d89cc59ebb6e326cfc64f32fd13",
     "date": "2026-10-22T04:27:09+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T01:28:08.009Z",
+      "fetchedAt": "2026-10-22T01:29:46.585Z",
       "status": "ok"
     }
   },
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 18,
-        "ready": 2,
-        "inProgress": 1,
+        "ready": 1,
+        "inProgress": 2,
         "needsHuman": 2,
         "staleClaims": [],
         "agentReady": 4,
@@ -428,11 +428,6 @@
         "project": "upkeep"
       },
       {
-        "number": 893,
-        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
-        "project": "harness"
-      },
-      {
         "number": 849,
         "title": "Inbox review: FID-028 · A registered definition must agree with its source: refuse one whose name or pins differ from its HDL's or its document's",
         "project": "upkeep"
@@ -523,21 +518,6 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 893,
-        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2564,6 +2544,22 @@
         "reason": "unshaped"
       },
       {
+        "number": 893,
+        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 895,
         "title": "Process review cadence: due 14 days after the last finished cycle, printed by `backlog.mjs ready` and `next`, and the coordinator starts its reviewers",
         "labels": [
@@ -2645,7 +2641,6 @@
       ],
       "harness": [
         257,
-        893,
         154,
         156,
         270,
@@ -2661,6 +2656,7 @@
         870,
         888,
         889,
+        893,
         895
       ],
       "spine": [
@@ -5037,6 +5033,31 @@
           "at": "2026-10-22T01:19:23Z",
           "url": "https://github.com/mezivillager/hacer/issues/888#issuecomment-6330338551"
         }
+      },
+      {
+        "number": 893,
+        "ref": "refs/heads/claim/893",
+        "sha": "0c81e05e01ee1d89cc59ebb6e326cfc64f32fd13",
+        "state": "OPEN",
+        "title": "The queue-up rule names its `risk:2` exceptions: inbox-panel filings, and coordinator-filed slices of an owner-approved plan (HRN-015)",
+        "url": "https://github.com/mezivillager/hacer/issues/893",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:2"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "docs/893-risk2-queue-up",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T01:28:34Z",
+          "url": "https://github.com/mezivillager/hacer/issues/893#issuecomment-6330456028"
+        }
       }
     ],
     "onClosedIssues": 0
@@ -6927,7 +6948,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T01:28:08.009Z",
+      "since": "2026-10-08T01:29:46.585Z",
       "merged": 96,
       "openToMergeHours": {
         "median": 0.3,
@@ -11236,12 +11257,15 @@
         "pr": null,
         "sha": "0c81e05e01ee1d89cc59ebb6e326cfc64f32fd13",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T01:29:22Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39705757550/job/119585293253",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
