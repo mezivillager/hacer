@@ -14,6 +14,7 @@ interface Pin {
 
 interface Provenance {
   pin: Pin
+  install: string
   typeErrors: number
 }
 
@@ -22,6 +23,7 @@ const PIN = JSON.parse(readFileSync(path.join(HERE, 'reference.json'), 'utf-8'))
 
 export const referenceDir = path.resolve(HERE, '../../node_modules/.cache/hacer-differential', PIN.commit)
 const PROVENANCE = path.join(referenceDir, 'provenance.json')
+const INSTALL = 'npm ci'
 export const BUILT = ['simulator/build/chip/builder.js', 'simulator/build/languages/tst.js', 'simulator/build/test/chiptst.js']
 
 const run = (cmd: string, args: string[]): string =>
@@ -32,7 +34,7 @@ function checkout(): void {
   mkdirSync(referenceDir, { recursive: true })
   run('git', ['init', '-q'])
   run('git', ['remote', 'add', 'origin', PIN.repository])
-  run('git', ['sparse-checkout', 'set', '--no-cone', '/LICENSE', '/tsconfig.base.json', ...PIN.packages.map((p) => `/${p}/`)])
+  run('git', ['sparse-checkout', 'set', '--no-cone', '/LICENSE', '/tsconfig.base.json', '/package-lock.json', ...PIN.packages.map((p) => `/${p}/`)])
   run('git', ['fetch', '-q', '--depth', '1', '--filter=blob:none', 'origin', PIN.commit])
   run('git', ['checkout', '-q', 'FETCH_HEAD'])
   const head = run('git', ['rev-parse', 'HEAD']).trim()
@@ -42,7 +44,7 @@ function checkout(): void {
 const installedVersion = (name: string): string =>
   (JSON.parse(readFileSync(path.join(referenceDir, 'node_modules', name, 'package.json'), 'utf-8')) as { version: string }).version
 
-/** A manifest of our own replaces web-ide's: only the pinned packages, and exact versions every one of them resolves to. */
+/** `npm ci` against web-ide's own lockfile at the pin: our manifest names only the pinned packages, and npm ci fails if it disagrees with the lock. */
 function install(): void {
   const manifest = {
     name: 'hacer-differential-reference',
@@ -51,7 +53,7 @@ function install(): void {
     dependencies: PIN.dependencies,
   }
   writeFileSync(path.join(referenceDir, 'package.json'), `${JSON.stringify(manifest, null, 2)}\n`)
-  run('npm', ['install', '--omit=dev', '--ignore-scripts', '--legacy-peer-deps', '--no-audit', '--no-fund'])
+  run('npm', ['ci', '--omit=dev', '--ignore-scripts', '--legacy-peer-deps', '--no-audit', '--no-fund'])
   for (const [name, version] of Object.entries(PIN.dependencies)) {
     const actual = installedVersion(name)
     if (actual !== version) throw new Error(`reference install resolved ${name}@${actual}, not the pinned ${version}`)
@@ -73,11 +75,12 @@ function build(): number {
   return (output.match(/error TS\d+/g) ?? []).length
 }
 
+/** Whether `dir` holds a finished build of this pin, installed from its lockfile, with every emitted file still on disk. */
 export function current(dir: string = referenceDir): boolean {
   const provenance = path.join(dir, 'provenance.json')
   if (!existsSync(provenance)) return false
-  const { pin } = JSON.parse(readFileSync(provenance, 'utf-8')) as Provenance
-  return JSON.stringify(pin) === JSON.stringify(PIN)
+  const { pin, install } = JSON.parse(readFileSync(provenance, 'utf-8')) as Provenance
+  return JSON.stringify(pin) === JSON.stringify(PIN) && install === INSTALL && BUILT.every((file) => existsSync(path.join(dir, file)))
 }
 
 /** The built reference's directory, fetched and built first unless its provenance already matches the pin. */
@@ -88,11 +91,11 @@ export function ensureReference(log: (line: string) => void = () => {}): string 
   }
   log(`reference: cloning ${PIN.repository} at ${PIN.commit}`)
   checkout()
-  log('reference: npm install (pinned versions)')
+  log('reference: npm ci (the lockfile at the pin)')
   install()
   const typeErrors = build()
   log(`reference: built; tsc reported ${typeErrors} upstream type error(s), emit complete`)
-  const provenance: Provenance = { pin: PIN, typeErrors }
+  const provenance: Provenance = { pin: PIN, install: INSTALL, typeErrors }
   writeFileSync(PROVENANCE, `${JSON.stringify(provenance, null, 2)}\n`)
   return referenceDir
 }
