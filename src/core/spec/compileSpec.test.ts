@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { getBuiltinChipRegistry } from '../chips/appRegistry'
+import { registerProject1Builtins } from '../chips/builtins/project01'
 import { DEFAULT_MAX_DEPTH, evaluateChipWithCtx } from '../chips/evaluateChip'
+import { createChipRegistry, registerBuiltin } from '../chips/registry'
 import { compileHDL, type CompiledEvaluator, type EvalContext } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
+import { printPin } from '../hdl/printer'
 import type { HDLSlice } from '../hdl/types'
 import { compileSpec, type CompileSpecInput } from './compileSpec'
 import { parseSpec } from './parseSpec'
@@ -67,6 +70,24 @@ const TWO_CYCLE = doc('X', [port('a')], [port('x'), port('y')], [], [
 ])
 const SELF_CYCLE = doc('X', [port('a')], [port('x')], [], [{ id: 'x', driver: chipOut('x'), sinks: [chipOut('x')] }])
 const WIDE_TRUE = 'CHIP A { IN a[16]; OUT out[16]; PARTS: And16(a=a, b=true, out=out); }'
+const wide = createChipRegistry()
+registerProject1Builtins(wide)
+registerBuiltin(wide, 'W32', [port('a', 32)], [port('lo', 16), port('hi', 16)], ({ a = 0 }) => ({ lo: a & 0xffff, hi: a >>> 16 }))
+registerBuiltin(wide, 'W17', [port('a', 17)], [port('lo', 16), port('top')], ({ a = 0 }) => ({ lo: a & 0xffff, top: a >>> 16 }))
+const wideCtx: EvalContext = { ...ctx, registry: wide }
+/** The inbox panel's table (#859): the value HACER decided for a literal on a pin wider than 16 bits. */
+const WIDE_LITERALS: Array<[string, string, Record<string, number>]> = [
+  ['W32', 'a=true', { lo: 65535, hi: 65535 }],
+  ['W32', 'a[0..23]=true', { lo: 65535, hi: 255 }],
+  ['W32', 'a[0..19]=true', { lo: 65535, hi: 15 }],
+  ['W32', 'a[8..31]=true', { lo: 65280, hi: 65535 }],
+  ['W17', 'a=true', { lo: 65535, top: 1 }],
+  ['W32', 'a[16..31]=true', { lo: 0, hi: 65535 }],
+  ['W32', 'a[0..15]=true', { lo: 65535, hi: 0 }],
+  ['W32', 'a[4..11]=true', { lo: 4080, hi: 0 }],
+  ['W32', 'a[0..15]=true, a[16..31]=true', { lo: 65535, hi: 65535 }],
+  ['W32', 'a=false', { lo: 0, hi: 0 }],
+]
 const TRUE: Ref = { kind: 'constant', value: true }
 const FALSE: Ref = { kind: 'constant', value: false }
 const AND_WITH = (driver: Ref | null): CircuitSpec => doc('K', [port('a')], [port('out')], [{ id: 'p1', chip: 'And' }], [
@@ -140,6 +161,18 @@ describe('compileSpec — the §1.5 lowering', () => {
 
   it('a wide literal reads all ones of its pin: And16(a=a, b=true) gives out = a', () => {
     for (const a of [0, 1, 0x5555, 0xaaaa, 0x8000, 0xffff]) expect(run(WIDE_TRUE, { a })).toEqual({ out: a })
+  })
+
+  it.each(WIDE_LITERALS)('a literal past 16 bits is every bit of its connection, through both readers: %s(%s)', (chip, binding, want) => {
+    const outs = wide.get(chip)?.outputs ?? []
+    const source = `CHIP T { IN x; OUT ${outs.map(printPin).join(', ')}; PARTS: ${chip}(${binding}, ${outs.map((o) => `${o.name}=${o.name}`).join(', ')}); }`
+    const viaSpec = compileSpec(parseSpec(source, { chips: wide }), wide)
+    const parsed = parseHDL(source)
+    const viaHdl = parsed.success ? compileHDL(parsed.chip, wide) : null
+    expect({
+      spec: viaSpec.success ? viaSpec.evaluate({ x: 0 }, wideCtx) : viaSpec.diagnostics,
+      hdl: viaHdl?.success ? viaHdl.evaluate({ x: 0 }, wideCtx) : viaHdl,
+    }).toEqual({ spec: want, hdl: want })
   })
 
   it('a constant driver built without a parse compiles on its own literal\'s net', () => {

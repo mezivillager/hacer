@@ -1,3 +1,4 @@
+import type { ChipRegistry } from '../chips/registry'
 import { printPinRef } from '../hdl/printer'
 import type { HDLSlice } from '../hdl/types'
 import { sliceWidth, splitNetId } from './netId'
@@ -8,6 +9,8 @@ export interface PrintSpecOptions {
   /** `nand2tetris` prints plain HDL: a pass-through becomes one buffer per 16-bit window, with no header and no sidecar. */
   dialect?: 'hacer' | 'nand2tetris'
   sidecar?: Sidecar
+  /** Where `nand2tetris` reads an unsliced part pin's width; the Project 1 builtins by default. */
+  chips?: ChipRegistry
 }
 
 type Alias = Net & { driver: Extract<Ref, { kind: 'chip-in' | 'chip-out' }> }
