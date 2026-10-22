@@ -600,3 +600,32 @@ On the grading path, a shape with two refusable causes reports the cause the ref
 `pnpm exec vitest run --project node src/core/testing src/core/hdl`
 ## Blocked by
 #840 (PR #869), which adds the check this extends.
+
+### FID-032 · A `BUILTIN` body declares the builtin's own pins: refuse a source whose `IN` or `OUT` differ from the builtin it names
+- **Date:** 2026-10-22 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #903 (PR #910) refuses a definition whose name or pins differ from its source's, and leaves `BUILTIN` bodies out. ADR-0020 §1.11 rule 2 says such a body "is compared with its source only, not with the builtin's own pins, which the web IDE takes (`../web-ide/simulator/src/chip/builder.ts:233-235`)". The #849 panel sent that gap to a separate entry. Measured on `main` `33ae5ec7` with a throwaway vitest probe, and on the web IDE at `91ef428` under tsx, 2026-10-22:
+  - `CHIP Foo { IN a; OUT out; BUILTIN Not; }`, built by `hdlChipDefinition` and registered, passes #910's check, because its declared pins are its source's. `Outer` = `Foo(a=a, out=o)` is accepted by `compileHDL` and by `compileSpec`, and gives `o = 1` for `a` = 0 and for `a` = 1. The passthrough hands the source's inputs to the builtin's `evaluate` (`src/core/hdl/compiler.ts:254-261`), and `Not` reads `in`, which nothing binds.
+  - `CHIP Foo { IN a; OUT o; BUILTIN Nand; }` evaluates to `{ out: 1 }`, a pin `Foo` does not declare. `Outer` = `Foo(a=a, o=o)` is accepted on both paths and gives `o = 0` for both inputs.
+  - The control, `CHIP Foo { IN in; OUT out; BUILTIN Not; }`, gives `o = ¬a`.
+  - The web IDE cannot hold either chip. Its grammar takes only `BUILTIN;` (`hdl.ohm:13`). A `BUILTIN` body returns the builtin named by the `CHIP` name, with the builtin's pins (`builder.ts:233-235`). `CHIP Nand { IN x, y; OUT out; BUILTIN; }` builds with `a[1], b[1], out[1]`, and so does `CHIP Nand { IN a[2], b; OUT out; BUILTIN; }`. `CHIP Foo { IN a; OUT out; BUILTIN; }` is refused (`Chip Foo not in builtin registry`), and a parent of it gets `Undefined chip name: Foo`.
+  - On the grading path, R771 lets only a primitive be `BUILTIN`, and only as itself (`src/core/testing/testChip.ts:56-58`), so the stand-in is refused there. The file's own chip keeps the source's pins (`testChip.ts:85-90`). `CHIP Nand { IN x, y; OUT out; BUILTIN; }` against a test over `a`, `b` and `out` reports `output-list names pin "a", but chip Nand has no such pin`, where the web IDE runs the same test on its builtin's pins. `IN a[2], b` passes in both.
+  - Not reachable by a learner on the core path today: the user registry is empty (#206). An agent can register such a definition through the core API now.
+- **Review note:** PR #911, the fidelity digest of 2026-10-22
+
+**Draft issue body**
+## Goal
+A definition whose source has a `BUILTIN` body declares the pins of the builtin it names, or it is refused with a message that names both sides. No chip evaluates through a builtin against pins the builtin does not have.
+## Acceptance criteria
+- The source check (`sourceDisagreements`, `src/core/hdl/compiler.ts`) compares a `BUILTIN` body's `IN` and `OUT`, as name→width maps, with the pins of the builtin it names. A mismatch reads in #903's form, for example `Foo declares IN a, but builtin Not declares IN in`.
+- `compileSpec`'s part check refuses it in rule 2's `›` chain, `evaluateChip` refuses it as a `ChipCompileError`, and `compileHDL` of the `BUILTIN` chip refuses it. None of them throws.
+- On the grading path, a primitive's `BUILTIN` file whose pins differ from the builtin's either takes the builtin's pins, as the web IDE does, or gets the same refusal, with ADR-0020 §1.11 rule 2 listing the web IDE's reading as an expected disagreement. A test pins the choice.
+- Tests:
+  - the two mismatched `Foo` shapes above are refused through `compileSpec`, `evaluateChip` and `compileHDL`;
+  - `CHIP Nand { IN x, y; OUT out; BUILTIN; }` and `CHIP Nand { IN a[2], b; OUT out; BUILTIN; }` through `testChip`, under the chosen rule;
+  - the control `Foo`, every Project 1 builtin, and a primitive's `BUILTIN;` file whose pins match are unaffected, and the existing suites stay green.
+- ADR-0020 §1.11 rule 2's `BUILTIN` sentence is replaced by the check.
+## Verification command
+`pnpm exec vitest run --project node src/core/spec src/core/chips src/core/hdl src/core/testing`
+## Blocked by
+—
