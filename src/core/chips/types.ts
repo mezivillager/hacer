@@ -1,3 +1,4 @@
+import { MAX_PIN_WIDTH } from '@/simulation'
 import type { CircuitSpec } from '../spec/types'
 
 export interface ChipPin {
@@ -37,6 +38,11 @@ export interface ChipValidationError {
   message: string
 }
 
+/** The refusal of a pin wider than `MAX_PIN_WIDTH`, with `width` printed as given. */
+export function pinTooWide(name: string, width: string): string {
+  return `Pin "${name}" width ${width} is wider than ${String(MAX_PIN_WIDTH)} bits, the widest bus HACER evaluates`
+}
+
 export function validateChipDefinition(def: ChipDefinition): ChipValidationError[] {
   const errors: ChipValidationError[] = []
   if (!def.name || def.name.trim() === '') {
@@ -63,6 +69,8 @@ export function validateChipDefinition(def: ChipDefinition): ChipValidationError
     const width = pin.width
     if (typeof width !== 'number' || !Number.isFinite(width) || !Number.isInteger(width) || width < 1) {
       errors.push({ field: 'pin', message: `Pin "${trimmedName}" width must be a finite integer >= 1` })
+    } else if (width > MAX_PIN_WIDTH) {
+      errors.push({ field: 'pin', message: pinTooWide(trimmedName, String(width)) })
     }
   }
   const dupes = normalizedNames.filter((n, i) => normalizedNames.indexOf(n) !== i)
