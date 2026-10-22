@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T09:06:11.527Z",
+  "generatedAt": "2026-10-22T09:10:49.223Z",
   "head": {
-    "sha": "96de42f182121b22bf3cd11c58c3ca12e89925f7",
-    "date": "2026-10-22T12:05:19+03:00",
-    "subject": "docs(harness): retro run 2026-10-22, HRN-021–027 proposed over 51 merges"
+    "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
+    "date": "2026-10-22T12:09:47+03:00",
+    "subject": "docs(harness): cite the run queue and tokens file without local paths"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T09:06:11.527Z",
+      "fetchedAt": "2026-10-22T09:10:49.223Z",
       "status": "ok"
     }
   },
@@ -428,7 +428,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        931,
         514
       ]
     }
@@ -2176,30 +2175,6 @@
   "prs": {
     "open": [
       {
-        "number": 931,
-        "title": "docs(harness): issue the 2026-10-22 process review brief",
-        "url": "https://github.com/mezivillager/hacer/pull/931",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/process-review-2026-10-22",
-        "isDraft": false,
-        "createdAt": "2026-10-22T08:59:34Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
-            "at": "2026-10-22T09:04:41Z",
-            "url": "https://github.com/mezivillager/hacer/pull/931#issuecomment-6336980399"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2248,6 +2223,30 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T09:04:43Z",
             "url": "https://github.com/mezivillager/hacer/pull/932#issuecomment-6336981031"
+          }
+        ]
+      },
+      {
+        "number": 931,
+        "title": "docs(harness): issue the 2026-10-22 process review brief",
+        "url": "https://github.com/mezivillager/hacer/pull/931",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22",
+        "isDraft": false,
+        "createdAt": "2026-10-22T08:59:34Z",
+        "mergedAt": "2026-10-22T09:09:48Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:04:41Z",
+            "url": "https://github.com/mezivillager/hacer/pull/931#issuecomment-6336980399"
           }
         ]
       },
@@ -3776,40 +3775,6 @@
         "mergedAt": "2026-10-16T02:04:23Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 774,
-        "title": "fix(core): fromLegacyCircuit sorts junction feeds and traces each loop-free key once (#767)",
-        "url": "https://github.com/mezivillager/hacer/pull/774",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/767-import-order",
-        "isDraft": false,
-        "createdAt": "2026-10-16T01:00:37Z",
-        "mergedAt": "2026-10-16T01:59:52Z",
-        "closes": [
-          767
-        ],
-        "verdicts": [
-          {
-            "verdict": "BLOCK",
-            "round": 1,
-            "model": "Opus 5.5",
-            "at": "2026-10-16T01:31:23Z",
-            "url": "https://github.com/mezivillager/hacer/pull/774#issuecomment-6205970880"
-          },
-          {
-            "verdict": "PASS",
-            "round": 2,
-            "model": "Opus 5.5",
-            "at": "2026-10-16T01:55:06Z",
-            "url": "https://github.com/mezivillager/hacer/pull/774#issuecomment-6206260968"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -5770,7 +5735,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-16",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-17",
@@ -5782,20 +5747,20 @@
       },
       {
         "date": "2026-10-22",
-        "merges": 25
+        "merges": 26
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T09:06:11.527Z",
-      "merged": 115,
+      "since": "2026-10-08T09:10:49.223Z",
+      "merged": 116,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
       },
       "blockedOnce": {
         "count": 7,
-        "of": 96,
+        "of": 97,
         "prs": [
           700,
           725,
@@ -5813,8 +5778,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 36,
-          "withVerdict": 17,
+          "merged": 37,
+          "withVerdict": 18,
           "without": [
             692,
             693,
@@ -10064,11 +10029,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "96de42f182121b22bf3cd11c58c3ca12e89925f7",
+        "sha": "68ded0de14ac8f836264ce48a14b57c2affff5d3",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39752705564/job/119736942919",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39753279011/job/119738865014",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10118,48 +10083,6 @@
           "known": 71,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 931,
-        "sha": "8a58bb217c28d3db9624aadf7551e0e43143928a",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T09:04:37Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39752583685/job/119736544329",
-        "line": "HYGIENE: WARN reviewable=375 test=0 excluded=0 files=6 issue=docs-only",
-        "verdict": "WARN",
-        "fields": {
-          "reviewable": 375,
-          "test": 0,
-          "excluded": 0,
-          "files": 6,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 931,
-        "sha": "8a58bb217c28d3db9624aadf7551e0e43143928a",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T09:04:39Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39752586208/job/119736550886",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 931,
-        "sha": "8a58bb217c28d3db9624aadf7551e0e43143928a",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39752586186/job/119736551227",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
