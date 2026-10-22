@@ -3,7 +3,7 @@ import type { ChipDefinition } from '../chips/types'
 import type { ChipRegistry } from '../chips/registry'
 import { ChipCompileError, evaluateChip } from '../chips/evaluateChip'
 import { parseHDL } from '../hdl/parser'
-import type { TSTScript } from './types'
+import type { TSTOutputColumn, TSTScript } from './types'
 import type { CmpFile } from './cmpParser'
 import { compareCmpRow } from './cmpParser'
 
@@ -65,6 +65,16 @@ function knownNames(chip: ChipDefinition): Set<string> {
 
 /** The reference's clock column: any `output-list` may name it (Project 3 onward). */
 const TIME_COLUMN = 'time'
+
+/** The script with each bare output-list name at its pin's width, as the reference IDE sizes it once it holds the chip. */
+export function resolveOutputColumns(script: TSTScript, chip: ChipDefinition): TSTScript {
+  const widths = new Map([...chip.inputs, ...chip.outputs].map((pin) => [pin.name, pin.width]))
+  const resolve = (column: TSTOutputColumn): TSTOutputColumn => {
+    const width = column.widthFromChip ? widths.get(column.name) : undefined
+    return width === undefined ? column : { ...column, width }
+  }
+  return { commands: script.commands.map((cmd) => (cmd.type === 'output-list' ? { ...cmd, columns: cmd.columns.map(resolve) } : cmd)) }
+}
 
 export function runTest(script: TSTScript, options: RunTestOptions): TestResult {
   const { registry, maxDepth } = options

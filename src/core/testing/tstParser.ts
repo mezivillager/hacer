@@ -239,6 +239,7 @@ function parseOutputColumn(token: string): TSTOutputColumn | null {
       padLeft: 1,
       width: 1,
       padRight: 1,
+      widthFromChip: true,
     }
   }
 
