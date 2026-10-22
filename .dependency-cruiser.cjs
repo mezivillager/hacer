@@ -151,6 +151,14 @@ module.exports = {
       to: { path: '^e2e/' },
     },
     {
+      name: 'src-no-conformance',
+      severity: 'error',
+      comment:
+        'Production code may not import the differential harness: it runs src beside the reference simulator, never the reverse.',
+      from: { path: '^src/' },
+      to: { path: '^conformance/differential/' },
+    },
+    {
       name: 'no-circular',
       severity: 'error',
       comment: 'A cycle means neither module can be loaded, tested or moved on its own.',
