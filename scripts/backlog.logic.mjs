@@ -666,10 +666,45 @@ export function readRetroLine(read) {
 // `ready` and `next` print it on stderr after the retro and main lines.
 
 export const REVIEWS_PATH = 'docs/harness/reviews/'
+const PROCESS_REVIEW_DUE_DAYS = 14
+const CYCLE_FILE = /^docs\/harness\/reviews\/(\d{4}-\d{2}-\d{2})\/(.+)$/
+const REVIEW_FILE = /^reviews\/\d+\.md$/
+const dayStart = (date) => Date.parse(`${date}T00:00:00Z`)
 
-export const processReviewLine = () => 'not implemented'
+/** The cycles among `paths`, newest first: each dated directory, whether it holds `SYNTHESIS.md`, and its reviews. */
+function reviewCycles(paths) {
+  const cycles = new Map()
+  for (const file of paths) {
+    const [, date, rest] = CYCLE_FILE.exec(file) ?? []
+    if (!date || Number.isNaN(dayStart(date)) || new Date(dayStart(date)).toISOString().slice(0, 10) !== date) continue
+    const cycle = cycles.get(date) ?? { date, finished: false, reviews: 0 }
+    if (rest === 'SYNTHESIS.md') cycle.finished = true
+    if (REVIEW_FILE.test(rest)) cycle.reviews += 1
+    cycles.set(date, cycle)
+  }
+  return [...cycles.values()].sort((a, b) => b.date.localeCompare(a.date))
+}
 
-export const readProcessReviewLine = () => 'not implemented'
+/**
+ * Over `paths` (`git ls-tree -r --name-only` under docs/harness/reviews/): `process review open: cycle <date>, <k> reviews`
+ * when the newest cycle has no SYNTHESIS.md, else `process review[ due]: <n> days since <cycle>`, due from 14 days.
+ */
+export function processReviewLine({ paths = [], now }) {
+  const [newest] = reviewCycles(paths)
+  if (!newest) return `process review due: no cycle under ${REVIEWS_PATH}`
+  if (!newest.finished) return `process review open: cycle ${newest.date}, ${plural(newest.reviews, 'review')}`
+  const days = Math.floor((new Date(now).getTime() - dayStart(newest.date)) / DAY_MS)
+  return `process review${days >= PROCESS_REVIEW_DUE_DAYS ? ' due' : ''}: ${plural(days, 'day')} since ${newest.date}`
+}
+
+/** processReviewLine over `read()`; a read that throws gives `process review: unread (<its first line>)`, never a throw. */
+export function readProcessReviewLine(read) {
+  try {
+    return processReviewLine(read())
+  } catch (error) {
+    return `process review: unread (${String(error?.message ?? error).split('\n')[0]})`
+  }
+}
 
 // main's workflows: each active workflow's newest completed run on main, as `ready` and `next` print it on stderr.
 
