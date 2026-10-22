@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { loadChipTest, testChip } from './testChip'
+import { loadChipTest, testChip, type TestSource } from './testChip'
 
 describe('a chip the registry refuses to register', () => {
   it.each([
@@ -15,5 +15,24 @@ describe('a chip the registry refuses to register', () => {
     const report = { status: 'error', chip, rows: null, failure: null, error: reason }
     expect(testChip(hdlFile, tstFile, { path: `${chip}.cmp`, source: '|a|\n' })).toEqual(report)
     expect(loadChipTest(hdlFile, tstFile)).toEqual(report)
+  })
+})
+
+describe("a BUILTIN body declares the builtin's own pins (#919)", () => {
+  const VECTORS = import.meta.glob<string>('../../../conformance/vectors/01/Nand.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+  const vector = (file: string): TestSource => ({ path: file, source: VECTORS[`../../../conformance/vectors/01/${file}`] })
+  const nand = (ins: string): TestSource => ({ path: 'Nand.hdl', source: `CHIP Nand { IN ${ins}; OUT out; BUILTIN; }` })
+
+  it.each([
+    ['x, y', 'Nand declares IN x, y, but builtin Nand declares IN a, b'],
+    ['a[2], b', 'Nand declares IN a[2], b, but builtin Nand declares IN a, b'],
+  ])('refuses CHIP Nand { IN %s; OUT out; BUILTIN; } from testChip and loadChipTest, naming both sides', (ins, error) => {
+    const report = { status: 'error', chip: 'Nand', rows: null, failure: null, error }
+    expect(testChip(nand(ins), vector('Nand.tst'), vector('Nand.cmp'))).toEqual(report)
+    expect(loadChipTest(nand(ins), vector('Nand.tst'))).toEqual(report)
+  })
+
+  it('passes CHIP Nand { IN b, a; OUT out; BUILTIN; }, which differs from the builtin only in order, on the course vectors', () => {
+    expect(testChip(nand('b, a'), vector('Nand.tst'), vector('Nand.cmp'))).toEqual({ status: 'pass', chip: 'Nand', rows: { passed: 4, expected: 4 }, failure: null, error: null })
   })
 })

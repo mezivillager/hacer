@@ -1200,3 +1200,34 @@ describe("compileHDL — the reference's self-reference sentence, and the line o
     expect(compileHDL(ast, getBuiltinChipRegistry())).toEqual({ success: false, errors: [{ message: 'Unknown chip-part: "Foo"', partName: 'Foo' }] })
   })
 })
+
+describe("compileHDL — a BUILTIN body declares the builtin's own pins (#919)", () => {
+  function ast(source: string): HDLChip {
+    const parsed = parseHDL(source)
+    if (!parsed.success) throw new Error(`parse failed: ${source}`)
+    return parsed.chip
+  }
+  const compile = (source: string, chips: ChipRegistry = getBuiltinChipRegistry()): HDLCompileResult => compileHDL(ast(source), chips)
+
+  it('refuses Foo declaring IN a over BUILTIN Not, whose IN is in, naming both sides', () => {
+    expect(compile('CHIP Foo { IN a; OUT out; BUILTIN Not; }')).toEqual({ success: false, errors: [{ message: 'Foo declares IN a, but builtin Not declares IN in' }] })
+  })
+
+  it('refuses Foo declaring IN a and OUT o over BUILTIN Nand with the IN message, then the OUT one', () => {
+    expect(compile('CHIP Foo { IN a; OUT o; BUILTIN Nand; }')).toEqual({
+      success: false,
+      errors: [{ message: 'Foo declares IN a, but builtin Nand declares IN a, b' }, { message: 'Foo declares OUT o, but builtin Nand declares OUT out' }],
+    })
+  })
+
+  it('accepts Foo declaring IN in and OUT out over BUILTIN Not, and an Outer over it gives o = ¬a', () => {
+    const foo = 'CHIP Foo { IN in; OUT out; BUILTIN Not; }'
+    expect(compile(foo).success).toBe(true)
+    const own = createChipRegistry()
+    own.register(hdlChipDefinition(ast(foo), foo))
+    const chips = combineRegistries(getBuiltinChipRegistry(), own)
+    const outer = compile('CHIP Outer { IN a; OUT o; PARTS: Foo(in=a, out=o); }', chips)
+    if (!outer.success) throw new Error(outer.errors.map((e) => e.message).join('; '))
+    expect([0, 1].map((a) => outer.evaluate({ a }, builtinOnlyCtx(chips)))).toEqual([{ o: 1 }, { o: 0 }])
+  })
+})

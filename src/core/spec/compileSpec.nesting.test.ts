@@ -288,6 +288,11 @@ describe('compileSpec — a registered part that does not compile refuses the sp
       expect(compileHDL(ast(OUTER_FOO), view)).toEqual({ success: false, errors: [{ message: 'Line 1: Wrong chip name: Foo holds CHIP Bar', partName: 'Foo', line: 1 }] })
     })
 
+    it("refuses a 'circuit' Outer over the 'hdl' Foo whose body is BUILTIN Not, declaring IN a where Not declares IN in, without throwing (#919)", () => {
+      const fooNot = 'CHIP Foo { IN a; OUT out; BUILTIN Not; }'
+      expect(compiled(OUTER_FOO, over(hdlChipDefinition(ast(fooNot), fooNot)))).toEqual(refusedAs('Outer › Foo: Foo declares IN a, but builtin Not declares IN in'))
+    })
+
     it('accepts a Foo2 declaring IN b, a over source IN a, b: pins compare by name and width, in any order', () => {
       const registry = over(hdl('Foo2', [pin('b'), pin('a')], [pin('out')], 'CHIP Foo2 { IN a, b; OUT out; PARTS: And(a=a, b=b, out=out); }'))
       const result = compiled('CHIP Outer { IN a, b; OUT o; PARTS: Foo2(a=a, b=b, out=o); }', registry)

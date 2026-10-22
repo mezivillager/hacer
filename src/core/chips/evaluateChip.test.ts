@@ -171,5 +171,28 @@ describe('evaluateChip', () => {
       expect(error).toBeInstanceOf(ChipCompileError)
       expect(error).toHaveProperty('message', `evaluateChip: chip "Outer" failed to compile: Outer › Foo: ${refusal}`)
     })
+
+    describe("a BUILTIN body whose pins differ from the builtin's (#919)", () => {
+      const builtinFoo: ChipDefinition = { name: 'Foo', ...ONE_IN_ONE_OUT, implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; BUILTIN Not; }' } }
+      const builtinRefusal = 'Foo declares IN a, but builtin Not declares IN in'
+
+      it("throws ChipCompileError on an 'hdl' Foo declaring IN a over BUILTIN Not, whose IN is in", () => {
+        const error = thrownBy(() => evaluateChip(builtinFoo, { a: 0 }, builtins()))
+        expect(error).toBeInstanceOf(ChipCompileError)
+        expect(error).toHaveProperty('message', `evaluateChip: chip "Foo" failed to compile: ${builtinRefusal}`)
+      })
+
+      it("compiles an 'hdl' Outer over that Foo, and its first evaluation throws the refusal chained from Outer", () => {
+        const source = 'CHIP Outer { IN a; OUT o; PARTS: Foo(a=a, out=o); }'
+        const ast = parseHDL(source)
+        if (!ast.success) throw new Error('Outer did not parse')
+        const chips = builtins()
+        chips.register(builtinFoo)
+        expect(compilerModule.compileHDL(ast.chip, chips).success).toBe(true)
+        const error = thrownBy(() => evaluateChip(compilerModule.hdlChipDefinition(ast.chip, source), { a: 0 }, chips))
+        expect(error).toBeInstanceOf(ChipCompileError)
+        expect(error).toHaveProperty('message', `evaluateChip: chip "Outer" failed to compile: Outer › Foo: ${builtinRefusal}`)
+      })
+    })
   })
 })
