@@ -65,7 +65,7 @@ function buffers(net: Alias, outs: Port[], chip: string): string[] {
 /** §1.10.10: the reference's `true` is 16 bits wide, so a `true` input feeding more bits prints one binding per window from its low bit. */
 function trueWindows(b: Binding, pins: Port[] | undefined): Binding[] {
   const bits = b.slice ? sliceWidth(b.slice) : pins?.find((p) => p.name === b.pin)?.width
-  if (b.output || b.signal !== 'true' || pins === undefined || bits === undefined || bits <= WINDOW) return [b]
+  if (b.output || b.signal !== 'true' || bits === undefined || bits <= WINDOW) return [b]
   return Array.from({ length: Math.ceil(bits / WINDOW) }, (_, w) => ({ ...b, slice: span(b.slice, w * WINDOW, Math.min(WINDOW, bits - w * WINDOW)) }))
 }
 
@@ -96,7 +96,7 @@ export function printSpec(doc: CircuitSpec, options: PrintSpecOptions = {}): str
   lines.push(`CHIP ${doc.name} {`, ...ports('IN', doc.ins), ...ports('OUT', doc.outs), '', `${INDENT}PARTS:`)
   for (const part of doc.parts) {
     const pins = chips?.get(part.chip)?.inputs
-    const conns = (bindings.get(part.id) ?? []).flatMap((b) => trueWindows(b, pins)).sort(byPin).map((b) => `${printPinRef(b.pin, b.slice)}=${b.signal}`)
+    const conns = (bindings.get(part.id) ?? []).flatMap((b) => (plain ? trueWindows(b, pins) : [b])).sort(byPin).map((b) => `${printPinRef(b.pin, b.slice)}=${b.signal}`)
     lines.push(`${INDENT}${part.chip}(${conns.join(', ')}); // #${part.id}`)
   }
   // Buffers are appended after every declared part, so the parts' ids keep their positions (§1.9).
