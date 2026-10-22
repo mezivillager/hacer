@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T03:22:24.140Z",
+  "generatedAt": "2026-10-22T03:26:25.300Z",
   "head": {
     "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
     "date": "2026-10-22T06:13:34+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T03:22:24.140Z",
+      "fetchedAt": "2026-10-22T03:26:25.300Z",
       "status": "ok"
     }
   },
@@ -80,9 +80,9 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 29,
-        "ready": 3,
-        "inProgress": 1,
+        "open": 30,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 27,
-          "percentCompleted": 84,
-          "total": 32
+          "percentCompleted": 81,
+          "total": 33
         }
       },
       {
@@ -405,11 +405,6 @@
     ],
     "next": [
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
         "number": 338,
         "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
@@ -420,9 +415,9 @@
         "project": "foundation"
       },
       {
-        "number": 906,
-        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "project": "foundation"
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       }
     ],
     "dormant": {
@@ -434,6 +429,37 @@
   },
   "tasks": {
     "items": [
+      {
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 905,
+        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -448,53 +474,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 905,
-        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 906,
-        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2556,30 +2535,46 @@
         "lane": "feature",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 906,
+        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 907,
+        "title": "Grading passes a part that reads one bit of a chip OUT and writes another, which the web IDE refuses as a Looping wire",
+        "labels": [
+          "bug",
+          "sev:critical",
+          "bot-filed",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
-      "harness": [
-        257,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        870,
-        889
-      ],
       "foundation": [
         338,
         905,
-        906,
         151,
         184,
         325,
@@ -2605,7 +2600,26 @@
         742,
         773,
         878,
-        903
+        903,
+        906,
+        907
+      ],
+      "harness": [
+        257,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        870,
+        889
       ],
       "spine": [
         165,
@@ -5152,6 +5166,32 @@
           "at": "2026-10-22T03:14:58Z",
           "url": "https://github.com/mezivillager/hacer/issues/903#issuecomment-6331789552"
         }
+      },
+      {
+        "number": 906,
+        "ref": "refs/heads/claim/906",
+        "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
+        "state": "OPEN",
+        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
+        "url": "https://github.com/mezivillager/hacer/issues/906",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "hacer-loop-to-70",
+          "branch": "fix/906-cycle-line",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-22T03:26:06Z",
+          "url": "https://github.com/mezivillager/hacer/issues/906#issuecomment-6331924479"
+        }
       }
     ],
     "onClosedIssues": 0
@@ -7042,7 +7082,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T03:22:24.140Z",
+      "since": "2026-10-08T03:26:25.300Z",
       "merged": 101,
       "openToMergeHours": {
         "median": 0.3,
