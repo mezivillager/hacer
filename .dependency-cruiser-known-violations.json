@@ -157,23 +157,6 @@
   {
     "type": "dependency",
     "from": "src/components/ui/TestResultsPanel.tsx",
-    "to": "src/core/testing/formatColumnValue.ts",
-    "unresolvedTo": "@/core/testing/formatColumnValue",
-    "dependencyTypes": [
-      "aliased",
-      "aliased-tsconfig",
-      "aliased-tsconfig-paths",
-      "local",
-      "import"
-    ],
-    "rule": {
-      "severity": "error",
-      "name": "core-through-index"
-    }
-  },
-  {
-    "type": "dependency",
-    "from": "src/components/ui/TestResultsPanel.tsx",
     "to": "src/core/testing/implementationSources.ts",
     "unresolvedTo": "@/core/testing/implementationSources",
     "dependencyTypes": [

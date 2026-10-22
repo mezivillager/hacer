@@ -3,7 +3,7 @@ import { Button } from '@/components/ui-kit/button'
 import { useCircuitStore, circuitActions } from '@/store/circuitStore'
 import { project1TstFixtures } from '@/core/testing/project1TstFixtures'
 import { getImplementationSources } from '@/core/testing/implementationSources'
-import { formatColumnValue } from '@/core/testing/formatColumnValue'
+import { formatColumnValue } from '@/core'
 
 const CHIP_NAMES = Object.keys(project1TstFixtures)
 const SELECT_CLASS = 'font-mono text-xs rounded border border-border bg-background px-2 py-1 cursor-pointer'
