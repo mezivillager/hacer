@@ -183,6 +183,15 @@ describe('countSuppressions', () => {
     expect(countSuppressions(text)).toBe(28)
   })
 
+  it('a max-lines-per-function suppression is not an engine global', () => {
+    const text = JSON.stringify({
+      'src/utils/wiringScheme/extension.ts': { 'no-console': { count: 4 } },
+      'src/store/actions/wiringActions/wiringActions.ts': { 'max-lines-per-function': { count: 1 } },
+      'src/core/hdl/compiler.ts': { 'no-restricted-globals': { count: 2 }, 'max-lines-per-function': { count: 3 } },
+    })
+    expect(countSuppressions(text)).toBe(6)
+  })
+
   it('treats a missing or unreadable file as zero rather than throwing', () => {
     expect(countSuppressions(null)).toBe(0)
     expect(countSuppressions('{oops')).toBe(0)
