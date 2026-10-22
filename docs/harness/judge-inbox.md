@@ -145,7 +145,7 @@ reused.
 
 ### JDG-004 · Does the spine move before phase C: a fidelity verdict on epic #139 next run, then Project 2's first slice pulled forward under `project:foundation`?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S13 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; review 1 F2 (`docs/harness/reviews/2026-10-22/reviews/1.md`); "For the owner" in `docs/harness/sessions/2026-10-22.md`
-- **Status:** proposed
+- **Status:** filed (#984), with #982 (the fidelity verdict it waits on), #985 and #983; A bounded by the judge on #970
 - **Evidence:**
   - 12 of 12 open `project:spine` issues read `unshaped` (`node scripts/backlog.mjs ready`, 2026-10-22: #165,
     #167, #169-#174, #176, #177, #235, #236). Epic #139 shows 4 of 16 sub-issues done and has no comment, so
