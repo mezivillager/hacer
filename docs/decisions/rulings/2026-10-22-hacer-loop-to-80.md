@@ -5,7 +5,8 @@ continue the loop until we reach 80% weekly usage". Weekly usage was 70% at the 
 meter resets on 2026-10-23T03:00Z. Publishing `on-green` under the standing grant. Subagents on Opus
 and Sonnet, three at a time, two while the laptop is hot (R866). The run held the retro and the
 process review that were due, shaped and built the foundation issues that had nothing pickable
-ahead of them, and decided two inbox review issues (R844).
+ahead of them, and decided two inbox review issues (R844). It closed at 79% with one build, #959,
+left open under a verifier's BLOCK (R888).
 
 ## R880 — the run stops at weekly_all 80% or at the weekly reset (2026-10-23T03:00Z), whichever comes first; no new chain at 77% or above, and the records PR starts at 78%
 Builds on: R852, R741
@@ -132,3 +133,16 @@ apart from an older message difference on `a[17]` used whole. All 38 vendored `.
 Project-1 sources read the same at base and head.
 Cost if wrong: an HDL file with a pin of 33 to 65535 bits that the web IDE accepts is refused by HACER
 with a message naming the pin and the limit; no value changes.
+
+## R888 — PR #959 (#773) is left open with its BLOCK; the fix waits for the next run
+Builds on: R880
+Coordinator, 2026-10-22T11:21Z. The Opus verifier blocked #959 (issuecomment-6339464842): the new
+wiring index keys wires by the string `${type}:${entityId}`, so a wire whose `entityId` is the number
+`7` now feeds a junction or bus whose id is the string `"7"`, where `main` matches ids by JSON value
+(`src/core/serialization/deserialize.test.ts:243-249`). Everything else held: the speed-up, the
+timings, and 12,000 identical documents with string ids. The meter read 79% at 11:20Z, against R880's
+stop at 80% and no new chain at 77%. A fix and a fresh verifier would cost about half a point, with the
+records still to land. The fix is small and named in the verdict: key by type and raw id, and add a
+numeric-id test. The claim stays on #773 as `paused:usage-ceiling`, with the verdict as its handoff.
+Cost if wrong: #773's speed-up reaches `main` one run later; the open PR keeps its claim from going
+stale.
