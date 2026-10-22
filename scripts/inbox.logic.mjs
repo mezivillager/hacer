@@ -1,12 +1,13 @@
-// The proposal inboxes as data, and the review issues the inbox panel decides them through (#778).
+// The inboxes as data, and the review issues the inbox panel (#778) or, for JDG, the judge (#963) decides them through.
 
 export const INBOXES = [
   { prefix: 'FID', file: 'docs/harness/fidelity-inbox.md' },
   { prefix: 'HRN', file: 'docs/harness/harness-inbox.md' },
   { prefix: 'PRD', file: 'docs/harness/product-inbox.md' },
+  { prefix: 'JDG', file: 'docs/harness/judge-inbox.md' },
 ]
 export const REVIEW_LABELS = ['inbox-review', 'agent-ready', 'risk:0', 'project:upkeep']
-export const JUDGE_LABELS = []
+export const JUDGE_LABELS = ['judge-review', 'agent-ready', 'risk:0', 'project:harness']
 /** `gh issue list --limit` for the dedupe read: a list this long may be cut short, so queue refuses it. */
 export const REVIEW_LIST_LIMIT = 1000
 
@@ -120,20 +121,41 @@ export function setStatus(text, inbox, id, value) {
 export const reviewedIds = (issues) =>
   new Set(issues.flatMap((issue) => [...String(issue.body ?? '').matchAll(/^Inbox-entry: *(\S+?)\s*$/gm)].map((match) => match[1])))
 
+const PANEL = {
+  title: 'Inbox review',
+  labels: REVIEW_LABELS,
+  decides: 'The inbox panel decides',
+  method: 'approved, declined or deferred, by the method in `docs/harness/inbox-panel-brief.md`',
+  verdict: 'One panel verdict comment on this issue, headed `## Inbox panel: APPROVED | DECLINED | DEFERRED`: one line per reviewer\'s position',
+  statuses: '`filed (#n)` once approved and filed',
+  scope: 'In: the review, the verdict and the status line. Out: building what the entry proposes, which an approval files as its own issue.',
+}
+const JUDGE = {
+  title: 'Judge review',
+  labels: JUDGE_LABELS,
+  decides: 'The judge decides',
+  method: 'on the owner\'s behalf, by the method in `docs/harness/judge-brief.md`',
+  verdict: 'One judge comment on this issue, headed `## Judge: DECIDED <option> | DEFERRED (<checkable condition>)`: both reviewers\' positions',
+  statuses: '`filed (#n)` for the issue that carries the decision out, `decided (<decision>), owner action: <what>` when only the owner\'s hand can',
+  scope: 'In: the reviews, the decision, the status line, and the issues or labels the decision needs. Out: building what it decides, which is filed as its own issue.',
+}
+const reviewerOf = (prefix) => (prefix === 'JDG' ? JUDGE : PANEL)
+
 /** The review issue for one entry, in the agent-ready issue form (docs/harness/issue-form.md). */
 export function reviewIssue({ id, title, file }) {
+  const reviewer = reviewerOf(id.split('-')[0])
   const body = `## Goal
-The inbox panel decides ${id} in \`${file}\`: approved, declined or deferred, by the method in \`docs/harness/inbox-panel-brief.md\`. Nothing waits for the owner, who may override the status at any time.
+${reviewer.decides} ${id} in \`${file}\`: ${reviewer.method}. Nothing waits for the owner, who may override the status at any time.
 
 ## Acceptance criteria
-- One panel verdict comment on this issue, headed \`## Inbox panel: APPROVED | DECLINED | DEFERRED\`: one line per reviewer's position, the reason, the findings it accepted, and \`Verified on:\`.
-- The status is set with \`node scripts/inbox.mjs set ${id} <status>\`: \`filed (#n)\` once approved and filed, otherwise the reason and this issue.
+- ${reviewer.verdict}, the reason, the findings it accepted, and \`Verified on:\`.
+- The status is set with \`node scripts/inbox.mjs set ${id} <status>\`: ${reviewer.statuses}, otherwise the reason and this issue.
 
 ## Verification command
 \`node scripts/inbox.mjs status ${id} --not proposed\`
 
 ## Scope
-In: the review, the verdict and the status line. Out: building what the entry proposes, which an approval files as its own issue.
+${reviewer.scope}
 
 ## Files likely touched
 \`${file}\`
@@ -145,16 +167,21 @@ In: the review, the verdict and the status line. Out: building what the entry pr
 —
 
 Inbox-entry: ${id}`
-  return { id, title: `Inbox review: ${id} · ${title}`, labels: [...REVIEW_LABELS], body }
+  return { id, title: `${reviewer.title}: ${id} · ${title}`, labels: [...reviewer.labels], body }
 }
 
-/** Files a review issue for each proposed entry no issue reviews yet, open or closed; one line per issue. */
+/**
+ * Files a review issue for each proposed entry no issue reviews yet, open or closed; one line per issue.
+ * `listReviewIssues(label)` is read once per review label the inboxes use, and an entry is reviewed if any list holds it.
+ */
 export function queueReviews(inboxes, { listReviewIssues, fileIssue, dryRun = false }) {
   const proposed = listEntries(inboxes, { status: 'proposed' })
-  const issues = listReviewIssues()
-  if (issues.length >= REVIEW_LIST_LIMIT) {
-    throw new InboxError(`gh listed ${issues.length} review issues, its limit, so some may be missing; nothing filed`)
-  }
+  const labels = [...new Set(inboxes.map((inbox) => reviewerOf(inbox.prefix).labels[0]))]
+  const issues = labels.flatMap((label) => {
+    const listed = listReviewIssues(label)
+    if (listed.length < REVIEW_LIST_LIMIT) return listed
+    throw new InboxError(`gh listed ${listed.length} ${label} issues, its limit, so some may be missing; nothing filed`)
+  })
   const reviewed = reviewedIds(issues)
   const lines = []
   for (const draft of proposed.filter((entry) => !reviewed.has(entry.id)).map(reviewIssue)) {

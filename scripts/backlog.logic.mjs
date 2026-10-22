@@ -63,6 +63,10 @@ const GATE_REASON = 'foundation-gate'
 const heldByGate = (task) =>
   task.labels.includes(GATED_RISK_LABEL) && !GATE_EXEMPT_ROWS.includes(task.project)
 
+/** The judge's review issues (docs/harness/judge-brief.md): picked ahead of pick rule 1, as a decision gates what gets built. */
+const JUDGE_LABEL = 'judge-review'
+const judgeReview = (task) => task.labels.includes(JUDGE_LABEL)
+
 const AUX_SLOT = 'aux'
 /** Rows that queue in another row's bucket: `pubdocs` shares the `surfaces` slot — both `on-request` while #330's rotation runs. */
 const SHARED_BUCKET = new Map([['pubdocs', 'surfaces']])
@@ -175,14 +179,14 @@ function rotate(buckets, start) {
 }
 
 /**
- * The bucket whose slot a task takes, or null for none: `sev:critical` goes ahead of the cycle, the gate holds, an
- * enabler takes the slot of the earliest bucket holding an open task it blocks (pull, don't push), and a row outside
- * the cycle is on-request.
+ * The bucket whose slot a task takes, or null for none: a judge review and `sev:critical` go ahead of the cycle, the
+ * gate holds, an enabler takes the slot of the earliest bucket holding an open task it blocks (pull, don't push), and a
+ * row outside the cycle is on-request.
  */
 function slotting(tasks) {
   const bucketByNumber = new Map(tasks.map((task) => [task.number, bucketOf(task.project)]))
   return (task) => {
-    if (task.labels.includes('sev:critical') || heldByGate(task)) return null
+    if (judgeReview(task) || task.labels.includes('sev:critical') || heldByGate(task)) return null
     const blocked = new Set(task.blocking.map((number) => bucketByNumber.get(number)))
     const bucket = task.lane === 'enabler' ? BUCKET_ORDER.find((name) => blocked.has(name)) : bucketOf(task.project)
     return BUCKET_ORDER.includes(bucket) ? bucket : null
@@ -226,8 +230,8 @@ export const formatResume = ({ slot, after }) => `cycle: slot ${slot + 1} of ${P
   (after ? `after #${after.number} · ${after.bucket}, claimed ${after.at}` : 'no earlier claim on record')
 
 /**
- * The pick rule over the pickable tasks: any `sev:critical` first; then the foundation gate holds
- * what is not safe to proceed on; then the eight-slot cycle over the buckets, `pubdocs` sharing the
+ * The pick rule over the pickable tasks: any judge review first, then any `sev:critical`; then the foundation gate
+ * holds what is not safe to proceed on; then the eight-slot cycle over the buckets, `pubdocs` sharing the
  * `surfaces` slot, an enabler only while it blocks an open task of a bucket and then in that
  * bucket's slot (pull, don't push); on-request rows never. The cycle resumes after the latest pick
  * in `history`, the claims before this call (resumePoint), so successive top picks follow it too. Inside a slot,
@@ -238,10 +242,15 @@ export const formatResume = ({ slot, after }) => `cycle: slot ${slot + 1} of ${P
 export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, claims = [], history = []) {
   const tasks = triageTasks(issues, portfolioRows, allowlist, claims)
   const slotOf = slotting(tasks)
+  const judged = []
   const critical = []
   const buckets = new Map(BUCKET_ORDER.map((name) => [name, []]))
   const unpicked = tasks.filter((task) => !task.pickable)
   for (const task of tasks.filter((task) => task.pickable).sort(byDesignFirstThenNumber)) {
+    if (judgeReview(task)) {
+      judged.push(task)
+      continue
+    }
     if (task.labels.includes('sev:critical')) {
       critical.push(task)
       continue
@@ -254,10 +263,14 @@ export function planReady(issues, portfolioRows, allowlist = DEFAULT_ALLOWLIST, 
     if (bucket) buckets.get(bucket).push(task)
     else unpicked.push({ ...task, reason: task.lane === 'enabler' ? 'not-pulled' : 'on-request' })
   }
-  return [...critical, ...rotate(buckets, resumePoint(issues, portfolioRows, history, allowlist)), ...unpicked.sort(byNumber)]
+  return [...judged, ...critical, ...rotate(buckets, resumePoint(issues, portfolioRows, history, allowlist)), ...unpicked.sort(byNumber)]
 }
 
-export const judgeDueLine = () => null
+/** `judge due: <n> (#a, #b, …)` over the open issues while any is labelled `judge-review`, else null. */
+export function judgeDueLine(issues = []) {
+  const due = issues.filter((issue) => (issue.labels ?? []).some((label) => label.name === JUDGE_LABEL)).map((issue) => issue.number)
+  return due.length > 0 ? `judge due: ${due.length} (${due.sort((a, b) => a - b).map((number) => `#${number}`).join(', ')})` : null
+}
 
 /** A row with more open `agent-ready` issues than this has outgrown shaping (reviews/2026-09-26 F12): `projects` warns. */
 export const ROW_AGENT_READY_CAP = 12

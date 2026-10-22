@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The proposal inboxes from the shell, and the queue of inbox-panel reviews: docs/harness/inbox-panel-brief.md.
+// The inboxes from the shell, and the queue of reviews: docs/harness/inbox-panel-brief.md, and judge-brief.md for JDG.
 // Rules live in inbox.logic.mjs. A flag the command does not take is a usage error: exit 2.
 
 import { execFileSync } from 'node:child_process'
@@ -66,7 +66,7 @@ const run = {
   queue([], flags) {
     const lines = inbox.queueReviews(readInboxes(), {
       dryRun: flags['dry-run'],
-      listReviewIssues: () => JSON.parse(gh('issue', 'list', '-R', REPO, '--label', 'inbox-review', '--state', 'all',
+      listReviewIssues: (label) => JSON.parse(gh('issue', 'list', '-R', REPO, '--label', label, '--state', 'all',
         '--limit', String(inbox.REVIEW_LIST_LIMIT), '--json', 'number,title,state,body')),
       fileIssue: ({ title, body, labels }) =>
         gh('issue', 'create', '-R', REPO, '--title', title, '--body', body, ...labels.flatMap((label) => ['--label', label])).trim(),
