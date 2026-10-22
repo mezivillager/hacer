@@ -30,7 +30,9 @@ import {
 //                      fields v1 declared after it (#540, #539) are spliced in from its own data at its own time, so
 //                      its other pins hold: `portfolio.projects[].agentReady` counted from its `tasks.items`,
 //                      `pickRule.dormant` from its `prs.open`, `metrics.flow` this collector over gh-flow.json at its
-//                      `generatedAt` (a test below holds that), `metrics.conformance` from `git ls-tree 561dcf1`
+//                      `generatedAt` (a test below holds that), `metrics.conformance` from `git ls-tree 561dcf1`;
+//                      `prs.coverage.belowTier` (#884) is [] here and in snapshot-2026-09-29.json, what their own
+//                      `prs.merged`, which carry no files, give
 //   gh-check-runs.json `gh api graphql` run with gh-check-runs.graphql, the query checksQuery builds, whole, at
 //                      04:51Z on 2026-09-25 (origin/main 1b01240, its ci still running): the required checks' runs
 //                      on main's head and on the 3 open PRs. #507 is MC-6's own PR: its ci and browser-qa runs ran
@@ -221,7 +223,7 @@ describe('collect.logic', () => {
       verdict: 'BLOCK', round: 2, model: opus, at: '2026-09-23T04:16:44Z',
       url: 'https://github.com/mezivillager/hacer/pull/399#issuecomment-5788949503',
     })
-    expect(prs.coverage).toEqual({ merged: 13, withVerdict: 9, withoutVerdict: 4, pass: 8, block: 1 })
+    expect(prs.coverage).toEqual({ merged: 13, withVerdict: 9, withoutVerdict: 4, pass: 8, block: 1, belowTier: [] })
     expect(prs.open.map((pr) => pr.verdicts)).toEqual([[], [], [], []]) // "Verification interrupted — not a verdict."
     expect(prs.merged.find((pr) => pr.number === 451)).toMatchObject({
       author: 'mezivillager', closes: [180, 450], labels: ['released', 'risk:1', 'project:foundation'],
@@ -829,5 +831,70 @@ describe('parsePrevious', () => {
   it('valid JSON text parses through unchanged', () => {
     const snapshot = fixture('snapshot.json')
     expect(parsePrevious(JSON.stringify(snapshot))).toEqual(snapshot)
+  })
+})
+
+// #884: an engine PR merged on a verdict below the tier its paths give (L070: #739 and #748).
+describe('prs.coverage.belowTier', () => {
+  const PR_739 = ['src/core/spec/printSpec.nand2tetris.test.ts', 'src/core/spec/printSpec.property.test.ts']
+  const merged = (number, labels, paths, models, changedFiles = paths.length) => ({
+    ...fixture('gh-prs-merged.json')[0], number, labels: labels.map((name) => ({ name })), files: paths.map((path) => ({ path })), changedFiles,
+    comments: models.map((model) => comment('mezivillager', `## Verifier verdict: PASS${model === null ? '' : `\n**Verified on:** ${model}`}`)),
+  })
+  const prsOf = (...prs) => build({ prsMerged: ok('gh pr list --state merged --limit 60', prs) }).prs
+
+  it('lists an Opus-tier PR with a verdict that does not name Opus, and says whether another verdict does', () => {
+    expect(prsOf(
+      merged(739, ['risk:1'], PR_739, ['Sonnet 5.5']),
+      merged(748, ['risk:1'], ['src/core/serialization/deserialize.ts'], ['Sonnet 5.5', 'Opus 5.5']),
+      merged(760, ['risk:1'], ['src/simulation/topologicalEval.ts'], ['Grok Bot (executor subagent)']),
+      merged(761, ['risk:1'], ['src/core/hdl/parser.ts'], ['Claude Opus 5.5 (claude-opus-5-5[1m])']),
+      merged(762, ['risk:1'], ['scripts/backlog.mjs'], ['Sonnet 5 (claude-sonnet-5)']),
+    ).coverage.belowTier).toEqual([
+      { number: 739, because: PR_739[0], opusVerdict: false },
+      { number: 748, because: 'src/core/serialization/deserialize.ts', opusVerdict: true },
+      { number: 760, because: 'src/simulation/topologicalEval.ts', opusVerdict: false },
+    ])
+  })
+
+  it('counts a coordinator verdict and one that names no model; matches Opus in any case', () => {
+    expect(prsOf(
+      merged(770, ['risk:2'], ['scripts/backlog.mjs'], ['coordinator']),
+      merged(771, ['risk:2'], ['scripts/backlog.mjs'], [null]),
+      merged(772, ['risk:2'], ['scripts/backlog.mjs'], ['claude-OPUS-5-5']),
+    ).coverage.belowTier).toEqual([
+      { number: 770, because: 'risk:2', opusVerdict: false },
+      { number: 771, because: 'risk:2', opusVerdict: false },
+    ])
+  })
+
+  it('a list cut short of changedFiles that reads Sonnet is files-truncated when a verdict does not name Opus, never tiered from part', () => {
+    const docs = Array.from({ length: 100 }, (_, index) => `docs/${index}.md`)
+    expect(prsOf(
+      merged(780, ['risk:1'], docs, ['Sonnet 5.5'], 145),
+      merged(781, ['risk:1'], docs, ['Opus 5.5'], 145),
+      merged(782, ['risk:1'], [...docs.slice(1), 'src/core/a.ts'], ['Sonnet 5.5'], 145),
+      merged(783, ['risk:1'], docs, ['Sonnet 5.5'], 100),
+    ).coverage.belowTier).toEqual([
+      { number: 780, because: 'files-truncated', opusVerdict: false },
+      { number: 782, because: 'src/core/a.ts', opusVerdict: false },
+    ])
+  })
+
+  it('reads the paths but does not copy them into prs.merged[]', () => {
+    const [pr] = prsOf(merged(739, ['risk:1'], PR_739, ['Sonnet 5.5'])).merged
+    expect(pr).not.toHaveProperty('files')
+    expect(pr).not.toHaveProperty('changedFiles')
+  })
+
+  it('schema v1 declares it: each item a number, a because and opusVerdict', () => {
+    const snapshot = build()
+    const { belowTier, ...without } = snapshot.prs.coverage
+    expect(belowTier).toEqual([])
+    expect(validateSnapshot({ ...snapshot, prs: { ...snapshot.prs, coverage: without } })).toEqual(['prs.coverage.belowTier must be an array'])
+    const item = { number: 739, because: 7, opusVerdict: 'no' }
+    expect(validateSnapshot({ ...snapshot, prs: { ...snapshot.prs, coverage: { ...without, belowTier: [item] } } })).toEqual([
+      'prs.coverage.belowTier[0].because must be a string', 'prs.coverage.belowTier[0].opusVerdict must be a boolean',
+    ])
   })
 })

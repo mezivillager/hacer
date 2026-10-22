@@ -4468,7 +4468,8 @@
       "withVerdict": 33,
       "withoutVerdict": 27,
       "pass": 32,
-      "block": 1
+      "block": 1,
+      "belowTier": []
     }
   },
   "claims": {

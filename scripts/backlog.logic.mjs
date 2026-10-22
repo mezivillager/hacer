@@ -661,3 +661,17 @@ export function readRetroLine(read) {
     return `retro: unread (${String(error?.message ?? error).split('\n')[0]})`
   }
 }
+
+export const ENGINE_PREFIXES = []
+
+export function verifierTier() {
+  throw new Error('not implemented')
+}
+
+export function filePagesPaths() {
+  throw new Error('not implemented')
+}
+
+export function formatVerifierTier() {
+  throw new Error('not implemented')
+}
