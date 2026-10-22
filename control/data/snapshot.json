@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T13:25:39.105Z",
+  "generatedAt": "2026-10-22T13:42:20.972Z",
   "head": {
-    "sha": "6bbf46a58021f86d9959a661995f54263d5ad2fe",
-    "date": "2026-10-22T16:07:20+03:00",
-    "subject": "docs(harness): builder blocked exit and the judge's model tier (R889, #963)"
+    "sha": "dbda6133877420093fc40412bf5a5fdfc9bb2b6a",
+    "date": "2026-10-22T16:41:08+03:00",
+    "subject": "docs(harness): JDG-009 recommends deferring until a shared temp directory exists"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T13:25:39.105Z",
+      "fetchedAt": "2026-10-22T13:42:20.972Z",
       "status": "ok"
     }
   },
@@ -2472,6 +2472,30 @@
     ],
     "merged": [
       {
+        "number": 966,
+        "title": "docs(harness): file the first ten judge inbox entries, JDG-001 to JDG-010",
+        "url": "https://github.com/mezivillager/hacer/pull/966",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/judge-queue-1",
+        "isDraft": false,
+        "createdAt": "2026-10-22T13:35:07Z",
+        "mergedAt": "2026-10-22T13:41:09Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T13:36:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/966#issuecomment-6342124387"
+          }
+        ]
+      },
+      {
         "number": 964,
         "title": "chore(harness): judge inbox — decisions go to a Fable + Grok review and an Opus judge, not the owner (R889)",
         "url": "https://github.com/mezivillager/hacer/pull/964",
@@ -4018,33 +4042,6 @@
             "model": "Opus (claude-opus-5-5)",
             "at": "2026-10-21T17:00:03Z",
             "url": "https://github.com/mezivillager/hacer/pull/843#issuecomment-6321708141"
-          }
-        ]
-      },
-      {
-        "number": 842,
-        "title": "chore(harness): the inbox grammar takes a note only after filed, declined or deferred",
-        "url": "https://github.com/mezivillager/hacer/pull/842",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/819-inbox-note-grammar",
-        "isDraft": false,
-        "createdAt": "2026-10-21T16:40:29Z",
-        "mergedAt": "2026-10-21T17:16:37Z",
-        "closes": [
-          819
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-21T17:11:24Z",
-            "url": "https://github.com/mezivillager/hacer/pull/842#issuecomment-6321941675"
           }
         ]
       }
@@ -6077,24 +6074,24 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 21
+        "merges": 20
       },
       {
         "date": "2026-10-22",
-        "merges": 39
+        "merges": 40
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T13:25:39.105Z",
-      "merged": 129,
+      "since": "2026-10-08T13:42:20.972Z",
+      "merged": 130,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 7,
-        "of": 110,
+        "of": 111,
         "prs": [
           700,
           725,
@@ -6112,8 +6109,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 44,
-          "withVerdict": 25,
+          "merged": 45,
+          "withVerdict": 26,
           "without": [
             692,
             693,
@@ -10219,7 +10216,7 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T13:07:58.329Z",
+        "at": "2026-10-22T13:25:39.105Z",
         "byProject": {
           "foundation": [
             940,
@@ -10376,17 +10373,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "6bbf46a58021f86d9959a661995f54263d5ad2fe",
+        "sha": "dbda6133877420093fc40412bf5a5fdfc9bb2b6a",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T13:10:50Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39784098201/job/119842565428",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/39789031009/job/119859777553",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
