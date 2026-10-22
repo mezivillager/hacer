@@ -198,16 +198,24 @@ const samePins = (a: readonly ChipPin[], b: readonly ChipPin[]): boolean => {
   return x.size === y.size && [...x].every(([name, width]) => y.get(name) === width)
 }
 
+type Pins = { inputs: readonly ChipPin[]; outputs: readonly ChipPin[] }
+
+/** One message per side whose pins differ, IN first: `Foo declares IN a, but <other> declares IN b`. */
+const pinDisagreements = (name: string, declared: Pins, other: string, stated: Pins): string[] =>
+  ([['IN', 'inputs'], ['OUT', 'outputs']] as const).flatMap(([kind, side]) =>
+    samePins(declared[side], stated[side]) ? [] : [`${name} declares ${kind} ${declared[side].map(printPin).join(', ')}, but ${other} declares ${kind} ${stated[side].map(printPin).join(', ')}`])
+
 /** Where `def`'s name, `inputs` or `outputs` differ from its source's (ADR-0020 §1.11 rule 2); empty when they agree. */
 export function sourceDisagreements(def: ChipDefinition): string[] {
   const source = sourceHeader(def)
   if (source === null) return []
-  const sides = [['IN', def.inputs, source.inputs], ['OUT', def.outputs, source.outputs]] as const
-  const pins = sides.flatMap(([kind, declared, stated]) =>
-    samePins(declared, stated) ? [] : [`${def.name} declares ${kind} ${declared.map(printPin).join(', ')}, but its source declares ${kind} ${stated.map(printPin).join(', ')}`])
+  const pins = pinDisagreements(def.name, def, 'its source', source)
   const name = wrongChipName(source.name, [def.name])
   return name === null ? pins : [name, ...pins]
 }
+
+/** Where a `BUILTIN` body's `IN` or `OUT` differ from the pins of `builtin`, the chip it names (ADR-0020 §1.11 rule 2). */
+export const builtinDisagreements = (ast: HDLChip, builtin: ChipDefinition): string[] => pinDisagreements(ast.name, ast, `builtin ${builtin.name}`, builtin)
 
 /**
  * The chips on a cycle reachable from the part named `start`, in order, or `null`; keyed by name, so it ends even if `get` builds a new definition per call.
@@ -256,6 +264,8 @@ export function compileHDL(ast: HDLChip, registry: ChipRegistry): HDLCompileResu
     const existing = registry.get(ast.builtin)
     if (!existing) return { success: false, errors: [{ message: `Builtin chip "${ast.builtin}" not found in registry` }] }
     if (!isBuiltinChip(existing)) return { success: false, errors: [{ message: `Chip "${ast.builtin}" is not a builtin` }] }
+    const disagrees = builtinDisagreements(ast, existing)
+    if (disagrees.length > 0) return { success: false, errors: disagrees.map((message) => ({ message })) }
     const ev = existing.implementation.evaluate
     return { success: true, evaluate: (inputs) => ev(inputs) }
   }
