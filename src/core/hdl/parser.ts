@@ -1,3 +1,5 @@
+import { MAX_PIN_WIDTH } from '@/simulation'
+import { pinTooWide } from '../chips/types'
 import type {
   HDLChip,
   HDLConnection,
@@ -419,6 +421,8 @@ class Parser {
           column: numToken.column,
           message: 'Invalid pin width; expected positive integer',
         })
+      } else if (parsed > MAX_PIN_WIDTH) {
+        this.errors.push({ line: numToken.line, column: numToken.column, message: pinTooWide(nameToken.value, numToken.value) })
       } else {
         width = parsed
       }
