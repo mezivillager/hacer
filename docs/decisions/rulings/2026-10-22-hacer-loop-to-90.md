@@ -3,8 +3,8 @@
 The coordinator loop run of 2026-10-22 from 13:51Z, the second run of the day. Owner's hand-over: "run
 the loop until weekly usage reaches 90%". Weekly usage was 84% at the start (13:50Z); the meter resets
 on 2026-10-23T03:00Z. Publishing `on-green` under the standing grant. The run judged the first inbox
-entries of the judge queue built the same day (R889) and fixed and merged the one build the 80% run had
-left open, #959. It stopped starting new chains at 87%.
+entries of the judge queue built the same day (R889), JDG-001 to JDG-004, and fixed and merged the one
+build the 80% run had left open, #959. It stopped starting new chains at 87% and closed there.
 
 ## R890 — the run stops at weekly_all 90% or the 2026-10-23T03:00Z reset, whichever comes first; no new chain at 87% or above, and the records start at 88%
 Builds on: R880
@@ -37,6 +37,9 @@ loops back to itself". The issue's unchanged-output criterion covers its corpora
 ids only.
 Cost if wrong: a document that names one junction or joiner `7` and another `"7"` imports differently
 from `main`, without `main`'s false notes; the fresh verifier judges it.
+Addendum (PR #959's re-verification, issuecomment-6343306427): of 592 differing twin documents, 585 come
+from `main`'s trace keys and 7 from two `driverCheck` template keys the fix kept; note text only; carried by
+#979.
 
 ## R893 — HRN inbox entries are reviewed in batches; R844 amended for HRN
 Builds on: R844
@@ -63,3 +66,17 @@ which cannot read the meter. The coordinator creates both routines under the 202
 lines.
 Cost if wrong: one routine fire a week spends usage the owner did not schedule himself; he disables it
 in one click.
+
+## R895 — Project 2 is pulled forward headless, a bounded exception to the phase rule
+Builds on: R889
+Judge, 2026-10-22T14:55Z, decision JDG-004 on #970 (issuecomment-6343664746); recorded by the
+coordinator. It amends the phase rule "implement for the current phase only" and the roadmap's "finish
+Phase 0.5 before Projects 2-3" for Project 2's headless grading path only. A fidelity verdict on epics
+#139 and #177 comes first (#982), then the phase-tracking docs name the exception (#983). Then Project 2
+is built in two slices: HalfAdder, FullAdder and Add16 (#984), then Inc16 and ALU (#985). Both slices
+are `project:spine`, `risk:1`, without `project:foundation`, and cover the grading path through the core,
+CLI and MCP drivers, with differential blocks. Project 2's builtins stay off the app registry unless #982
+says otherwise. Projects 3-5 keep the phase rule, and FID-001 to FID-005 stay deferred. ADR-0018 §2's
+order is kept by the blocked-by links and #982's per-slice `build / revise / hold` lines.
+Cost if wrong: five Project 2 chips are graded headless before the foundation's phase C; nothing they
+touch is what phase C switches, and #982 can hold a slice.
