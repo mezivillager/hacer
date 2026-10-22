@@ -25,7 +25,9 @@ Paths in this file are relative to the hacer checkout; from the parent workspace
 1. Claim, unless your dispatch says the coordinator holds it for you:
    `node scripts/backlog.mjs claim <n> --by <id> --session <run>` — exclusive; it posts the claim comment
    and labels the issue `in-progress`. If it exits 1, someone else holds the claim: stop and report.
-2. Worktree, `pnpm install --frozen-lockfile`, Node 22; baseline the relevant suite.
+2. Worktree, `pnpm install --frozen-lockfile`, Node 22: `bash scripts/wt-new <type>/<n>-<topic>` does all
+   three, then prints `SCRATCH: <folder>`. Write every scratch file (PR bodies, logs) only in the folder
+   `SCRATCH:` names. Pass every body you write with `--body-file`, never inline. Baseline the relevant suite.
 3. Red: the tests plus the smallest compiling stub that fails them — `test(<scope>): …`.
 4. Green: the smallest implementation that passes. Test files do not change after red; if an
    assertion looks wrong, stop and say so on the issue.

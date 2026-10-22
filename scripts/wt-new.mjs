@@ -7,10 +7,10 @@
 //   node scripts/wt-new.mjs judge <worktree-path> <verify-exit> prints the verdict; exit 1 unless everything passed
 //   node scripts/wt-new.mjs fetch-verdict <exit-code>           prints nothing on 0; the accurate reason otherwise
 //   node scripts/wt-new.mjs freshness <behind> <ahead>          prints the --refresh report line
-//   node scripts/wt-new.mjs scratch <worktree-path>             empties that worktree's scratch folder, prints "SCRATCH: <path>"; exit 1 on the main checkout
+//   node scripts/wt-new.mjs scratch <worktree-path>             empties that worktree's scratch folder, prints "SCRATCH: <path>"; exit 1 on the main checkout or a symlink
 
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, readdirSync, rmSync } from 'node:fs'
+import { lstatSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { formatFreshness, hasBabelHelperSymlinks, isTreeClean, judge, judgeFetch, parseSpec, scratchFolder } from './wt-new.logic.mjs'
@@ -49,6 +49,11 @@ if (command === 'scratch' && args.length === 1) {
   }
   if (!folder.ok) {
     console.error(`wt-new: ${folder.reason}`)
+    process.exit(1)
+  }
+  const symlink = [path.dirname(folder.path), folder.path].find((dir) => lstatSync(dir, { throwIfNoEntry: false })?.isSymbolicLink())
+  if (symlink) {
+    console.error(`wt-new: ${symlink} is a symlink, so its target is not a folder wt-new owns — remove it and rerun`)
     process.exit(1)
   }
   rmSync(folder.path, { recursive: true, force: true })
