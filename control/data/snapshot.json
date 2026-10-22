@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-22T03:14:11.485Z",
+  "generatedAt": "2026-10-22T03:22:24.140Z",
   "head": {
     "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
     "date": "2026-10-22T06:13:34+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-22T03:14:11.485Z",
+      "fetchedAt": "2026-10-22T03:22:24.140Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 28,
+        "open": 29,
         "ready": 3,
-        "inProgress": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
           "number": 338,
@@ -191,8 +191,8 @@
         "title": "Epic: core — headless core",
         "subIssues": {
           "completed": 27,
-          "percentCompleted": 87,
-          "total": 31
+          "percentCompleted": 84,
+          "total": 32
         }
       },
       {
@@ -405,23 +405,23 @@
     ],
     "next": [
       {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "project": "foundation"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
       },
       {
-        "number": 903,
-        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
         "project": "foundation"
       },
       {
         "number": 905,
         "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
+        "project": "foundation"
+      },
+      {
+        "number": 906,
+        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
         "project": "foundation"
       }
     ],
@@ -434,21 +434,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 338,
-        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -467,8 +452,23 @@
         "reason": null
       },
       {
-        "number": 903,
-        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "number": 338,
+        "title": "Differential harness: HACER's engine against web-ide's reference simulator on the official vectors (foundation 1.6)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 905,
+        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -483,8 +483,8 @@
         "reason": null
       },
       {
-        "number": 905,
-        "title": "A literal `true` feeding more than 16 bits is every bit: pin it through both readers, record the reference's 16, and window it on export",
+        "number": 906,
+        "title": "The combinational-cycle refusal carries the line of the part that closes the cycle, as the reference's `Looping wire` and `Circular pin dependency` do",
         "labels": [
           "agent-ready",
           "risk:1",
@@ -2539,13 +2539,47 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 903,
+        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "harness": [
+        257,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        870,
+        889
+      ],
       "foundation": [
         338,
-        903,
         905,
+        906,
         151,
         184,
         325,
@@ -2570,24 +2604,8 @@
         728,
         742,
         773,
-        878
-      ],
-      "harness": [
-        257,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        870,
-        889
+        878,
+        903
       ],
       "spine": [
         165,
@@ -5110,12 +5128,12 @@
         }
       },
       {
-        "number": 901,
-        "ref": "refs/heads/claim/901",
-        "sha": "bf96e39fc7748e6c09a17383aacc6a8612fb895c",
-        "state": "CLOSED",
-        "title": "A part named after a builtin only the reference has resolves to the user chip: ADR-0020 §1.11 rule 4 names the lookup order, and tests pin the 27-name boundary",
-        "url": "https://github.com/mezivillager/hacer/issues/901",
+        "number": 903,
+        "ref": "refs/heads/claim/903",
+        "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
+        "state": "OPEN",
+        "title": "A registered definition agrees with its source: refuse one whose name or pins differ from its HDL's or its document's, or from the name it was looked up by",
+        "url": "https://github.com/mezivillager/hacer/issues/903",
         "labels": [
           "agent-ready",
           "in-progress",
@@ -5123,20 +5141,20 @@
           "fidelity",
           "project:foundation"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "hacer-loop-to-70",
-          "branch": "feat/901-lookup-order",
+          "branch": "fix/903-definition-agrees",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-22T02:44:00Z",
-          "url": "https://github.com/mezivillager/hacer/issues/901#issuecomment-6331409875"
+          "at": "2026-10-22T03:14:58Z",
+          "url": "https://github.com/mezivillager/hacer/issues/903#issuecomment-6331789552"
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -7024,7 +7042,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-08T03:14:11.485Z",
+      "since": "2026-10-08T03:22:24.140Z",
       "merged": 101,
       "openToMergeHours": {
         "median": 0.3,
@@ -11153,10 +11171,12 @@
       },
       {
         "date": "2026-10-22",
-        "at": "2026-10-22T02:51:28.795Z",
+        "at": "2026-10-22T03:14:11.485Z",
         "byProject": {
           "foundation": [
             338,
+            903,
+            905,
             151,
             184,
             325,
@@ -11181,9 +11201,7 @@
             728,
             742,
             773,
-            878,
-            901,
-            903
+            878
           ],
           "harness": [
             257,
@@ -11201,41 +11219,6 @@
             677,
             870,
             889
-          ],
-          "upkeep": [
-            874,
-            229,
-            256,
-            788,
-            789,
-            790,
-            791,
-            792,
-            793,
-            794,
-            795,
-            796,
-            797,
-            798,
-            799,
-            800,
-            807,
-            808,
-            809,
-            827,
-            828,
-            829,
-            830,
-            831,
-            832,
-            833,
-            834,
-            835,
-            839,
-            848,
-            849,
-            859,
-            867
           ],
           "spine": [
             165,
@@ -11283,6 +11266,41 @@
             218,
             219,
             284
+          ],
+          "upkeep": [
+            229,
+            256,
+            788,
+            789,
+            790,
+            791,
+            792,
+            793,
+            794,
+            795,
+            796,
+            797,
+            798,
+            799,
+            800,
+            807,
+            808,
+            809,
+            827,
+            828,
+            829,
+            830,
+            831,
+            832,
+            833,
+            834,
+            835,
+            839,
+            848,
+            849,
+            859,
+            867,
+            874
           ],
           "horizon": [
             230,
@@ -11332,12 +11350,15 @@
         "pr": null,
         "sha": "a2dcfbbef0faef4c100667b8abfee9d576019962",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-22T03:16:48Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39715669959/job/119617056873",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 69 known violations (37 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 69,
+          "new": 0
+        },
         "disagrees": false
       },
       {
