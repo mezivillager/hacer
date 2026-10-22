@@ -177,13 +177,14 @@ describe('the harness briefs keep their load-bearing rules', () => {
   const present = BRIEF_INVARIANTS.flatMap((i) => i.present.map((rule) => [i.file, rule.id, rule.phrases]))
   const absent = BRIEF_INVARIANTS.flatMap((i) => i.absent.map((rule) => [i.file, rule.id, rule.phrases]))
 
-  it('pins every brief in docs/harness, each with at least one rule', () => {
+  it('pins every brief in docs/harness, and ha-next, each with at least one rule', () => {
     expect(BRIEF_INVARIANTS.map((i) => i.file)).toEqual([
       'docs/harness/implementer-brief.md',
       'docs/harness/verifier-brief.md',
       'docs/harness/product-brief.md',
       'docs/harness/fidelity-brief.md',
       'docs/harness/retro-brief.md',
+      '.claude/skills/ha-next/SKILL.md',
     ])
     expect(BRIEF_INVARIANTS.every((i) => i.present.length > 0)).toBe(true)
     expect(absent.length).toBeGreaterThan(0)

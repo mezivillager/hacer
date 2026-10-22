@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process'
-import { readFileSync } from 'node:fs'
+import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, it, expect } from 'vitest'
 import {
@@ -9,6 +10,7 @@ import {
   DEFAULT_ALLOWLIST,
   DESIGN_FIRST_SLUGS,
   DORMANT_OPEN_PRS,
+  ENGINE_PREFIXES,
   NOTHING_PICKABLE_EXIT,
   PICK_ROTATION,
   ROW_AGENT_READY_CAP,
@@ -22,11 +24,13 @@ import {
   claimTaken,
   dormantMode,
   epicTree,
+  filePagesPaths,
   formatDormant,
   formatProjects,
   formatReady,
   formatResume,
   formatTasks,
+  formatVerifierTier,
   historyGap,
   lastRunsRow,
   latestClaim,
@@ -47,7 +51,9 @@ import {
   retroLine,
   summarizeProjects,
   triageTasks,
+  verifierTier,
 } from './backlog.logic.mjs'
+import { VERIFIER_TIER_SENTENCE } from './skills.logic.mjs'
 
 // scripts/fixtures/gh-issues.json is a trimmed recording of
 //   gh issue list -R mezivillager/hacer --state open --limit 500 --json number,title,labels,author,blockedBy,blocking,parent
@@ -1324,5 +1330,103 @@ describe('retro due', () => {
     expect(cadence).toContain('node scripts/backlog.mjs ready')
     expect(cadence).toContain('before its first claim')
     expect(cadence).not.toMatch(/every 5 merged PRs|HRN-009/)
+  })
+})
+
+// #884: the verifier's tier from the PR's changed paths and labels (L070: #739 and #748 were verified on Sonnet).
+describe('the verifier tier', () => {
+  const PR_748 = ['src/core/serialization/deserialize.test.ts', 'src/core/serialization/deserialize.ts',
+    'src/store/actions/persistenceActions/persistenceActions.test.ts', 'src/store/actions/persistenceActions/persistenceActions.ts']
+  const PR_739 = ['src/core/spec/printSpec.nand2tetris.test.ts', 'src/core/spec/printSpec.property.test.ts']
+
+  it.each([
+    ['risk:1 with a path under src/core/serialization/ (#748)', PR_748, ['risk:1'], 'opus', 'src/core/serialization/deserialize.test.ts'],
+    ['only tests under src/core/spec/ (#739)', PR_739, ['released', 'project:spine', 'risk:1'], 'opus', PR_739[0]],
+    ['risk:1 with a path under src/simulation/', ['docs/a.md', 'src/simulation/topologicalEval.ts'], ['risk:1'], 'opus',
+      'src/simulation/topologicalEval.ts'],
+    ['risk:2 with only scripts/backlog.mjs', ['scripts/backlog.mjs'], ['risk:2'], 'opus', 'risk:2'],
+    ['risk:0 with a path under src/core/spec/: the engine clause wins over the label', ['src/core/spec/a.ts'], ['risk:0'], 'opus',
+      'src/core/spec/a.ts'],
+    ['risk:0 docs only', ['docs/harness/README.md'], ['risk:0'], 'sonnet', 'none'],
+    ['no risk: label and no engine path', ['scripts/backlog.mjs'], ['project:harness'], 'sonnet', 'none'],
+    ['the near-miss paths src/core-x/ and docs/src/core/', ['src/core-x/a.ts', 'docs/src/core/a.md'], ['risk:1'], 'sonnet', 'none'],
+  ])('%s', (_case, paths, labels, tier, because) => {
+    expect(verifierTier(paths, labels)).toEqual({ tier, because })
+  })
+
+  it('uses exactly the engine directories VERIFIER_TIER_SENTENCE names, and the sentence names risk:2', () => {
+    const named = [...VERIFIER_TIER_SENTENCE.matchAll(/`(src\/[^`]+\/)`/g)].map((match) => match[1])
+    expect(named).toEqual(ENGINE_PREFIXES)
+    for (const prefix of named) expect(verifierTier([`${prefix}a.ts`], [])).toEqual({ tier: 'opus', because: `${prefix}a.ts` })
+    expect(VERIFIER_TIER_SENTENCE).toContain('`risk:2`')
+  })
+
+  it('reads every page of the REST files list, and a rename by both its names', () => {
+    const pages = [[{ filename: 'docs/a.md' }, { filename: 'scripts/b.mjs' }], [{ filename: 'src/core/hdl/parser.ts' }]]
+    expect(filePagesPaths(pages)).toEqual(['docs/a.md', 'scripts/b.mjs', 'src/core/hdl/parser.ts'])
+    expect(verifierTier(filePagesPaths(pages), ['risk:1'])).toEqual({ tier: 'opus', because: 'src/core/hdl/parser.ts' })
+    const renamed = [[{ filename: 'src/lib/a.ts', previous_filename: 'src/core/a.ts', status: 'renamed' }]]
+    expect(filePagesPaths(renamed)).toEqual(['src/lib/a.ts', 'src/core/a.ts'])
+    expect(verifierTier(filePagesPaths(renamed), ['risk:1'])).toEqual({ tier: 'opus', because: 'src/core/a.ts' })
+    expect(filePagesPaths([])).toEqual([])
+  })
+
+  it('prints VERIFIER-TIER: <tier> pr=<n> because=<path|risk:2|none>', () => {
+    expect(formatVerifierTier(748, { tier: 'opus', because: 'src/core/serialization/deserialize.ts' }))
+      .toBe('VERIFIER-TIER: opus pr=748 because=src/core/serialization/deserialize.ts')
+    expect(formatVerifierTier(12, { tier: 'sonnet', because: 'none' })).toBe('VERIFIER-TIER: sonnet pr=12 because=none')
+  })
+
+  describe('tier <pr>', () => {
+    const SCRIPT = path.join(import.meta.dirname, 'backlog.mjs')
+    // PR 7's labels and its two pages, served only to a call that reads every page; anything else fails as gh does.
+    const FAKE_GH = `#!/bin/sh
+case "$*" in
+  *"/pulls/7/files"*)
+    case "$*" in *--paginate*) ;; *) echo 'fake gh: one page only' >&2; exit 1 ;; esac
+    case "$*" in *--slurp*) ;; *) echo 'fake gh: pages not slurped' >&2; exit 1 ;; esac
+    echo '[[{"filename":"docs/a.md"}],[{"filename":"src/lib/a.ts","previous_filename":"src/core/a.ts"}]]' ;;
+  *"/pulls/7 "*) echo '["risk:1"]' ;;
+  *) echo 'gh: Not Found (HTTP 404)' >&2; exit 1 ;;
+esac
+`
+    const run = (bin, ...args) => spawnSync(process.execPath, [SCRIPT, ...args],
+      { encoding: 'utf8', env: { PATH: bin, HOME: '/nonexistent-backlog-test' } })
+    const withFakeGh = (test) => {
+      const bin = mkdtempSync(path.join(tmpdir(), 'backlog-tier-'))
+      try {
+        writeFileSync(path.join(bin, 'gh'), FAKE_GH)
+        chmodSync(path.join(bin, 'gh'), 0o755)
+        test(bin)
+      } finally {
+        rmSync(bin, { recursive: true, force: true })
+      }
+    }
+
+    it.each(['tier 0', 'tier abc', 'tier 1.5', 'tier -3', 'tier', 'tier 7 8', 'tier 7 --json', 'tier 7 --by me'])(
+      'a PR that is not one positive integer, or a flag tier does not take, exits 2 with usage: %s', (command) => {
+        const { status, stdout, stderr } = run('/nonexistent-backlog-test/bin', ...command.split(' '))
+        expect({ status, stdout }).toEqual({ status: 2, stdout: '' })
+        expect(stderr).toContain('node scripts/backlog.mjs tier <pr>')
+      })
+
+    it('prints the line from every page of the PR\'s files, a rename by its old name', () => {
+      withFakeGh((bin) => {
+        const { status, stdout, stderr } = run(bin, 'tier', '7')
+        expect({ status, stdout, stderr }).toEqual({ status: 0, stdout: 'VERIFIER-TIER: opus pr=7 because=src/core/a.ts\n', stderr: '' })
+      })
+    })
+
+    it('a PR gh cannot read exits 1 with gh\'s message', () => {
+      withFakeGh((bin) => {
+        const { status, stdout, stderr } = run(bin, 'tier', '8')
+        expect({ status, stdout }).toEqual({ status: 1, stdout: '' })
+        expect(stderr).toContain('gh: Not Found (HTTP 404)')
+      })
+    })
+
+    it('is in the header comment', () => {
+      expect(readFileSync(SCRIPT, 'utf8')).toMatch(/^\/\/ +node scripts\/backlog\.mjs tier <pr>/m)
+    })
   })
 })

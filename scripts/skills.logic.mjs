@@ -104,6 +104,10 @@ export function containsPhrases(text, phrases) {
 export const VERIFIER_TIER_SENTENCE =
   'a PR touching `src/core/` or `src/simulation/`, or labelled `risk:2`, is verified on **Opus**; every other PR, at `risk:0` or `risk:1`, on **Sonnet**.'
 
+/** The dispatch step for the verifier's tier, stated verbatim in its brief and in ha-next. */
+const VERIFIER_TIER_AT_DISPATCH_SENTENCE =
+  'Run `node scripts/backlog.mjs tier <pr>`, then dispatch the verifier on the model its `VERIFIER-TIER:` line names.'
+
 /** Verifier rules stated verbatim in its brief and in its agent definition's body. */
 const VERIFIER_WORKTREE_SENTENCE =
   'Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch> && node scripts/wt-new.mjs scratch ../hacer-wt-verify-<pr>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.'
@@ -228,6 +232,7 @@ export const BRIEF_INVARIANTS = [
       { id: 'verdict-format-shows-invalidates', phrases: ['**Invalidates:** <on BLOCK, the decision the finding invalidates, or `none`>'] },
       { id: 'worktree-makes-scratch', phrases: [VERIFIER_WORKTREE_SENTENCE] },
       { id: 'scratch-and-body-file', phrases: [VERIFIER_SCRATCH_SENTENCE] },
+      { id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
@@ -264,6 +269,11 @@ export const BRIEF_INVARIANTS = [
       { id: 'policy-entries-capped', phrases: ['**At most five policy entries per run:**'] },
       { id: 'prune-by-deletion', phrases: ['**Prune by deleting whole components, never by rewriting rules shorter.**'] },
     ],
+    absent: [],
+  },
+  {
+    file: '.claude/skills/ha-next/SKILL.md',
+    present: [{ id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] }],
     absent: [],
   },
 ]
