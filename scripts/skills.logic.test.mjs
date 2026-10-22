@@ -307,6 +307,14 @@ describe('the agent definitions keep their load-bearing rules', () => {
     }
   })
 
+  it('pins the builder\'s scratch-folder and --body-file rules as the implementer brief\'s own sentences', () => {
+    const ids = ['scratch-only-in-the-worktree-folder', 'body-file-never-inline']
+    const phrasesOf = (rules) => ids.map((id) => rules.find((rule) => rule.id === id)?.phrases)
+    const builder = AGENT_INVARIANTS.find((i) => i.file === '.claude/agents/hacer-builder.md')
+    const brief = BRIEF_INVARIANTS.find((i) => i.file === 'docs/harness/implementer-brief.md')
+    expect(phrasesOf(builder.body)).toEqual(phrasesOf(brief.present))
+  })
+
   it.each(TWIN_SENTENCES.map((t) => [t.id, t]))('%s: every twin carries the owner\'s sentence', (_id, twin) => {
     const twins = twin.twins.map(({ file, part }) => ({ label: `${file} ${part}`, text: partOf(readBrief(file), part) }))
     expect(checkTwinAgreement(readBrief(twin.owner), twin.anchor, twins)).toEqual([])
