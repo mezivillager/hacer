@@ -367,7 +367,7 @@ function exportFailures(saved: SerializedCircuit, vectors: Vector[], expected: O
   if (rejected.length > 0 || sidecar.notes.some((n) => REFUSALS.has(n.kind))) return rejected
   return vectors.flatMap((vector, i) => {
     const run = viaExport(doc, Object.fromEntries(saved.inputNodes.map((n, k) => [doc.ins[k].name, vector[n.name] ?? 0])))
-    if (expected[i].result.status === 'cycle') return 'refused' in run && run.refused.some((m) => /^Cyclic part dependency/.test(m)) ? [] : [`${JSON.stringify(vector)}: expected the export to be refused as cyclic, got ${JSON.stringify(run)}`]
+    if (expected[i].result.status === 'cycle') return 'refused' in run && run.refused.some((m) => /^Line \d+: Cyclic part dependency/.test(m)) ? [] : [`${JSON.stringify(vector)}: expected the export to be refused as cyclic, got ${JSON.stringify(run)}`]
     if ('refused' in run) return [`${JSON.stringify(vector)}: the export is refused: ${run.refused.join('; ')}`]
     return saved.outputNodes.flatMap((n, k) => (run.outputs[doc.outs[k].name] === expected[i].outputs[n.name] ? [] : [`${JSON.stringify(vector)}: the export gives ${n.name} = ${run.outputs[doc.outs[k].name]}, legacy ${expected[i].outputs[n.name]}`]))
   })

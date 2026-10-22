@@ -43,7 +43,6 @@ const registry = getBuiltinChipRegistry()
 const accepted: Readings = { parseHDL: null, compileHDL: null, parseSpec: { doc: true, errors: [] }, compileSpec: null }
 // Every shape is one line: compileHDL puts a part's refusal on line 1, and compileSpec, which lowers without lines, on none.
 const compileRefuses = (messages: string[]): Readings => ({ ...accepted, compileHDL: messages.map((message) => `Line 1: ${message}`), compileSpec: messages })
-const cycleRefuses = (messages: string[]): Readings => ({ ...accepted, compileHDL: messages, compileSpec: messages })
 const syntaxError = (messages: string[]): Readings => ({
   parseHDL: messages,
   compileHDL: 'unparsed',
@@ -146,8 +145,8 @@ const EXPECTED: Record<string, Expected> = {
   'chip-out-never-written': accepted,
   'chip-in-whole-and-sliced': accepted,
   'self-part': compileRefuses(['Cannot use chip Not to implement itself']),
-  'looping-wire': cycleRefuses(['Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"']),
-  'loop-across-parts': cycleRefuses(['Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "v" → "u"']),
+  'looping-wire': compileRefuses(['Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"']),
+  'loop-across-parts': compileRefuses(['Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "u" → "v"']),
   'width-mismatch': compileRefuses(['Part "Not" pin "in" width 1 != signal "a" width 16']),
   'two-writers-of-internal': {
     parseHDL: null,

@@ -175,9 +175,9 @@ describe("runTest — a compile refusal reads as the reference's, without evalua
     expect(errorOf('Top', 'a o', ownFirst(hdl(INN), hdl(mid), hdl(top)))).toBe('Top › Mid › Inn: Line 5: Part "Nand" has no pin "c"')
   })
 
-  it('gives a refusal no part caused no line', () => {
+  it('gives a combinational cycle the line of the part that closes it', () => {
     const loop = 'CHIP C {\n  IN a;\n  OUT o;\n  PARTS:\n  And(a=a, b=t, out=t);\n  Not(in=t, out=o);\n}'
-    expect(errorOf('C', 'a o', ownFirst(hdl(loop)))).toBe('Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"')
+    expect(errorOf('C', 'a o', ownFirst(hdl(loop)))).toBe('Line 5: Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"')
   })
 
   it("keeps evaluateChip's prefix for a registered chip that does not parse", () => {

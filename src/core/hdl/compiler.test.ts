@@ -7,7 +7,7 @@ import { combineRegistries } from '../chips/combineRegistries'
 import type { ChipDefinition } from '../chips/types'
 import { isBuiltinChip } from '../chips/types'
 import { parseHDL } from './parser'
-import { compileHDL, hdlChipDefinition, type EvalContext, type HDLCompileResult } from './compiler'
+import { compileHDL, hdlChipDefinition, type EvalContext, type HDLCompileError, type HDLCompileResult } from './compiler'
 import type { HDLChip } from './types'
 
 // A minimal evalChip that only understands builtins (enough to test compileHDL in isolation).
@@ -1102,10 +1102,11 @@ describe("compileHDL — the reference's self-reference sentence, and the line o
     if (!ast.success) throw new Error(`parse failed: ${source}`)
     return compileHDL(ast.chip, registry)
   }
-  const lines = (source: string): Array<[number | undefined, string]> => {
+  const errorsOf = (source: string): HDLCompileError[] => {
     const r = compile(source)
-    return r.success ? [] : r.errors.map((e) => [e.line, e.message])
+    return r.success ? [] : r.errors
   }
+  const lines = (source: string): Array<[number | undefined, string]> => errorsOf(source).map((e) => [e.line, e.message])
 
   it('refuses a chip that names itself in the reference sentence, on the line of that part', () => {
     expect(compile('CHIP Not {\n  IN in;\n  OUT out;\n\n  PARTS:\n  Not(in=in, out=out);\n}')).toEqual({
@@ -1156,11 +1157,38 @@ describe("compileHDL — the reference's self-reference sentence, and the line o
     expect(lines(chip('a, b, c', 'o', '  Not(in=a, out=o);\n  Not(in=b, out=o);\n  Not(in=c, out=o);'))).toEqual([[6, 'Line 6: Signal "o" is driven by more than one part']])
   })
 
-  it('gives an error no part caused no line and no prefix', () => {
+  const CYCLE = 'Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through'
+
+  it("gives a part that reads the bits it writes the line of that part, where the reference refuses a Looping wire", () => {
     expect(compile(chip('a', 'o', '  And(a=a, b=t, out=t);\n  Not(in=t, out=o);'))).toEqual({
       success: false,
-      errors: [{ message: 'Cyclic part dependency: parts cannot be topologically ordered (combinational cycle) through "t"' }],
+      errors: [{ message: `Line 5: ${CYCLE} "t"`, line: 5 }],
     })
+  })
+
+  it('gives a cycle across parts the line of the part that closes it, where the reference refuses a Circular pin dependency', () => {
+    expect(lines(chip('a', 'o', '  Nand(a=a, b=y, out=x);\n  Not(in=x, out=y);\n  Not(in=x, out=o);'))).toEqual([[6, `Line 6: ${CYCLE} "x" → "y"`]])
+  })
+
+  it('blames the first cycle closed in source order, and traces that cycle, not an earlier part on a later cycle', () => {
+    const errors = errorsOf(chip('a', 'o', '  Not(in=q, out=p);\n  Not(in=s, out=r);\n  Not(in=r, out=s);\n  Not(in=p, out=q);\n  And(a=p, b=r, out=o);'))
+    const read = ({ line, message }: HDLCompileError) => ({ line, prefixed: message.startsWith(`Line 7: ${CYCLE} `), signals: [...message.matchAll(/"(\w+)"/g)].map(([, signal]) => signal).sort() })
+    expect(errors.map(read)).toEqual([{ line: 7, prefixed: true, signals: ['r', 's'] }])
+  })
+
+  it('gives a cycle through three parts the line of the third', () => {
+    expect(lines(chip('a', 'o', '  Not(in=r, out=p);\n  Not(in=p, out=q);\n  Not(in=q, out=r);\n  Not(in=p, out=o);'))).toEqual([[7, `Line 7: ${CYCLE} "q" → "r" → "p"`]])
+  })
+
+  it('follows bits, so a cycle through two bits of one internal signal takes line 6, where the reference refuses the subscripted pin on line 5', () => {
+    expect(lines(chip('a', 'out', '  Not(in=w[1], out=w[0]);\n  Not(in=w[0], out=w[1]);\n  And(a=w[0], b=w[1], out=out);'))).toEqual([[6, `Line 6: ${CYCLE} "w" bit 0 → "w" bit 1`]])
+  })
+
+  it("gives a cycle closed by a part written across several lines the line of its name, where the reference gives the closing wire's line 8", () => {
+    expect(lines(chip('a', 'o', '  Nand(a=a, b=y, out=x);\n  Not(\n    in=x,\n    out=y);\n  Not(in=x, out=o);'))).toEqual([[6, `Line 6: ${CYCLE} "x" → "y"`]])
+  })
+
+  it('gives an error no part caused no line and no prefix', () => {
     expect(compile(chip('a', 'out', '  BUILTIN Nope;'))).toEqual({ success: false, errors: [{ message: 'Builtin chip "Nope" not found in registry' }] })
     const user = createChipRegistry()
     user.register({ name: 'Foo', inputs: [{ name: 'a', width: 1 }], outputs: [{ name: 'out', width: 1 }], implementation: { type: 'hdl', source: 'CHIP Foo { IN a; OUT out; PARTS: Not(in=a, out=out); }' } })
