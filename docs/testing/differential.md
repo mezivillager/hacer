@@ -21,6 +21,10 @@ official `.tst`/`.cmp` from `conformance/vectors/01/`:
 | `REJECTED` | the engines agree, but the reference's .out is not the `.cmp`: the HDL is wrong, so agreement proves nothing |
 | `ERROR` | one engine wrote no .out, and why |
 
+HACER's .out is what `runCli(['run-tst', '<chip>.hdl', '<chip>.tst'], read)` prints, with `read` serving
+the vector from memory: `runCli` is the function the `hacer` bin calls, so a change to the CLI's path
+reaches the harness, and `conformance/differential/harness.test.ts` fails if the harness stops calling it.
+
 The harness is not vacuous: the upstream stub `.hdl` files (empty `PARTS:`) are `REJECTED` for all 15.
 
 **A disagreement is a finding, not a test to tune.** File an issue naming the chip, the line, both
@@ -33,23 +37,28 @@ setup, or alone with `node conformance/differential/reference.ts`) does this onc
 `node_modules/.cache/hacer-differential/<commit>/`:
 
 1. a sparse, shallow clone of the repository `conformance/differential/reference.json` names, at its
-   `commit` (`projects`, `runner`, `simulator`, `LICENSE`, `tsconfig.base.json`), checked against the pin;
-2. `npm install` from a manifest of our own naming only those three packages, with the exact versions
-   that file pins. `@davidsouther/jiffies` must be exactly **2.2.5**: 2.3.0 ships `.ts` sources
-   and one `.js` file, so every `lib/esm/*.js` import fails at runtime;
+   `commit` (`projects`, `runner`, `simulator`, `LICENSE`, `tsconfig.base.json`, and its lockfile),
+   checked against the pin;
+2. `npm ci` from upstream's own lockfile at that commit, with a manifest of our own naming only
+   those three packages and the four exact versions the pin lists. The lockfile fixes the whole
+   tree, transitive packages included, so every cold run installs the same one; `npm ci` fails if a
+   pinned version is not the one the lock resolves. `@davidsouther/jiffies` must be exactly **2.2.5**:
+   2.3.0 ships `.ts` sources and one `.js` file, so every `lib/esm/*.js` import fails at runtime;
 3. `tsc --build` of each package. Upstream's sources carry type errors (6 at `52611ad9`) that do not
    stop the emit, so the run checks the emitted files, never tsc's exit code;
-4. a provenance file in that folder, recording the pin it was built from. A cache whose provenance
-   does not match the pin is rebuilt from scratch.
+4. a provenance file in that folder, recording the pin it was built from and that the install was
+   `npm ci`. A cache is reused only if its provenance matches both and the three emitted files still
+   exist; any other cache is rebuilt from scratch.
 
 The pin is the commit `conformance/vectors/` was extracted from, so the vectors and the simulator
-come from one place. A cold run (fetch, install, build, test) took 32 s on the owner's laptop, and a
-cached run 4 s.
+come from one place. A cold run (fetch, install, build, test) took 37 s on the owner's laptop, and a
+cached run 7 s.
 
 ## Re-vendoring
 
 1. Pick the new upstream commit, and read the versions its package-lock.json resolves for
-   `@davidsouther/jiffies`, `ohm-js`, `rxjs` and `typescript`.
+   `@davidsouther/jiffies`, `ohm-js`, `rxjs` and `typescript`. `npm ci` takes the lockfile as it
+   stands, so a direct dependency upstream adds to one of the three packages arrives with it.
 2. Set `commit` and those versions in `conformance/differential/reference.json`. Change jiffies only
    if upstream has, and check the new version ships `lib/esm/*.js`.
 3. `pnpm run test:differential`. The changed pin rebuilds the cache.
