@@ -69,7 +69,7 @@ in one click.
 
 ## R895 — Project 2 is pulled forward headless, a bounded exception to the phase rule
 Builds on: R889
-Judge, 2026-10-22T14:55Z, decision JDG-004 on #970 (issuecomment-6343664746); recorded by the
+Judge, 2026-10-22T14:48Z, decision JDG-004 on #970 (issuecomment-6343664746); recorded by the
 coordinator. It amends the phase rule "implement for the current phase only" and the roadmap's "finish
 Phase 0.5 before Projects 2-3" for Project 2's headless grading path only. A fidelity verdict on epics
 #139 and #177 comes first (#982), then the phase-tracking docs name the exception (#983). Then Project 2
