@@ -3,7 +3,8 @@
 //
 //   node scripts/backlog.mjs ready    [--json]   pickable tasks in pick order, then the rest with a reason, each with the
 //                                               merged PRs that cite it as `possibly-delivered`; to stderr, the
-//                                               dormant banner at 5 open agent PRs (#540), the slot the cycle resumes
+//                                               dormant banner at 5 open agent PRs (#540), `judge due: <n> (#a, …)`
+//                                               while open `judge-review` issues exist (#963), the slot the cycle resumes
 //                                               at, after the latest claim (#535), what the claim history leaves a guess,
 //                                               and `retro due: …` or `retro: …`, from origin/main's Runs row and
 //                                               session records and the merged PRs it already reads; then
@@ -275,7 +276,7 @@ async function view(name, slug, flags) {
   if (name === 'ready' || name === 'next') {
     const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
     const main = await backlog.readMainLines(mainInputs)
-    for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
+    for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)), backlog.judgeDueLine(issues),
       backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)),
       gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`,
       backlog.readRetroLine(() => retroInputs(fetchMergedPrs)), ...main,
