@@ -41,9 +41,11 @@ import {
   parseRunsRow,
   planReady,
   possiblyDelivered,
+  processReviewLine,
   readClaimDrift,
   readClaimHistory,
   readPossiblyDelivered,
+  readProcessReviewLine,
   readRetroLine,
   readClaims,
   readMainLines,
@@ -1609,6 +1611,161 @@ esac
         const none = runBacklog(bin, ['next', '--json'], { ...env, FAKE_ISSUES: '[]' })
         expect({ status: none.status, stdout: none.stdout }).toEqual({ status: NOTHING_PICKABLE_EXIT, stdout: 'null\n' })
         expect(mainOf(none.stderr)).toEqual(['main: unread (HTTP 502: Bad Gateway)'])
+      })
+    })
+  })
+})
+
+// #895: whether a process review is due, from the cycles under docs/harness/reviews/ on origin/main.
+describe('process review due', () => {
+  const DAY = 24 * 60 * 60 * 1000
+  const cycle = (date, ...files) => files.map((file) => `docs/harness/reviews/${date}/${file}`)
+  const FINISHED = cycle('2026-10-01', 'BRIEF.md', 'README.md', 'reviews/1.md', 'reviews/2.md', 'SYNTHESIS.md')
+  const at = (date, days) => Date.parse(`${date}T00:00:00Z`) + days * DAY
+  const line = (paths, now) => processReviewLine({ paths, now })
+  const NO_CYCLE = 'process review due: no cycle under docs/harness/reviews/'
+  // `git ls-tree -r --name-only 304c61c8 -- docs/harness/reviews/`
+  const TREE_304C61C8 = [
+    'docs/harness/reviews/2026-09-26/BRIEF.md',
+    'docs/harness/reviews/2026-09-26/README.md',
+    'docs/harness/reviews/2026-09-26/SYNTHESIS.md',
+    'docs/harness/reviews/2026-09-26/evidence/1-stuck-merge-box.md',
+    'docs/harness/reviews/2026-09-26/evidence/2-controls.md',
+    'docs/harness/reviews/2026-09-26/evidence/2-product.md',
+    'docs/harness/reviews/2026-09-26/evidence/3-measurements.md',
+    'docs/harness/reviews/2026-09-26/evidence/brief-measure-flow.mjs',
+    'docs/harness/reviews/2026-09-26/evidence/brief-measurements.txt',
+    'docs/harness/reviews/2026-09-26/reviews/1.md',
+    'docs/harness/reviews/2026-09-26/reviews/2.md',
+    'docs/harness/reviews/2026-09-26/reviews/3.md',
+    'docs/harness/reviews/README.md',
+  ]
+
+  it('a finished cycle 13 days old is not due', () => {
+    expect(line(FINISHED, at('2026-10-01', 13))).toBe('process review: 13 days since 2026-10-01')
+    expect(line(FINISHED, at('2026-10-01', 14) - 1)).toBe('process review: 13 days since 2026-10-01')
+    expect(line(FINISHED, at('2026-10-01', 1))).toBe('process review: 1 day since 2026-10-01')
+  })
+
+  it('a finished cycle 14 days old is due', () => {
+    expect(line(FINISHED, at('2026-10-01', 14))).toBe('process review due: 14 days since 2026-10-01')
+    expect(line(FINISHED, new Date(at('2026-10-01', 40.5)).toISOString())).toBe('process review due: 40 days since 2026-10-01')
+  })
+
+  it('a newer cycle with a brief and no synthesis is open, at 0 days and at 30', () => {
+    const paths = [...FINISHED, ...cycle('2026-10-20', 'BRIEF.md', 'README.md')]
+    expect(line(paths, at('2026-10-20', 0))).toBe('process review open: cycle 2026-10-20, 0 reviews')
+    expect(line(paths, at('2026-10-20', 30))).toBe('process review open: cycle 2026-10-20, 0 reviews')
+  })
+
+  it('an open cycle counts its reviews/<n>.md files, 0, 1 and 2', () => {
+    const open = (...files) => line([...FINISHED, ...cycle('2026-10-20', 'BRIEF.md', ...files)], at('2026-10-20', 3))
+    expect(open('evidence/brief-measurements.txt')).toBe('process review open: cycle 2026-10-20, 0 reviews')
+    expect(open('reviews/1.md', 'evidence/1-trace.md')).toBe('process review open: cycle 2026-10-20, 1 review')
+    expect(open('reviews/2.md', 'reviews/README.md', 'reviews/1.md', 'reviews/draft.md', 'reviews/3.txt', 'evidence/2-x.md'))
+      .toBe('process review open: cycle 2026-10-20, 2 reviews')
+  })
+
+  it('the clock does not restart when a brief is issued', () => {
+    const paths = [...cycle('2026-10-16', 'BRIEF.md'), ...cycle('2026-09-26', 'BRIEF.md', 'reviews/1.md', 'SYNTHESIS.md')]
+    expect(line(paths, at('2026-10-16', 0))).toBe('process review open: cycle 2026-10-16, 0 reviews')
+    expect(line(paths, at('2026-10-16', 0))).not.toMatch(/^process review: 0 days/)
+    expect(line([...paths, 'docs/harness/reviews/2026-10-16/SYNTHESIS.md'], at('2026-10-16', 2)))
+      .toBe('process review: 2 days since 2026-10-16')
+    expect(line([...cycle('2026-09-01', 'BRIEF.md'), ...FINISHED], at('2026-10-01', 20)))
+      .toBe('process review due: 20 days since 2026-10-01')
+  })
+
+  it('no dated cycle directory is due', () => {
+    expect(line([], at('2026-10-01', 0))).toBe(NO_CYCLE)
+    expect(line(['docs/harness/reviews/README.md'], at('2026-10-01', 0))).toBe(NO_CYCLE)
+  })
+
+  it('README.md and a non-date directory under reviews/ are not cycles', () => {
+    const notCycles = ['docs/harness/reviews/README.md', 'docs/harness/reviews/templates/BRIEF.md',
+      'docs/harness/reviews/latest/SYNTHESIS.md', 'docs/harness/reviews/2026-10-2/BRIEF.md',
+      'docs/harness/reviews/2026-13-01/BRIEF.md', 'docs/harness/reviews/2026-02-30/BRIEF.md',
+      'docs/harness/reviews/2026-10-20-draft/BRIEF.md', 'docs/harness/reviews/2026-10-21.md', 'docs/harness/2026-10-22/BRIEF.md']
+    expect(line([...FINISHED, ...notCycles], at('2026-10-01', 3))).toBe('process review: 3 days since 2026-10-01')
+    expect(line(notCycles, at('2026-10-01', 3))).toBe(NO_CYCLE)
+  })
+
+  it('the 304c61c8 tree at 2026-10-22T12:00Z reads process review due: 26 days since 2026-09-26', () => {
+    expect(line(TREE_304C61C8, '2026-10-22T12:00Z')).toBe('process review due: 26 days since 2026-09-26')
+  })
+
+  it('a read that throws gives process review: unread with its first line', () => {
+    expect(readProcessReviewLine(() => ({ paths: FINISHED, now: at('2026-10-01', 1) }))).toBe('process review: 1 day since 2026-10-01')
+    expect(readProcessReviewLine(() => {
+      throw new Error("fatal: Not a valid object name origin/main\nusage: git ls-tree")
+    })).toBe('process review: unread (fatal: Not a valid object name origin/main)')
+  })
+
+  it('ha-next §1 says due issues the brief and dispatches step 2 before the first claim, and open finishes the cycle', () => {
+    const skill = readFileSync(path.join(import.meta.dirname, '..', '.claude', 'skills', 'ha-next', 'SKILL.md'), 'utf8')
+    const orient = skill.slice(skill.indexOf('## 1.'), skill.indexOf('## 2.')).replace(/\s+/g, ' ')
+    expect(orient).toMatch(/A `process review due:` line from `ready` means issue the next cycle's `BRIEF\.md`.{0,80}, then dispatch its step 2 reviewers before the first claim/)
+    expect(orient).toMatch(/`process review open:` means finish that cycle.{0,40}the reviewers still missing unless an open PR already adds one.{0,40}`SYNTHESIS\.md` once they have landed/)
+    expect(orient).toMatch(/The reviewers count toward the three-subagents-at-once cap, and their tokens join this run's total/)
+  })
+
+  it('is in the header comment, under ready', () => {
+    const header = readFileSync(BACKLOG_SCRIPT, 'utf8').split('\nimport ')[0]
+    expect(header).toMatch(/node scripts\/backlog\.mjs ready[\s\S]*`process review due: <n> days since <cycle>`[\s\S]*node scripts\/backlog\.mjs next/)
+  })
+
+  describe('in ready and next', () => {
+    const EMPTY_HISTORY = { data: { repository: { issues: { pageInfo: { hasNextPage: false, endCursor: null }, nodes: [] } } } }
+    const FAKE_GH = `#!/bin/sh
+case "$*" in
+  "issue list "*) printf '%s\\n' "$FAKE_ISSUES" ;;
+  *matching-refs*|"pr list "*|"workflow list "*|"run list "*) echo '[]' ;;
+  "api graphql "*) echo '${JSON.stringify(EMPTY_HISTORY)}' ;;
+  *) echo "fake gh: unexpected $*" >&2; exit 1 ;;
+esac
+`
+    // Only the reviews tree on origin/main is answered, so the retro's reads fail and its line reads unread.
+    const FAKE_GIT = `#!/bin/sh
+case "$*" in
+  "ls-tree -r --name-only origin/main -- docs/harness/reviews/")
+    [ "$FAKE_TREE" = refused ] && { echo 'fatal: Not a valid object name origin/main' >&2; exit 128; }
+    printf '%s\\n' "$FAKE_TREE" ;;
+  *) echo "fake git: unexpected $*" >&2; exit 1 ;;
+esac
+`
+    const PICKABLE = JSON.stringify([issue(1, { labels: ['agent-ready', 'project:spine'] })])
+    const OPEN_TREE = [...TREE_304C61C8, ...cycle('2026-10-22', 'BRIEF.md', 'reviews/1.md')].join('\n')
+    /** `test(bin)` with the fake gh and git on PATH. */
+    const withFakes = (test) => withFakeGh(FAKE_GH, (bin) => {
+      writeFileSync(path.join(bin, 'git'), FAKE_GIT)
+      chmodSync(path.join(bin, 'git'), 0o755)
+      test(bin)
+    })
+    const kinds = (stderr) => stderr.split('\n').map((text) => /^(retro|main|process review)\b/.exec(text)?.[1]).filter(Boolean)
+    const reviewOf = (stderr) => stderr.split('\n').filter((text) => text.startsWith('process review'))
+
+    it('ready and next print the line after the retro and main lines, from origin/main, with no GitHub call', () => {
+      withFakes((bin) => {
+        for (const args of [['ready', '--json'], ['next', '--json']]) {
+          const run = runBacklog(bin, args, { FAKE_ISSUES: PICKABLE, FAKE_TREE: OPEN_TREE })
+          expect({ status: run.status, kinds: kinds(run.stderr) }).toEqual({ status: 0, kinds: ['retro', 'main', 'process review'] })
+          expect(reviewOf(run.stderr)).toEqual(['process review open: cycle 2026-10-22, 1 review'])
+        }
+        const due = runBacklog(bin, ['ready'], { FAKE_ISSUES: PICKABLE, FAKE_TREE: TREE_304C61C8.join('\n') })
+        expect(reviewOf(due.stderr)).toEqual([expect.stringMatching(/^process review due: \d+ days since 2026-09-26$/)])
+      })
+    })
+
+    it('a tree read git refuses prints unread and leaves the exit status as it was', () => {
+      withFakes((bin) => {
+        const env = { FAKE_TREE: 'refused' }
+        const UNREAD = ['process review: unread (fatal: Not a valid object name origin/main)']
+        const ready = runBacklog(bin, ['ready', '--json'], { ...env, FAKE_ISSUES: PICKABLE })
+        expect({ status: ready.status, numbers: numbers(JSON.parse(ready.stdout)), review: reviewOf(ready.stderr) })
+          .toEqual({ status: 0, numbers: [1], review: UNREAD })
+        const none = runBacklog(bin, ['next', '--json'], { ...env, FAKE_ISSUES: '[]' })
+        expect({ status: none.status, stdout: none.stdout, review: reviewOf(none.stderr) })
+          .toEqual({ status: NOTHING_PICKABLE_EXIT, stdout: 'null\n', review: UNREAD })
       })
     })
   })
