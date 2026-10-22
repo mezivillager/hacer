@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/nand2tetris/web-ide.git",
+  "commit": "52611ad9bc2a30d329293b0cf58be672d672ac96",
+  "packages": ["projects", "runner", "simulator"],
+  "dependencies": {
+    "@davidsouther/jiffies": "2.2.5",
+    "ohm-js": "17.5.0",
+    "rxjs": "7.8.2",
+    "typescript": "6.0.3"
+  }
+}

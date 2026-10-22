@@ -17,7 +17,8 @@
  *     concern built ON this surface.
  *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct
  *     implementations, `project1HdlSources`, ARE exported: surfaces outside src/core test against
- *     them, and the layer rule lets them reach it only through here.
+ *     them, and the layer rule lets them reach it only through here. `project1DependencyOrder` names
+ *     the 15 of them, parts first: the differential harness (#338) runs each through both engines.
  *   - `resetAppRegistriesForTests`, `stripExt`, `printPinRef` — internal helpers.
  * Bus operations live in `@/simulation`, the other half of the engine's surface.
  */
@@ -36,7 +37,7 @@ export type {
   HDLPin,
   HDLSlice,
 } from './hdl'
-export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1HdlSources } from './hdl'
+export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1DependencyOrder, project1HdlSources } from './hdl'
 
 // ── The spec document: HDL-shaped text and its sidecar (ADR-0020 §1) ──────────────────────────────
 export type {
