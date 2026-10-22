@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { registerProject1Builtins } from '../chips/builtins/project01'
 import { createChipRegistry } from '../chips/registry'
+import { compileHDL } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import { project1HdlSources } from '../hdl/project1HdlSources'
 import { gradingRefusal } from './gradingRefusal'
@@ -21,6 +22,32 @@ const chipC = (pins: string, ...partLines: string[]): string => ['CHIP C {', pin
 const OUT_READ = 'Cannot use output pin as input'
 const internalPin = (pin: string): string => `Internal pins (in this case: ${pin}) cannot be subscripted or indexed`
 const nameRule = (name: string): string => `Name "${name}" contains "_": a name is a letter, then letters and digits`
+
+/** Shapes whose first cause in the reference is one compileHDL also refuses, before a later chip-OUT read or subscript. */
+const DEFERRED = {
+  A1: chipC('IN a, b; OUT o, p;', 'Not(in=a, in=b, out=o);', 'Not(in=o, out=p);'),
+  A2: chipC('IN a, b; OUT o, p;', 'Not(in=a, out=o);', 'And(a=a, a=b, b=o, out=p);'),
+  A3: chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'Not(in=a, out=o);', 'Not(in=o, out=p);'),
+  A4: chipC('IN a; OUT o;', 'Not(in=a, out=t);', 'Not(in=a, out=t);', 'Not(in=t[0], out=o);'),
+  A5: chipC('IN a; OUT o, p;', 'Not(in=a[3], out=o);', 'Not(in=o, out=p);'),
+  A6: chipC('IN a; OUT o, p;', 'Not(in[2]=a, out=o);', 'Not(in=o, out=p);'),
+}
+
+/** Shapes the reference refuses with a double assignment or `already defined` on line 4 or 5. */
+const SAFETY = {
+  S1: chipC('IN a, b; OUT o, p;', 'Nand(a=a, b=b, out=t, out=t);', 'Not(in=t, out=o);', 'Not(in=o, out=p);'),
+  S2: chipC('IN a, b; OUT o, p;', 'Nand(a=a, b=b, out=o, out=o);', 'Not(in=o, out=p);'),
+  S3: chipC('IN a; OUT o, p;', 'Not(in=true, in=a, out=o);', 'Not(in=o, out=p);'),
+  S4: chipC('IN a; OUT o, p;', 'Not(in=a, in=a, out=o);', 'Not(in=o, out=p);'),
+  S5: chipC('IN b[16]; OUT o, p;', 'Not16(in=b, out[0]=o, out[1]=o);', 'Not(in=o, out=p);'),
+  S6: chipC('IN b[16]; OUT o, p;', 'Not16(in=b, out[0..7]=t, out[8..15]=t);', 'Not(in=b[0], out=o);', 'Not(in=o, out=p);'),
+  S7: chipC('IN b[16]; OUT o[16], p;', 'Not16(in=b, out=o);', 'Not(in=b[0], out=o[0]);', 'Not(in=o[0], out=p);'),
+  S8: chipC('IN a, b[16]; OUT o, p;', 'Not16(in=b, in[0]=a, out[0]=o);', 'Not(in=o, out=p);'),
+  S9: chipC('IN b[16]; OUT o[16], p;', 'Not16(in=b, out[0..3]=o[0..3]);', 'Not16(in=b, out[0..1]=o[2..3]);', 'Not(in=o[0], out=p);'),
+  S10: chipC('IN a; OUT o, p;', 'Not(in=false, in=false, out=o);', 'Not(in=o, out=p);'),
+  S11: chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'Not(in=a, out=o[0]);', 'Not(in=o, out=p);'),
+  S12: chipC('IN a, b; OUT o, p;', 'Or(a=a, b=b, out=t);', 'And(a=a, b=b, out=t);', 'Not(in=t, out=o);', 'Not(in=o, out=p);'),
+}
 
 describe('gradingRefusal', () => {
   it.each([
@@ -76,8 +103,8 @@ describe('gradingRefusal', () => {
 })
 
 describe('the grading path', () => {
-  const graded = (hdl: string): string | null =>
-    testChip({ path: 'P.hdl', source: hdl }, { path: 'P.tst', source: 'load P.hdl,\neval,\n' }, { path: 'P.cmp', source: '|o|\n' }).error
+  const graded = (hdl: string, chip = 'P'): string | null =>
+    testChip({ path: `${chip}.hdl`, source: hdl }, { path: `${chip}.tst`, source: `load ${chip}.hdl,\neval,\n` }, { path: `${chip}.cmp`, source: '|o|\n' }).error
 
   it.each([
     ['a bit of an internal pin past its width', 'CHIP P { IN a[16]; OUT o; PARTS: Not16(in=a, out=t); Not(in=t[16], out=o); }', internalPin('t')],
@@ -88,5 +115,47 @@ describe('the grading path', () => {
     ['a subscript of a pin nothing drives', 'CHIP P { IN a; OUT o; PARTS: Not(in=x[0], out=o); }', internalPin('x')],
   ])("gives the reference's cause, not compileHDL's, for %s", (_, hdl, refusal) => {
     expect(graded(hdl)).toBe(`Line 1: ${refusal}`)
+  })
+
+  it.each([
+    ['A1', 'a part input bound twice', 'Line 4: Part "Not" pin "in" bit 0 is bound by more than one connection'],
+    ['A2', 'a part input bound twice', 'Line 5: Part "And" pin "a" bit 0 is bound by more than one connection'],
+    ['A3', 'a chip OUT written again', 'Line 5: Signal "o" is driven by more than one part'],
+    ['A4', 'an internal pin written again', 'Line 5: Signal "t" is driven by more than one part'],
+    ['A5', 'a chip IN bit past its width', 'Line 4: Part "Not" pin "in" is wired to "a[3]": sub-bus index out of range ("a" has width 1)'],
+    ['A6', 'a part pin bit past its width', 'Line 4: Part "Not" pin "in[2]" is out of range; "in" has width 1'],
+  ] as const)("gives compileHDL's refusal on the reference's line where %s's first cause is %s", (id, _, refusal) => {
+    expect(graded(DEFERRED[id], 'C')).toBe(refusal)
+  })
+
+  it.each([
+    ['A1', chipC('IN a, b; OUT o, p;', 'Not(in=a, out=o);', 'Not(in=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['A2', chipC('IN a, b; OUT o, p;', 'Not(in=a, out=o);', 'And(a=a, b=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['A3', chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'Not(in=a, out=q);', 'Not(in=o, out=p);'), `Line 6: ${OUT_READ}`],
+    ['A4', chipC('IN a; OUT o;', 'Not(in=a, out=t);', 'Not(in=a, out=u);', 'Not(in=t[0], out=o);'), `Line 6: ${internalPin('t')}`],
+    ['A5', chipC('IN a; OUT o, p;', 'Not(in=a[0], out=o);', 'Not(in=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['A6', chipC('IN a; OUT o, p;', 'Not(in[0]=a, out=o);', 'Not(in=o, out=p);'), `Line 5: ${OUT_READ}`],
+  ])("gives the later part's sentence again once %s's first cause is removed", (_, hdl, refusal) => {
+    expect(graded(hdl, 'C')).toBe(refusal)
+  })
+
+  it.each([
+    ['B1', chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'And(a=a[3], b=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['B2', chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'And(a[1]=a, b=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['B3', chipC('IN a; OUT o;', 'Not(in=a, out=t);', 'And(a=a[3], b=t[0], out=o);'), `Line 5: ${internalPin('t')}`],
+    ['B5', chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'And(out=p[3], a=o, b=a);'), `Line 5: ${OUT_READ}`],
+    ['C1', chipC('IN a; OUT o, p;', 'Not(in=a, out=o);', 'Not(in=a, in=o, out=p);'), `Line 5: ${OUT_READ}`],
+    ['D3', chipC('IN a, b[16]; OUT o, p;', 'Not(in=a, out=o);', 'Not16(in[0]=a, in=b, out[0]=w);', 'And(a=o, b=w, out=p);'), `Line 6: ${OUT_READ}`],
+    ['D5', chipC('IN a, b[16]; OUT o[16], p;', 'Not(in=a, out=o[0]);', 'Not16(in=b, out=o);', 'Not(in=o[1], out=p);'), `Line 6: ${OUT_READ}`],
+  ])("keeps the reference's sentence and line for %s", (_, hdl, refusal) => {
+    expect(graded(hdl, 'C')).toBe(refusal)
+  })
+})
+
+describe('compileHDL alone', () => {
+  it.each(Object.entries({ ...DEFERRED, ...SAFETY }))('refuses %s, so leaving its first cause to compileHDL never grades it', (_, hdl) => {
+    const parsed = parseHDL(hdl)
+    if (!parsed.success) throw new Error(parsed.errors[0].message)
+    expect(compileHDL(parsed.chip, parts).success).toBe(false)
   })
 })
