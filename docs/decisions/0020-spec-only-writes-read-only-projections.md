@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -726,8 +726,11 @@ are v1's. v2 keeps every one but 9, which it replaces (1.10.9). Each is pinned b
       `W32(a[8..23]=true, a[24..31]=true, …)`.
       - An unsliced binding's width is its part pin's, read from `PrintSpecOptions.chips`. It defaults
         to the Project 1 builtins, as `ParseSpecOptions.chips` does, so no Project 1 binding changes.
-      - A part whose chip that registry lacks prints as written, sliced bindings included. So do a
-        `true` of 16 bits or fewer, any `false`, and the `hacer` dialect.
+      - A part whose chip that registry lacks windows a sliced `true` by its slice width
+        ([#916](https://github.com/mezivillager/hacer/issues/916)), as for a known chip:
+        `W32(a[8..31]=true, …)` prints `W32(a[8..23]=true, a[24..31]=true, …)`. An unsliced `true`
+        there prints as written, because its width is unknown. So do a `true` of 16 bits or fewer,
+        any `false`, and the `hacer` dialect.
 
 **The round trip §1.9 asked N.1 to re-measure has been measured on the shipped printer.** It covers
 the 15 Project 1 sources and 13 spec shapes:
@@ -807,7 +810,10 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      ([#903](https://github.com/mezivillager/hacer/issues/903), FID-028). Its `name`, `inputs` and
      `outputs` must equal its source's: an `'hdl'` source's `CHIP` name, `IN` and `OUT`, or a
      `'circuit'` document's `name`, `ins` and `outs`. Pins compare as name→width maps, so their
-     order does not matter. A builtin has no source and is not compared. A `BUILTIN` body is
+     order does not matter, and a pin name repeated within `IN` or within `OUT` is refused
+     ([#912](https://github.com/mezivillager/hacer/issues/912)): the map would collapse it, so a `Foo`
+     whose inputs are `a` at 1 bit and `a` at 16 would agree with a source declaring `IN a[16]`.
+     A builtin has no source and is not compared. A `BUILTIN` body is
      compared with its source here, and with the builtin it names by the next bullet's check.
      - The part check compares each definition the walk enters before compiling it, and refuses in
        the chain above: `Outer › Foo: Foo declares IN a, but its source declares IN b`.
@@ -842,8 +848,9 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
    - **A `BUILTIN` body declares the builtin's own pins**
      ([#919](https://github.com/mezivillager/hacer/issues/919), FID-032). `BUILTIN Not;` names
      `Not`, and a bare `BUILTIN;` names its own `CHIP`. The source's `IN` and `OUT` must equal that
-     builtin's, as name→width maps, or it is refused with one message per side that differs, IN
-     first: `Foo declares IN a, but builtin Not declares IN in`. The check runs after
+     builtin's, as name→width maps with a repeated name within a side refused as above, or it is
+     refused with one message per side that differs, IN first:
+     `Foo declares IN a, but builtin Not declares IN in`. The check runs after
      `Builtin chip "X" not found in registry` and `Chip "X" is not a builtin`.
      - On the core path it is `compileHDL`'s, in the `BUILTIN` passthrough that looks the builtin
        up, so every caller shares it. `compileHDL` returns it. The part check returns it in the
