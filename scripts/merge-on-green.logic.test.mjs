@@ -1,7 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
-import { CANNOT_REBASE, decide, mergeCommits, outcome, requiredContexts, stopOnRefusal, withRerunMarker } from './merge-on-green.logic.mjs'
+import {
+  CANNOT_REBASE,
+  decide,
+  mergeCommits,
+  missingScope,
+  outcome,
+  requiredContexts,
+  stopOnRefusal,
+  tokenScopes,
+  withRerunMarker,
+} from './merge-on-green.logic.mjs'
 
 // Each state is a recorded GitHub reading of a real PR on this repo: check runs (filter=all) and
 // workflow runs, replayed to the moment the state held. A fixture's `_recorded` names the PR, the
@@ -272,6 +282,94 @@ describe('decide — the rules between the states', () => {
         expect(decide(load(state), history).reason).not.toMatch(/force|amend|rebase onto|reset/i)
       }
     }
+  })
+})
+
+const LAPSED = ['admin:public_key', 'gist', 'read:org', 'repo']
+const WORKFLOW_FILE = [{ filename: '.github/workflows/ci.yml', previous_filename: null }]
+
+describe('tokenScopes — the scopes in `gh api -i user` output', () => {
+  const shapes = load('token-scopes')
+
+  it('reads X-Oauth-Scopes past the empty X-Accepted-Oauth-Scopes line, each value trimmed', () => {
+    expect(shapes.withWorkflow).toMatch(/X-Accepted-Oauth-Scopes: \r\nX-Oauth-Scopes: [^\r]*workflow\r\n/)
+    expect(tokenScopes(shapes.withWorkflow)).toEqual([...LAPSED, 'workflow'])
+    expect(tokenScopes(shapes.lapsed)).toEqual(LAPSED)
+  })
+
+  it('matches the header name in any case', () => {
+    for (const name of ['X-OAuth-Scopes', 'x-oauth-scopes']) {
+      expect(tokenScopes(shapes.lapsed.replace('X-Oauth-Scopes', name))).toEqual(LAPSED)
+    }
+  })
+
+  it('is unknown (null) with no such header: a fine-grained or App token', () => {
+    expect(tokenScopes(shapes.noHeader)).toBeNull()
+  })
+})
+
+describe('missingScope — the scope a PR’s changed paths need and the token lacks', () => {
+  it.each([
+    ['repo, workflow + a workflow file → none', ['repo', 'workflow'], WORKFLOW_FILE, null],
+    ['the lapsed list + a workflow file → workflow', LAPSED, WORKFLOW_FILE, 'workflow'],
+    ['the lapsed list + only package.json → none', LAPSED, [{ filename: 'package.json', previous_filename: null }], null],
+    ['the lapsed list + a rename out of .github/workflows/ → workflow', LAPSED, [{ filename: 'docs/old.yml', previous_filename: '.github/workflows/old.yml' }], 'workflow'],
+    ['unknown scopes + a workflow file → none', null, WORKFLOW_FILE, null],
+    ['the lapsed list + files it could not read → none', LAPSED, null, null],
+  ])('%s', (_, scopes, files, missing) => {
+    expect(missingScope(scopes, files)).toBe(missing)
+  })
+})
+
+describe('stopOnRefusal — a refused update or merge of a workflow change, with the scope missing', () => {
+  const refusal = 'refusing to allow an OAuth App to create or update workflow `.github/workflows/ci.yml` without `workflow` scope'
+  const lapsed = { scopes: LAPSED, files: WORKFLOW_FILE }
+  const pr = unarmed('behind').pr
+
+  it('gives up at the first refused update, naming the scope, the refresh and GitHub’s words', () => {
+    const history = { refusals: { 'update-branch': 1 }, lastError: refusal, ...lapsed }
+    const action = stopOnRefusal(pr, history)
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toContain('`workflow` scope')
+    expect(action.reason).toContain('gh auth refresh -s workflow')
+    expect(action.reason).toContain(refusal)
+    expect(action.reason).not.toContain('@dependabot rebase')
+    expect(decide(unarmed('behind'), history)).toEqual(action)
+  })
+
+  it('gives up at the first refused merge, not the third', () => {
+    const history = { refusals: { merge: 1 }, lastError: refusal }
+    expect(stopOnRefusal(pr, history)).toBeNull()
+    const action = stopOnRefusal(pr, { ...history, ...lapsed })
+    expect(action).toMatchObject({ kind: 'give-up', exit: 4 })
+    expect(action.reason).toContain('`workflow` scope')
+    expect(action.reason).toContain('gh auth refresh -s workflow')
+    expect(action.reason).toContain(refusal)
+  })
+
+  it('names @dependabot rebase for a dependabot PR, the remedy that needs no owner (R60)', () => {
+    const dependabot = { ...pr, author: { login: 'app/dependabot', is_bot: true } }
+    for (const refusals of [{ 'update-branch': 1 }, { merge: 1 }]) {
+      const action = stopOnRefusal(dependabot, { refusals, lastError: refusal, ...lapsed })
+      expect(action.reason).toContain('@dependabot rebase')
+      expect(action.reason).toContain('gh auth refresh -s workflow')
+    }
+  })
+
+  it('keeps today’s reasons when the scopes are unknown or no workflow path changed', () => {
+    const unchanged = [
+      { scopes: null, files: WORKFLOW_FILE },
+      { scopes: LAPSED, files: [{ filename: 'package.json', previous_filename: null }] },
+    ]
+    for (const reads of unchanged) {
+      for (const refusals of [{ 'update-branch': 1 }, { merge: 1 }, { merge: 3 }]) {
+        const today = { refusals, lastError: refusal }
+        expect(stopOnRefusal(pr, { ...today, ...reads })).toEqual(stopOnRefusal(pr, today))
+      }
+    }
+    const update = stopOnRefusal(pr, { refusals: { 'update-branch': 1 }, lastError: refusal, scopes: null, files: WORKFLOW_FILE })
+    expect(update.reason).toMatch(/a fork or a protected head/)
+    expect(update.reason).not.toContain('gh auth refresh')
   })
 })
 
