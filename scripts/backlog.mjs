@@ -6,7 +6,10 @@
 //                                               dormant banner at 5 open agent PRs (#540), the slot the cycle resumes
 //                                               at, after the latest claim (#535), what the claim history leaves a guess,
 //                                               and `retro due: …` or `retro: …`, from origin/main's Runs row and
-//                                               session records and the merged PRs it already reads
+//                                               session records and the merged PRs it already reads; then
+//                                               `main: <workflow> failing`, `<n> in a row since <time> (run <id>)`,
+//                                               for each active workflow whose newest completed run on main failed,
+//                                               each read on its own, or `main: workflows green`
 //   node scripts/backlog.mjs next     [--json]   the head of ready's pick order, with ready's stderr; exit 3 when
 //                                               nothing is pickable
 //   node scripts/backlog.mjs projects [--json]   one line per docs/portfolio.md row: counts + next pick, `over cap` past 12
@@ -24,11 +27,11 @@
 // since it was written (#703). A flag the command does not take is a usage error: exit 2. Only `gh` and `git` do I/O;
 // every rule lives in backlog.logic.mjs. BACKLOG_ALLOWLIST=login,login overrides the author allowlist.
 
-import { execFileSync } from 'node:child_process'
+import { execFile, execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import path from 'node:path'
-import { parseArgs } from 'node:util'
+import { parseArgs, promisify } from 'node:util'
 import * as backlog from './backlog.logic.mjs'
 
 const REPO = 'mezivillager/hacer'
@@ -79,18 +82,38 @@ function parseCommandLine([name, ...args]) {
   return { name, operand, flags }
 }
 
+const GH_BINS = ['gh', path.join(homedir(), '.local', 'bin', 'gh')]
+const GH_OPTIONS = { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
+const GH_NOT_FOUND = 'gh CLI not found on PATH or in ~/.local/bin'
+const ghError = (error) => Object.assign(new Error(String(error.stderr).trim() || error.message), { stdout: error.stdout })
+
 /** `gh` from PATH, else the release binary in ~/.local/bin (where brew's gh is too old to bottle); throws gh's message. */
 function gh(...args) {
-  for (const bin of ['gh', path.join(homedir(), '.local', 'bin', 'gh')]) {
+  for (const bin of GH_BINS) {
     try {
-      return execFileSync(bin, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 64 * 1024 * 1024 })
+      return execFileSync(bin, args, { ...GH_OPTIONS, stdio: ['ignore', 'pipe', 'pipe'] })
     } catch (error) {
-      if (error.code !== 'ENOENT') throw Object.assign(new Error(String(error.stderr).trim() || error.message), { stdout: error.stdout })
+      if (error.code !== 'ENOENT') throw ghError(error)
     }
   }
-  throw new Error('gh CLI not found on PATH or in ~/.local/bin')
+  throw new Error(GH_NOT_FOUND)
 }
 const ghJson = (...args) => JSON.parse(gh(...args))
+
+/** ghJson without blocking, so that several reads run side by side. */
+async function ghJsonAsync(...args) {
+  for (const bin of GH_BINS) {
+    let stdout
+    try {
+      ({ stdout } = await promisify(execFile)(bin, args, GH_OPTIONS))
+    } catch (error) {
+      if (error.code === 'ENOENT') continue
+      throw ghError(error)
+    }
+    return JSON.parse(stdout)
+  }
+  throw new Error(GH_NOT_FOUND)
+}
 
 function git(...args) {
   try {
@@ -133,6 +156,21 @@ const retroInputs = (fetchMergedPrs) => ({
   mergedAts: fetchMergedPrs().map((pr) => pr.mergedAt),
   now: Date.now(),
 })
+
+const mainRuns = (...args) => ghJsonAsync('run', 'list', '-R', REPO, '--branch', 'main',
+  '--json', 'databaseId,workflowName,status,conclusion,createdAt', ...args)
+
+/** What mainLines reads: each active workflow with a run failed on main, read on its own, and main's newest run. */
+async function mainInputs() {
+  const [workflows, latest, ...failed] = await Promise.all([
+    ghJsonAsync('workflow', 'list', '-R', REPO, '--limit', '100', '--json', 'id,name'),
+    mainRuns('--limit', '1'),
+    ...backlog.FAILED_CONCLUSIONS.map((status) => mainRuns('--status', status, '--limit', '100')),
+  ])
+  const own = await Promise.all(backlog.workflowsToRead(workflows, failed.flat())
+    .map((id) => mainRuns('--workflow', String(id), '--limit', String(backlog.WORKFLOW_RUNS))))
+  return { runs: own.flat(), latest }
+}
 
 /** A `claim/<n>` whose n is no issue makes GraphQL answer `data` beside `errors`, and gh exit 1: keep the data. */
 function graphql(query) {
@@ -226,10 +264,11 @@ async function view(name, slug, flags) {
   }
   if (name === 'ready' || name === 'next') {
     const gap = backlog.historyGap(pages, issues, portfolioRows, allowlist)
+    const main = await backlog.readMainLines(mainInputs)
     for (const line of [backlog.formatDormant(backlog.dormantMode(openPrs, allowlist)),
       backlog.formatResume(backlog.resumePoint(issues, portfolioRows, history, allowlist)),
       gap && `cycle: claim history exhausted — ${gap}; the place above is a guess`,
-      backlog.readRetroLine(() => retroInputs(fetchMergedPrs))]) if (line) console.error(line)
+      backlog.readRetroLine(() => retroInputs(fetchMergedPrs)), ...main]) if (line) console.error(line)
   }
   if (name === 'next') {
     const { exitCode, stdout, stderr } = backlog.reportNext(readyPlan(), flags)
