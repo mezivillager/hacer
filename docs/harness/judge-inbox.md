@@ -108,7 +108,7 @@ reused.
 
 ### JDG-003 · How does the loop start without the owner, and how does #257 get its cloud browser run: connect GitHub to his Claude account, a local scheduled start, or owner-started runs only?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S11 and S12 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; R881; "For the owner" in `docs/harness/sessions/2026-10-22.md`
-- **Status:** filed (#980), weekly routine #981; #257 blocked by #980's browser lines
+- **Status:** declined (owner override, R903 and R904: the loop starts only when the owner starts it; 3D browser QA goes to the grok-bot queue; #980 and #981 closed)
 - **Evidence:**
   - No PR of any author merged from 2026-10-05 to 2026-10-14T21:59Z (`node scripts/run-prs.mjs --from
     2026-10-05T00:00:00Z --to 2026-10-14T21:59:00Z` prints `0 PRs merged`, re-run 2026-10-22).
@@ -181,7 +181,7 @@ reused.
 
 ### JDG-005 · Is #801 (`sev:high`, an unsaved circuit is lost on reload) moved to `project:bugs` and pulled forward under `project:foundation`?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S14 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; review 1 F11; #801
-- **Status:** proposed
+- **Status:** filed (#801), A bounded by the judge on #971
 - **Evidence:**
   - #801 has been open since 2026-10-17T18:40Z with `bug`, `project:polish`, `agent-ready`, `risk:2` and
     `sev:high`; `node scripts/backlog.mjs ready` prints it `on-request` (2026-10-22).
@@ -220,7 +220,7 @@ reused.
 
 ### JDG-006 · Is the `differential` CI job made a required check on `main`?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** "Carried from the 2026-10-21 record" in `docs/harness/sessions/2026-10-22.md`; review 1 §9 and review 2 §6 (`docs/harness/reviews/2026-10-22/reviews/`)
-- **Status:** proposed
+- **Status:** decided (require differential), owner action: #993, add differential to the required status checks of the main-rules ruleset; the in-repo half is #994
 - **Evidence:**
   - The `main-rules` ruleset (active) requires `ci`, `pr-hygiene` and `browser-qa`; `differential` is not
     among them (`gh api repos/<repo>/rulesets`, 2026-10-22).
@@ -251,7 +251,7 @@ reused.
 
 ### JDG-007 · Does a plan approved by the panel or the judge count as "owner-approved" in the queue-up rule's third `risk:2` exception (#893)?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** "Carried from the 2026-10-21 record" in `docs/harness/sessions/2026-10-22.md`; #893; R844; R889
-- **Status:** proposed
+- **Status:** filed (#992)
 - **Evidence:**
   - Exception 3 lets the coordinator file a `risk:2` issue `agent-ready` when it is "a slice of an
     owner-approved plan" and its body "links the owner's approval of that plan" (`docs/harness/README.md`
@@ -283,7 +283,7 @@ reused.
 
 ### JDG-008 · May #950 (Mission Control's conformance count, S3) be built as one PR though `mission-control/src/snapshot.ts` has 21 direct importers, one over the threshold?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** S3 in `docs/harness/reviews/2026-10-22/SYNTHESIS.md`; R885; "#950 needs a ruling before anyone builds it" in `docs/harness/sessions/2026-10-22.md`
-- **Status:** proposed
+- **Status:** filed (#950)
 - **Evidence:**
   - #950 is open, `risk:1`, `project:mission-control`, without `agent-ready`; `ready` prints it `unshaped`.
     Goal: `metrics.conformance` reports pass counts from the Project 1 scenario suite instead of
