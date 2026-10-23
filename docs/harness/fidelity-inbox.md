@@ -695,3 +695,56 @@ A chip header that names a pin twice within `IN` or within `OUT` is refused on e
 `pnpm exec vitest run --project node src/core/spec src/core/hdl src/core/chips src/core/testing`
 ## Blocked by
 —
+
+### FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it
+- **Date:** 2026-10-23 · **Target epic:** #140 core
+- **Status:** proposed
+- **Why:** #984 and #985 (R895) register Project 2's five builtins on the grading path only. That path builds its own registry (`src/core/testing/testChip.ts:102-103`), apart from the app's (`src/core/chips/appRegistry.ts:8-12`). So grading resolves 21 builtin names, and the engine and spec paths resolve 16.
+  - Measured on `main` `100e3993`, 2026-10-23: a course-shaped FullAdder built from `HalfAdder` parts fails `parseSpec` with `unknown-chip: Unknown chip "HalfAdder"`. The same text will grade green under `hacer test` once #984 lands.
+  - This is harmless while the user registry is empty (#206).
+  - Once #206 registers user HDL, the engine view `combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())` (`src/simulation/topologicalEval.ts:314`) resolves a part `HalfAdder` to the user's chip. Grading resolves it to the builtin, and so does the web IDE (`../web-ide/simulator/src/chip/builder.ts:48`). Measured: a FullAdder beside a broken HalfAdder file in its directory passes there. Two HACER paths would then compute different values for one text.
+  - ADR-0020 §1.11 rule 4 names one lookup order. It does not name two builtin sets.
+- **Review note:** docs/research/2026-10-fidelity-review-spine-0.6.md (Q2)
+
+**Draft issue body**
+## Goal
+One set of builtins answers "what does a part named X resolve to" on the grading, engine and spec paths. Otherwise, ADR-0020 §1.11 rule 4 states the split: which path holds which names, and why. A test pins either outcome.
+## Acceptance criteria
+- The panel picks one of two:
+  - (a) Project 2's builtins join `getBuiltinChipRegistry()`. The 27 names in `src/core/chips/referenceBuiltins.test.ts` become 22, and the legacy 3D toolbar's list gains the five or is filtered by a stated rule.
+  - (b) The split stays. Rule 4 names both sets, and #206 states what happens to a user chip under a grading-only name: it is refused, or it gives way to the builtin.
+- A test checks each path's builtin set against the reference's 43 names.
+- A test runs one course-shaped FullAdder through `testChip`, `compileSpec(parseSpec(…))` and the engine view, and pins the decided outcome on each.
+## Verification command
+`pnpm exec vitest run --project node src/core/chips src/core/spec src/core/testing`
+## Blocked by
+#984, #985. It lands before #206.
+
+### FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines
+- **Date:** 2026-10-23 · **Target epic:** #139 spine
+- **Status:** proposed
+- **Why:** measured on `main` `100e3993`, 2026-10-23. Three parts of the plan text do not match what runs:
+  - **#177's AC2** asks for each sub-issue as "spec text plus a `.tst`/`.cmp` binding in the sidecar (§1.3)".
+    - The sidecar's `tests` field (`src/core/spec/types.ts:49-52, 66`) has no reader outside tests, and ADR-0020 §6 row 14's "sidecar's test binding" is unbuilt. A binding there is a test nothing runs.
+    - #984 and #985 bind through scenarios, the pattern of `src/scenarios/project1.ts`, which the core, CLI and MCP drivers run.
+  - **#177's AC1** names #207's `repeat`/`while`/`tick`/`tock`, which no Project 2 script uses. What Project 2 does need:
+    - a `set` that ends a step with `;` (`conformance/vectors/02/ALU.tst:11`, `:194`). The reference allows it (`../web-ide/simulator/src/languages/grammars/tst.ohm:9-10`), and #207's body excludes the case and attributes it to #177;
+    - `.cmp` columns bound by position. Today a correct HalfAdder fails, because `src/core/testing/engine.ts:166` reads `conformance/vectors/02/HalfAdder.cmp`'s truncated `car` header as 0.
+  - **The phase page.**
+    - L12 ("using either the 3D circuit designer or the HDL text editor") predates ADR-0020's read-only projections and R895's headless Project 2.
+    - L144 ("registered in ChipRegistry and available via builtin toggle (from Phase 0.5)") names a toggle that nothing in `src` implements, and a registration that R895 bounds.
+    - The page never says which ALU a builtin computes. The web IDE's builtin is an 18-word table (`../web-ide/simulator/src/cpu/alu.ts:253-316`), which differs from the book's bitwise definition on 36 of 64 control words. The desktop simulator's builtin is bitwise.
+- **Review note:** docs/research/2026-10-fidelity-review-spine-0.6.md
+
+**Draft issue body**
+## Goal
+#177 and `docs/roadmap/phases/phase-0.6-arithmetic-sequential.md` describe Project 2 as it is built: scenario bindings, the two engine prerequisites, headless, builtins on the grading path, and the ALU builtin's semantics.
+## Acceptance criteria
+- #177's AC2 says Project 2's sub-issues bind each script as a scenario: HDL plus the vendored `.tst`/`.cmp`. A sidecar test binding is owed together with §6 row 14's runner.
+- #177's AC1 names the separator and the column binding as Project 2's prerequisites, or names the issues that carry them, and lists #207 under Project 3 only.
+- The page's L12 and L144 are restated per ADR-0020 and R895.
+- §0.6.4 says the ALU builtin computes the bitwise definition over all 64 control words, and that this differs from the web IDE's builtin.
+## Verification command
+`pnpm run lint:docs`
+## Blocked by
+— (if the slice rulings on #177 change the facts, edit after #984 and #985 land)
