@@ -214,16 +214,33 @@ const openTasksOf = (snapshots, now) => snapshots
   .sort((a, b) => a.generatedAt.localeCompare(b.generatedAt))
   .map(({ generatedAt: at, tasks }) => ({ date: at.slice(0, 10), at, byProject: tasks.byProject }))
 
-/** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension.
- *  Nothing runs them yet (#194), so `runner` is null: a pass count arrives with a runner, never before. */
-function buildConformance(files) {
+/** The runner (#950): the Project 1 scenario suite, each test pairing HACER's HDL with a vendored .tst and .cmp. */
+export const SCENARIO_FILE = 'src/scenarios/drivers/core.test.ts'
+// vitest renders the string `$name` of `'$name: testChip passes'` quoted; the bare form counts too, nothing longer.
+const SCENARIO = /^('?)project(\d+)\/([^'\s:]+)\1: testChip passes$/
+
+/** Each scenario in a vitest JSON report: the vendored .tst it runs, as `<0N>/<Chip>.tst`, and whether it passed. */
+const scenariosOf = (report) => (report?.testResults ?? []).flatMap((file) => file.assertionResults ?? []).flatMap(({ title, status }) => {
+  const [, , n, chip] = SCENARIO.exec(title ?? '') ?? []
+  return n ? [{ vector: `${n.padStart(2, '0')}/${chip}.tst`, passed: status === 'passed' }] : []
+})
+
+/** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension,
+ *  and, when the scenario report holds a scenario, how many of each project's .tst pass. Otherwise `runner` is null. */
+function buildConformance(files, report) {
   const byProject = Object.groupBy(files.filter((file) => file.includes('/')), (file) => file.split('/')[0])
-  const projects = Object.entries(byProject).sort(([a], [b]) => a.localeCompare(b)).map(([project, names]) =>
-    ({ project, files: names.length, byExtension: countBy(names.map((name) => /\.([^./]+)$/.exec(name)?.[1] ?? 'none')) }))
-  return { projects, files: projects.reduce((sum, project) => sum + project.files, 0), runner: null }
+  const scenarios = scenariosOf(report)
+  const passing = new Set(scenarios.filter((each) => each.passed).map((each) => each.vector))
+  const projects = Object.entries(byProject).sort(([a], [b]) => a.localeCompare(b)).map(([project, names]) => {
+    const row = { project, files: names.length, byExtension: countBy(names.map((name) => /\.([^./]+)$/.exec(name)?.[1] ?? 'none')) }
+    const tsts = names.filter((name) => name.endsWith('.tst'))
+    return scenarios.length > 0 ? { ...row, passed: tsts.filter((name) => passing.has(name)).length, of: tsts.length } : row
+  })
+  const sum = (field) => projects.reduce((total, project) => total + project[field], 0)
+  return { projects, files: sum('files'), runner: scenarios.length > 0 ? { source: SCENARIO_FILE, passed: sum('passed'), of: sum('of') } : null }
 }
 
-function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [], flowPrs, vectors, archive }, options) {
+function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = [], flowPrs, vectors, scenarios, archive }, options) {
   const history = (ratchetLog?.log ?? '').split('\n').filter(Boolean).map((line) => {
     const [sha, date, ...subject] = line.split('\t')
     return { sha, date, subject: subject.join('\t'), count: ratchetLog.rows[sha].length }
@@ -234,7 +251,7 @@ function buildMetrics({ baseline = [], ratchetLog, releases = [], prsMerged = []
     releases: releases.map(({ tagName, publishedAt, isLatest }) => ({ tag: tagName, publishedAt, isLatest })),
     mergesPerDay: merges.map(([date, count]) => ({ date, merges: count })),
     flow: flowPrs ? buildFlow(flowPrs, options) : null,
-    conformance: vectors ? buildConformance(vectors) : null,
+    conformance: vectors ? buildConformance(vectors, scenarios) : null,
     openTasks: archive ? openTasksOf(archive, options.now) : null,
   }
 }
@@ -295,7 +312,7 @@ const SECTIONS = {
   },
   adrs: { needs: ['adrs'], build: ({ adrs = [] }) => ({ items: adrs.flatMap(adrOf).sort((a, b) => a.number - b.number) }) },
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
-  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'archive'], build: buildMetrics },
+  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'scenarios', 'archive'], build: buildMetrics },
   checks: { needs: ['checkRuns'], build: buildChecks },
   lineage: {
     needs: ['lineage'],
@@ -376,7 +393,8 @@ export const SCHEMA_V1 = {
     releases: [{ tag: 'string', publishedAt: 'iso' }], mergesPerDay: [{ date: 'string', merges: 'number' }],
     flow: orNull({ days: 'number', since: 'iso', merged: 'number', openToMergeHours: { median: 'number?', p90: 'number?' },
       blockedOnce: { count: 'number', of: 'number', prs: ['number'] }, coverage: { code: COVERAGE, nonCode: COVERAGE } }),
-    conformance: orNull({ projects: [{ project: 'string', files: 'number', byExtension: 'object' }], files: 'number', runner: 'object?' }),
+    conformance: orNull({ projects: [{ project: 'string', files: 'number', byExtension: 'object' }], files: 'number',
+      runner: orNull({ source: 'string', passed: 'number', of: 'number' }) }),
     openTasks: orNull([{ date: 'string', at: 'iso', byProject: 'object' }]) },
   checks: { items: [{ pr: 'number?', sha: 'sha', check: 'string', conclusion: 'string?', completedAt: 'iso?', url: 'string?',
     line: 'string?', verdict: 'string?', fields: 'object', disagrees: 'boolean' }] },
@@ -395,9 +413,10 @@ const TYPES = {
 }
 for (const [type, [test, what]] of Object.entries(TYPES)) TYPES[`${type}?`] = [(value) => value === null || test(value), `${what} or null`]
 
-function conform(value, spec, path, errors) {
-  if (spec?.[OR_NULL]) return value === null ? errors : conform(value, spec[OR_NULL], path, errors)
-  const [test, what] = typeof spec === 'string' ? TYPES[spec] : TYPES[Array.isArray(spec) ? 'array' : 'object']
+function conform(value, spec, path, errors, nullable = false) {
+  if (spec?.[OR_NULL]) return value === null ? errors : conform(value, spec[OR_NULL], path, errors, true)
+  const kind = typeof spec === 'string' ? spec : Array.isArray(spec) ? 'array' : 'object'
+  const [test, what] = TYPES[nullable ? `${kind}?` : kind]
   if (!test(value)) errors.push(`${path || 'the snapshot'} must be ${what}`)
   else if (Array.isArray(spec)) value.forEach((item, index) => conform(item, spec[0], `${path}[${index}]`, errors))
   else if (typeof spec === 'object') {
