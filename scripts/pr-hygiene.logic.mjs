@@ -903,7 +903,11 @@ function weakenedTests({ files }) {
     .map(([what, names, why]) => ({ rule: 'weakened-tests', level: 'warn', message: `${what}: ${listUpTo(names)}${why}` }))
 }
 
-export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath, weakenedTests]
+function refactorTests() {
+  return [{ rule: 'refactor-tests', level: 'pass', message: 'not implemented' }]
+}
+
+export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath, weakenedTests, refactorTests]
 
 /**
  * Run every rule over one PR.

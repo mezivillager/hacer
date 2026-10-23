@@ -186,6 +186,12 @@ export const BRIEF_INVARIANTS = [
           'Lint counts long functions per file, not their lines, so it cannot see a recorded one grow.',
         ],
       },
+      {
+        id: 'refactor-keeps-every-witness',
+        phrases: [
+          '**A refactor keeps every witness:** a PR titled `refactor(…)` or `refactor!:` fails `pr-hygiene` when an existing test file loses net `expect(` calls it does not re-add verbatim in another test file, when a test file goes while its subject stays, or when the API sends a test file without a patch; each removed assertion line re-added nowhere is a warning the verifier stops on, so land a test change first, in its own PR.',
+        ],
+      },
     ],
     absent: [
       { id: 'e2e-in-the-definition-of-done', phrases: ['test:e2e'], why: 'ADR-0012 took E2E out of the definition of done' },
@@ -240,6 +246,12 @@ export const BRIEF_INVARIANTS = [
       { id: 'worktree-makes-scratch', phrases: [VERIFIER_WORKTREE_SENTENCE] },
       { id: 'scratch-and-body-file', phrases: [VERIFIER_SCRATCH_SENTENCE] },
       { id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] },
+      {
+        id: 'refactor-changed-assertion-is-a-stop',
+        phrases: [
+          '**Refactor PRs:** each assertion line `pr-hygiene` names as changed in a refactor PR is a stop: show that it was generalised (the same check over more cases) or moved, or **BLOCK** on it, citing that line.',
+        ],
+      },
     ],
     absent: [
       { id: 'stryker-mutation-testing', phrases: ['Stryker'], why: 'ADR-0011 removed Stryker' },
