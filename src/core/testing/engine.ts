@@ -45,6 +45,12 @@ export function stripExt(filename: string): string {
   return dot > 0 ? filename.slice(0, dot) : filename
 }
 
+/** The commands a run executes: as the reference's run() does, it ends at the first `!`. */
+function commandsRun(script: TSTScript): TSTScript['commands'] {
+  const end = script.commands.findIndex((cmd) => cmd.type === 'break')
+  return end < 0 ? script.commands : script.commands.slice(0, end)
+}
+
 /**
  * Names a `.tst` may use for a chip: its input and output pins and, for an HDL chip, the wires
  * between its parts, which the reference IDE resolves as well. The evaluator returns only the
@@ -110,7 +116,7 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
   const unknownPin = (chip: ChipDefinition, command: 'set' | 'output-list', pin: string, line: number | undefined): TestResult =>
     fail(`${line === undefined ? '' : `line ${line}: `}${command} names pin "${pin}", but chip ${chip.name} has no such pin`)
 
-  for (const cmd of script.commands) {
+  for (const cmd of commandsRun(script)) {
     switch (cmd.type) {
       case 'load': {
         const name = stripExt(cmd.filename)
