@@ -68,6 +68,16 @@ const repoDir = (dir) => readdirSync(path.join(ROOT, dir)).filter((file) => file
 const vectorFiles = (dir = path.join(ROOT, 'conformance', 'vectors')) => readdirSync(dir, { recursive: true, withFileTypes: true })
   .filter((entry) => entry.isFile()).map((entry) => path.relative(dir, path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
 
+const SCENARIOS = 'vitest run src/scenarios/drivers/core.test.ts --reporter=json'
+/** That run's report as vitest's JSON reporter prints it, one [title, status] per test of the file. */
+const scenarioReport = (tests) => ({
+  success: tests.every(([, status]) => status === 'passed'),
+  testResults: [{ name: 'src/scenarios/drivers/core.test.ts', status: tests.every(([, status]) => status === 'passed') ? 'passed' : 'failed',
+    assertionResults: tests.map(([title, status]) => ({ ancestorTitles: ['core scenario driver'], title, status })) }],
+})
+/** A Project <n> scenario's title as vitest renders `$name: testChip passes`, its string `$name` quoted. */
+const scenario = (chip, status = 'passed', n = 1) => [`'project${n}/${chip}': testChip passes`, status]
+
 const ratchet = fixture('git-ratchet.json')
 const ok = (source, value) => ({ source, value })
 const failed = (source, error) => ({ source, error })
@@ -96,6 +106,7 @@ function inputs(overrides = {}) {
     checkRuns: ok('gh api graphql (check runs)', fixture('gh-check-runs.json')),
     flowPrs: ok('gh api graphql (flow)', fixture('gh-flow.json')),
     vectors: ok('conformance/vectors', vectorFiles()),
+    scenarios: ok(SCENARIOS, scenarioReport([['keeps the recovered three-gate circuit', 'passed']])),
     archive: ok('git show origin/gh-pages:control/history', fixture('gh-pages-history.json').snapshots),
     lineage: ok('node scripts/lineage.mjs graph --json', fixture('lineage-graph.json')),
     ...overrides,
@@ -729,6 +740,58 @@ describe('metrics.flow and metrics.conformance', () => {
     expect(validateSnapshot(snapshot)).toEqual([])
   })
 
+  // #950: the Project 1 scenario suite is the runner; a project's pass count is over its own .tst files.
+  const conformanceOf = (tests, listing) => build({ scenarios: ok(SCENARIOS, scenarioReport(tests)),
+    ...(listing && { vectors: ok('conformance/vectors', listing) }) }).metrics.conformance
+  const PROJECT1 = vectorFiles().filter((file) => /^01\/[^/]+\.tst$/.test(file)).map((file) => path.basename(file, '.tst'))
+  const RUNNER = 'src/scenarios/drivers/core.test.ts'
+
+  it('metrics.conformance: a passed scenario counts toward its project, over that project\'s .tst files', () => {
+    const listing = ['LICENSE', '01/And.hdl', '01/And.tst', '01/And.cmp', '01/Or.tst', '02/And.tst', '02/Inc16.tst']
+    expect(conformanceOf([scenario('And'), scenario('Or'), scenario('Mult'), scenario('Inc16', 'passed', 2)], listing)).toEqual({
+      projects: [
+        { project: '01', files: 4, byExtension: { hdl: 1, tst: 2, cmp: 1 }, passed: 2, of: 2 },
+        { project: '02', files: 2, byExtension: { tst: 2 }, passed: 1, of: 2 },
+      ],
+      files: 6, runner: { source: RUNNER, passed: 3, of: 4 },
+    })
+  })
+
+  it('metrics.conformance: a failed scenario is in the total and not in the pass count', () => {
+    const { projects, runner } = conformanceOf([scenario('And'), scenario('Or', 'failed')], ['01/And.tst', '01/Or.tst'])
+    expect([projects[0].passed, projects[0].of, runner]).toEqual([1, 2, { source: RUNNER, passed: 1, of: 2 }])
+  })
+
+  it('metrics.conformance: a project with vectors and no scenario reports 0 of its .tst files', () => {
+    const { projects, runner } = conformanceOf(PROJECT1.map((chip) => scenario(chip)))
+    expect(projects.map(({ project, passed, of }) => `${project}:${passed}/${of}`)).toEqual(['01:16/16', '02:0/6', '03:0/8', '04:0/3', '05:0/6'])
+    expect(projects.slice(1).reduce((sum, project) => sum + project.of, 0)).toBe(23)
+    expect(runner).toEqual({ source: RUNNER, passed: 16, of: 39 })
+  })
+
+  it('metrics.conformance: a scenario run that produced no report leaves runner null', () => {
+    const snapshot = build({ scenarios: failed(SCENARIOS, 'Unexpected end of JSON input') })
+    const { projects, runner } = snapshot.metrics.conformance
+    expect([runner, projects.map(Object.keys)]).toEqual([null, projects.map(() => ['project', 'files', 'byExtension'])])
+    expect(snapshot.freshness.metrics).toMatchObject({ status: 'partial', error: 'scenarios: Unexpected end of JSON input' })
+    expect(validateSnapshot(snapshot)).toEqual([])
+    // A run that reports no project1/ test at all, while 01 has vectors, is no runner either: never 0 of 16.
+    expect(conformanceOf([['keeps the recovered three-gate circuit', 'passed']])).toEqual(snapshot.metrics.conformance)
+    expect(conformanceOf([])).toEqual(snapshot.metrics.conformance)
+  })
+
+  it('metrics.conformance: only a "project<N>/<Chip>: testChip passes" title is a scenario', () => {
+    // core.test.ts's own neighbour names project1/Xor and passes; with Xor's scenario failing, 01 stays at 15.
+    const live = PROJECT1.map((chip) => scenario(chip, chip === 'Xor' ? 'failed' : 'passed'))
+    const neighbour = ['fails project1/Xor on the vendored empty template, as every driver does', 'passed']
+    expect(conformanceOf([...live, neighbour]).projects[0]).toMatchObject({ project: '01', passed: 15, of: 16 })
+    // The title unquoted counts too; a longer title, a prefix or an unbalanced quote does not.
+    const listing = ['01/And.tst', '01/Or.tst', '01/Not.tst', '01/Mux.tst', '01/DMux.tst']
+    expect(conformanceOf([['project1/And: testChip passes', 'passed'], ["'project1/Or': testChip passes twice", 'passed'],
+      ["core 'project1/Not': testChip passes", 'passed'], ["'project1/Mux: testChip passes", 'passed'], scenario('DMux')], listing).runner)
+      .toEqual({ source: RUNNER, passed: 2, of: 5 })
+  })
+
   it('schema v1 declares metrics.flow and metrics.conformance, each an object or null, and #540\'s agentReady and dormant', () => {
     const snapshot = build()
     const { agentReady, ...project } = snapshot.portfolio.projects[0]
@@ -744,6 +807,12 @@ describe('metrics.flow and metrics.conformance', () => {
       'metrics.flow.openToMergeHours.median must be a number or null',
       'metrics.conformance.runner must be an object or null',
     ])
+    expect(validateSnapshot({ ...snapshot, metrics: { ...snapshot.metrics, conformance: { ...conformance, runner: { source: 1, passed: '16' } } } }))
+      .toEqual([
+        'metrics.conformance.runner.source must be a string',
+        'metrics.conformance.runner.passed must be a number',
+        'metrics.conformance.runner.of must be a number',
+      ])
   })
 
   it('a last-known section that predates a field v1 now declares is not kept: the section is empty, and the run stays valid', () => {
