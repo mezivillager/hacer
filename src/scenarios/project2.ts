@@ -1,19 +1,17 @@
-/** Project 2's chips as scenarios: the vendored `.tst`/`.cmp`, run against `project2HdlSources`. */
+/** Project 2's scripts as scenarios: the vendored `.tst`/`.cmp`, run against `project2HdlSources`. */
 import { readFileSync } from 'node:fs'
 import { project2HdlSources } from '@/core'
 import type { ChipScenario } from './types'
 
 const VECTORS = new URL('../../conformance/vectors/02/', import.meta.url)
 
-/** A vendored Project 2 file, read from `conformance/vectors/02/`. */
-export const project2Vector = (chip: string, ext: 'hdl' | 'tst' | 'cmp'): string =>
-  readFileSync(new URL(`${chip}.${ext}`, VECTORS), 'utf8')
+const vendored = (script: string, ext: 'tst' | 'cmp'): string => readFileSync(new URL(`${script}.${ext}`, VECTORS), 'utf8')
 
-export function project2Scenario(chip: string): ChipScenario {
-  return { name: `project2/${chip}`, chip, hdl: project2HdlSources[chip], tst: project2Vector(chip, 'tst'), cmp: project2Vector(chip, 'cmp') }
+function project2Scenario(script: string, chip = script): ChipScenario {
+  return { name: `project2/${script}`, chip, hdl: project2HdlSources[chip], tst: vendored(script, 'tst'), cmp: vendored(script, 'cmp') }
 }
 
-/** In `project2HdlSources`' order, parts first. */
+/** One per vendored `.tst`, in `project2HdlSources`' order, parts first; `ALU-basic.tst` loads `ALU.hdl`. */
 export function project2Scenarios(): ChipScenario[] {
-  return Object.keys(project2HdlSources).map(project2Scenario)
+  return [...Object.keys(project2HdlSources).map((chip) => project2Scenario(chip)), project2Scenario('ALU-basic', 'ALU')]
 }

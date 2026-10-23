@@ -4,25 +4,27 @@ import { pathToFileURL } from 'node:url'
 import { runCli } from '@/cli/runCli'
 
 export interface Disagreement {
-  chip: string
+  script: string
   line: number
   expected: string
   actual: string
 }
 
-/** One chip's case: the HDL under test and the official `.tst` / `.cmp`. */
+/** One script's case: the official `<script>.tst` / `.cmp`, and the HDL under test of the chip that `.tst` loads. */
 export interface Vector {
+  script: string
   chip: string
   hdl: string
   tst: string
   cmp: string
 }
 
+/** A script's verdict: two scripts over one chip, as `ALU.tst` and `ALU-basic.tst`, get one each. */
 export type Verdict =
-  | { chip: string; status: 'agree' }
-  | { chip: string; status: 'disagree'; disagreements: Disagreement[] }
-  | { chip: string; status: 'rejected' }
-  | { chip: string; status: 'error'; engine: 'hacer' | 'reference'; error: string }
+  | { script: string; status: 'agree' }
+  | { script: string; status: 'disagree'; disagreements: Disagreement[] }
+  | { script: string; status: 'rejected' }
+  | { script: string; status: 'error'; engine: 'hacer' | 'reference'; error: string }
 
 /** An engine's `.out`, or why it wrote none. */
 export type Out = { out: string } | { error: string }
@@ -36,28 +38,28 @@ const MISSING = '(no line)'
 const lines = (text: string): string[] => (text.endsWith('\n') ? text.slice(0, -1) : text).split('\n')
 
 /** Every line where HACER's `.out` (actual) differs from the reference's (expected), numbered from 1. */
-export function compareOutputs(chip: string, expected: string, actual: string): Disagreement[] {
+export function compareOutputs(script: string, expected: string, actual: string): Disagreement[] {
   const want = lines(expected)
   const got = lines(actual)
   return Array.from({ length: Math.max(want.length, got.length) }, (_, i) => ({
-    chip,
+    script,
     line: i + 1,
     expected: want[i] ?? MISSING,
     actual: got[i] ?? MISSING,
   })).filter(({ expected: line, actual: other }) => line !== other)
 }
 
-export const formatDisagreement = ({ chip, line, expected, actual }: Disagreement): string =>
-  `${chip} line ${line}: expected ${expected}, actual ${actual}`
+export const formatDisagreement = ({ script, line, expected, actual }: Disagreement): string =>
+  `${script} line ${line}: expected ${expected}, actual ${actual}`
 
 export function describeVerdict(verdict: Verdict): string {
   switch (verdict.status) {
     case 'agree':
-      return `AGREE ${verdict.chip}`
+      return `AGREE ${verdict.script}`
     case 'rejected':
-      return `REJECTED ${verdict.chip}: the reference's .out is not the official .cmp, so agreement proves nothing`
+      return `REJECTED ${verdict.script}: the reference's .out is not the official .cmp, so agreement proves nothing`
     case 'error':
-      return `ERROR ${verdict.chip}: ${verdict.engine} wrote no .out: ${verdict.error}`
+      return `ERROR ${verdict.script}: ${verdict.engine} wrote no .out: ${verdict.error}`
     case 'disagree':
       return ['DISAGREE', ...verdict.disagreements.map(formatDisagreement)].join('\n')
   }
@@ -76,14 +78,14 @@ function hacerOut({ chip, hdl, tst }: Vector): Out {
 
 /** Both engines on one vector. A pass needs both: the same `.out` line for line, and the reference accepting it as the `.cmp`. */
 export async function differential(reference: ReferenceSimulator, vector: Vector): Promise<Verdict> {
-  const { chip } = vector
+  const { chip: script } = vector
   const expected = await reference.run(vector.hdl, vector.tst)
-  if ('error' in expected) return { chip, status: 'error', engine: 'reference', error: expected.error }
+  if ('error' in expected) return { script, status: 'error', engine: 'reference', error: expected.error }
   const actual = hacerOut(vector)
-  if ('error' in actual) return { chip, status: 'error', engine: 'hacer', error: actual.error }
-  const disagreements = compareOutputs(chip, expected.out, actual.out)
-  if (disagreements.length > 0) return { chip, status: 'disagree', disagreements }
-  return expected.out.trim() === vector.cmp.trim() ? { chip, status: 'agree' } : { chip, status: 'rejected' }
+  if ('error' in actual) return { script, status: 'error', engine: 'hacer', error: actual.error }
+  const disagreements = compareOutputs(script, expected.out, actual.out)
+  if (disagreements.length > 0) return { script, status: 'disagree', disagreements }
+  return expected.out.trim() === vector.cmp.trim() ? { script, status: 'agree' } : { script, status: 'rejected' }
 }
 
 /** jiffies' `Result`, the shape every reference call returns. */
