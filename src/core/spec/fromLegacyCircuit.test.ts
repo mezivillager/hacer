@@ -206,6 +206,23 @@ const TWIN_JOINERS = circuit('TwinJoiners', {
   busComponents: [bus('7', 'joiner', 2), bus(seven, 'joiner', 2)],
   wires: [wire('w0', fromIn('ib'), busEnd('7', 'in0'), 1), wire('w1', busEnd('7', 'out'), busEnd(seven, 'in0'), 1), wire('w2', busEnd(seven, 'out'), toOut('oo'), 1)],
 })
+/** A splitter bit read back through twin `"7"`, which only loops, and through twin `7`, which `a` drives. */
+function twinsInLoop(kind: 'junction' | 'joiner'): SerializedCircuit {
+  const into = (id: string): Endpoint => (kind === 'junction' ? junctionEnd(id) : busEnd(id, 'in0'))
+  const out = (id: string): Endpoint => (kind === 'junction' ? junctionEnd(id) : busEnd(id, 'out'))
+  const wires = [
+    wire('w1', busEnd('join', 'out'), busEnd('split', 'in'), 2), wire('w2', busEnd('split', 'out0'), into('7'), 1),
+    wire('w3', out('7'), busEnd('join', 'in0'), 1), wire('w4', fromIn('ia'), into(seven), 1),
+    wire('w5', out(seven), busEnd('join', 'in0'), 1), wire('w6', busEnd('split', 'out0'), toOut('oo'), 1),
+  ]
+  const twins = kind === 'joiner'
+    ? { busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2), bus('7', 'joiner', 2), bus(seven, 'joiner', 2)] }
+    : {
+      busComponents: [bus('join', 'joiner', 2), bus('split', 'splitter', 2)],
+      junctions: [{ id: '7', position: ZERO, signalId: 'signal-7', wireIds: ['w2', 'w3'] }, { id: seven, position: ZERO, signalId: 'signal-seven', wireIds: ['w4', 'w5'] }],
+    }
+  return circuit(`Twin${kind}sInLoop`, { inputNodes: [node('ia', 'a')], outputNodes: [node('oo', 'out')], wires, ...twins })
+}
 
 interface ChainShape { feed?: 'input' | 'missing' | 'loop'; closed?: boolean }
 
@@ -256,6 +273,27 @@ function pipeline(stages: number, width: number): SerializedCircuit {
   }
   add(from, toOut('oo'), width)
   return circuit(`Pipeline${stages}`, { inputNodes: [node('ia', 'a', width)], outputNodes: [node('oo', 'out', width)], busComponents, wires })
+}
+
+/** IN a through `stages` junctions, each fed twice by the one before and once by a splitter of it joined one bit rotated. */
+function lattice(stages: number, width: number): SerializedCircuit {
+  const wires: SerializedWire[] = []
+  const add = (from: Endpoint, to: Endpoint, bits: number): void => void wires.push(wire(`w${wires.length + 1}`, from, to, bits))
+  const busComponents = Array.from({ length: stages }, (_, s) => [bus(`split${s}`, 'splitter', width), bus(`join${s}`, 'joiner', width)]).flat()
+  let from = fromIn('ia')
+  for (let s = 0; s < stages; s++) {
+    add(from, junctionEnd(`j${s}`), width)
+    add(from, junctionEnd(`j${s}`), width)
+    add(from, busEnd(`split${s}`, 'in'), width)
+    for (let i = 0; i < width; i++) add(busEnd(`split${s}`, `out${i}`), busEnd(`join${s}`, `in${(i + 1) % width}`), 1)
+    add(busEnd(`join${s}`, 'out'), junctionEnd(`j${s}`), width)
+    from = junctionEnd(`j${s}`)
+  }
+  add(from, toOut('oo'), width)
+  const junctions = Array.from({ length: stages }, (_, s) => ({
+    id: `j${s}`, position: ZERO, signalId: `signal-j${s}`, wireIds: wires.filter((w) => [w.from, w.to].some((e) => e.entityId === `j${s}`)).map((w) => w.id),
+  }))
+  return circuit(`Lattice${stages}`, { inputNodes: [node('ia', 'a', width)], outputNodes: [node('oo', 'out', width)], busComponents, wires, junctions })
 }
 
 const LOCAL = [WITH_NOR, PARTS, PLACED, NAMES, C7, OUTPUT_AS_SOURCE, FAN_OUT, DUPLICATE, C8b]
@@ -555,6 +593,15 @@ describe('fromLegacyCircuit', () => {
     expect(printSpec(doc)).toContain('    wire out = a;\n}')
   })
 
+  it('a 40-stage, 16-bit loop-free lattice imports in under 500 ms', () => {
+    const saved = lattice(40, 16)
+    const started = performance.now()
+    const { doc, sidecar } = load(saved)
+    expect(performance.now() - started).toBeLessThan(500)
+    expect(printSpec(doc)).toContain('    wire out = a;\n')
+    expect(sidecar.notes.filter((n) => n.kind === 'multiple-drivers').map((n) => n.detail.split(':')[0])).toEqual(['out has 307 drivers'])
+  })
+
   it('a bit is noted as looping back to itself only when it has no other driver', () => {
     const loopsBack = (saved: SerializedCircuit) => load(saved).sidecar.notes.filter((n) => n.detail.includes('loops back'))
     expect(kinds(load(LOOP_BESIDE_INPUT).sidecar.notes)).toContain('multiple-drivers')
@@ -586,5 +633,15 @@ describe('fromLegacyCircuit', () => {
     const { doc, sidecar } = load(saved)
     expect(printSpec(doc)).toContain(line)
     expect(kinds(sidecar.notes)).toEqual(notes)
+  })
+
+  it('driverCheck keys junctions and buses by JSON value, so twins 7 and "7" never share a seen entry', () => {
+    for (const kind of ['junction', 'joiner'] as const) {
+      const { doc, sidecar } = load(twinsInLoop(kind))
+      expect(doc.nets.filter((n) => n.id === 'out').map((n) => n.driver), kind).toEqual([{ kind: 'chip-in', pin: 'a' }, null])
+      expect(sidecar.notes.filter((n) => n.kind === 'floating-source'), kind).toEqual([
+        { kind: 'floating-source', pin: 'out', detail: 'Wire "w6" reads nothing at splitter "split" pin "in", so it is kept as a driverless net on out beside the other drivers' },
+      ])
+    }
   })
 })
