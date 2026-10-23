@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T20:47:14.717Z",
+  "generatedAt": "2026-10-23T21:06:33.497Z",
   "head": {
-    "sha": "5720caba590f3ec99122ed158ff7954dfa43365b",
-    "date": "2026-10-23T23:46:29+03:00",
-    "subject": "docs(harness): JDG-011 and JDG-012, the Project 2 oracle bugs and the autosave follow-up"
+    "sha": "e81871b9d81616412ad833328164edaed7a32928",
+    "date": "2026-10-24T00:05:33+03:00",
+    "subject": "feat(layout): hold a previous drawing's order and never move a hinted node"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T20:47:14.717Z",
+      "fetchedAt": "2026-10-23T21:06:33.497Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 24,
-        "ready": 1,
-        "inProgress": 2,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
@@ -93,9 +93,9 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 24,
-          "percentCompleted": 66,
-          "total": 36
+          "completed": 25,
+          "percentCompleted": 67,
+          "total": 37
         }
       },
       {
@@ -103,20 +103,20 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 25,
-        "ready": 8,
-        "inProgress": 2,
+        "open": 27,
+        "ready": 9,
+        "inProgress": 3,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 13,
         "filedElsewhere": [
           151,
           941,
           942
         ],
         "next": {
-          "number": 257,
-          "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict"
+          "number": 1012,
+          "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -309,12 +309,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 15,
-        "ready": 13,
+        "open": 17,
+        "ready": 15,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 14,
+        "agentReady": 16,
         "filedElsewhere": [],
         "next": {
           "number": 930,
@@ -415,6 +415,11 @@
     ],
     "next": [
       {
+        "number": 1012,
+        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
+        "project": "harness"
+      },
+      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -433,6 +438,11 @@
         "number": 983,
         "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it",
         "project": "spine"
+      },
+      {
+        "number": 1014,
+        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "project": "foundation"
       },
       {
         "number": 930,
@@ -533,6 +543,16 @@
         "number": 991,
         "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
         "project": "upkeep"
+      },
+      {
+        "number": 1009,
+        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
+        "project": "upkeep"
+      },
+      {
+        "number": 1010,
+        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
+        "project": "upkeep"
       }
     ],
     "dormant": {
@@ -544,6 +564,22 @@
   },
   "tasks": {
     "items": [
+      {
+        "number": 1012,
+        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -609,6 +645,21 @@
         "reason": null
       },
       {
+        "number": 1014,
+        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
         "labels": [
@@ -908,6 +959,38 @@
       {
         "number": 991,
         "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1009,
+        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1010,
+        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -2301,22 +2384,6 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
-        "number": 940,
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 941,
         "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
         "labels": [
@@ -2503,10 +2570,28 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 1011,
+        "title": "Judge review: JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
       "harness": [
+        1012,
         257,
         949,
         951,
@@ -2531,10 +2616,12 @@
         975,
         976,
         993,
-        994
+        994,
+        1011
       ],
       "foundation": [
         979,
+        1014,
         151,
         184,
         325,
@@ -2554,7 +2641,6 @@
         722,
         728,
         742,
-        940,
         941,
         942,
         1003
@@ -2597,6 +2683,8 @@
         989,
         990,
         991,
+        1009,
+        1010,
         229,
         256
       ],
@@ -2793,6 +2881,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 1013,
+        "title": "feat(layout): hold a previous drawing and never move a hinted node (N.4b)",
+        "url": "https://github.com/mezivillager/hacer/pull/1013",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/940-layout-previous",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:51:22Z",
+        "mergedAt": "2026-10-23T21:05:33Z",
+        "closes": [
+          940
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T21:04:33Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1013#issuecomment-6374707963"
+          }
+        ]
+      },
       {
         "number": 1008,
         "title": "docs(harness): JDG-011 and JDG-012, the Project 2 oracle bugs and the autosave follow-up",
@@ -4339,34 +4453,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/863#issuecomment-6325627187"
           }
         ]
-      },
-      {
-        "number": 862,
-        "title": "feat(hdl): compile errors use the reference's words and carry the part's line",
-        "url": "https://github.com/mezivillager/hacer/pull/862",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/820-reference-compile-errors",
-        "isDraft": false,
-        "createdAt": "2026-10-21T19:47:37Z",
-        "mergedAt": "2026-10-21T20:32:16Z",
-        "closes": [
-          820
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T20:07:20Z",
-            "url": "https://github.com/mezivillager/hacer/pull/862#issuecomment-6325422853"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4380,6 +4466,32 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 1011,
+        "ref": "refs/heads/claim/1011",
+        "sha": "5720caba590f3ec99122ed158ff7954dfa43365b",
+        "state": "OPEN",
+        "title": "Judge review: JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?",
+        "url": "https://github.com/mezivillager/hacer/issues/1011",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "chore/judge-jdg-011",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T20:47:52Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1011#issuecomment-6374429650"
+        }
+      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -4409,7 +4521,7 @@
         "number": 940,
         "ref": "refs/heads/claim/940",
         "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
         "url": "https://github.com/mezivillager/hacer/issues/940",
         "labels": [
@@ -4418,7 +4530,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4509,7 +4621,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6490,7 +6602,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 11
+        "merges": 10
       },
       {
         "date": "2026-10-22",
@@ -6498,20 +6610,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T20:47:14.717Z",
-      "merged": 139,
+      "since": "2026-10-09T21:06:33.497Z",
+      "merged": 140,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
       },
       "blockedOnce": {
         "count": 8,
-        "of": 120,
+        "of": 121,
         "prs": [
           700,
           725,
@@ -6525,8 +6637,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 88,
-          "withVerdict": 88,
+          "merged": 89,
+          "withVerdict": 89,
           "without": []
         },
         "nonCode": {
@@ -10808,51 +10920,8 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T20:34:43.728Z",
+        "at": "2026-10-23T20:47:14.717Z",
         "byProject": {
-          "upkeep": [
-            930,
-            933,
-            934,
-            935,
-            936,
-            937,
-            938,
-            939,
-            945,
-            946,
-            989,
-            990,
-            991,
-            229,
-            256
-          ],
-          "foundation": [
-            941,
-            979,
-            151,
-            184,
-            325,
-            380,
-            381,
-            382,
-            383,
-            384,
-            385,
-            386,
-            389,
-            395,
-            400,
-            462,
-            506,
-            719,
-            722,
-            728,
-            742,
-            940,
-            942,
-            1003
-          ],
           "harness": [
             257,
             949,
@@ -10875,14 +10944,36 @@
             607,
             677,
             870,
-            971,
-            972,
-            973,
-            974,
             975,
             976,
             993,
             994
+          ],
+          "foundation": [
+            979,
+            151,
+            184,
+            325,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506,
+            719,
+            722,
+            728,
+            742,
+            940,
+            941,
+            942,
+            1003
           ],
           "mission-control": [
             950,
@@ -10903,9 +10994,27 @@
             177,
             235,
             236,
-            982,
             984,
-            985
+            985,
+            1006,
+            1007
+          ],
+          "upkeep": [
+            930,
+            933,
+            934,
+            935,
+            936,
+            937,
+            938,
+            939,
+            945,
+            946,
+            989,
+            990,
+            991,
+            229,
+            256
           ],
           "core": [
             179,
@@ -10980,11 +11089,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "5720caba590f3ec99122ed158ff7954dfa43365b",
+        "sha": "e81871b9d81616412ad833328164edaed7a32928",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40021810994/job/120647962006",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40024196120/job/120656107643",
         "line": null,
         "verdict": null,
         "fields": {},
