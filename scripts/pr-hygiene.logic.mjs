@@ -22,6 +22,7 @@ export const FIXUP_MAX_SHARE = 0.05
 
 const LEVELS = ['pass', 'warn', 'fail']
 const plural = (count, one, many = `${one}s`) => `${count} ${count === 1 ? one : many}`
+const listUpTo = (names, max = 8) => names.slice(0, max).join(', ') + (names.length > max ? ` (+${names.length - max} more)` : '')
 
 // ---------------------------------------------------------------- classification
 
@@ -812,32 +813,97 @@ function baselineGrowth(body, kind, ratchet) {
 
 /**
  * The held-out oracle (#193). Flagged, not gated: a PR that edits it still passes this
- * check, and the finding names the files so the edit cannot be silent. #151 owns the
- * sticky comment and the rest of the protected-path list.
+ * check, and the finding names the files so the edit cannot be silent; a file renamed out
+ * of a protected path is named by the path it left. #151 owns the sticky comment and the
+ * rest of the protected-path list.
  */
 function protectedPath({ files }) {
   const groups = PROTECTED_PATHS.map((entry) => ({ entry, names: [] }))
-  for (const { filename } of files) {
+  const add = (entry, name) => groups.find((group) => group.entry === entry).names.push(name)
+  for (const { filename, previous_filename: previous } of files) {
     const entry = protectedEntryFor(filename)
-    if (entry) groups.find((group) => group.entry === entry).names.push(filename)
+    if (entry) add(entry, filename)
+    const left = previous ? protectedEntryFor(previous) : undefined
+    if (left && left !== entry) add(left, `${previous} (renamed to ${filename})`)
   }
   const touched = groups.filter((group) => group.names.length > 0)
   if (touched.length === 0) return []
-  const parts = touched.map(({ entry, names }) => {
-    const shown = names.slice(0, 8)
-    const more = names.length > shown.length ? ` (+${names.length - shown.length} more)` : ''
-    return `${entry.glob} is protected as ${entry.reason}: ${shown.join(', ')}${more}`
-  })
+  const parts = touched.map(({ entry, names }) => `${entry.glob} is protected as ${entry.reason}: ${listUpTo(names)}`)
   return [{ rule: 'protected-path', level: 'warn', message: `protected path touched — ${parts.join('; ')}` }]
 }
 
 // ---------------------------------------------------------------- weakened tests
 
-export function testWitnessLoss() {
-  return { witnesses: [], weakened: [], removedTests: [], unshown: [], disabled: [] }
+const WITNESS = 'expect('
+const DISABLING_MARKERS = ['.skip(', '.only(', 'passWithNoTests']
+
+/** A file of tests by its name; e2e helpers, snapshots and fixtures are not. */
+const isWitnessFile = (p) => /\.(test|spec)\.[^/.]+$/.test(p) && classifyFile(p).kind === 'test'
+
+const occurrences = (lines, token) => lines.reduce((count, line) => count + line.split(token).length - 1, 0)
+
+/** The API's patch is hunks without file headers, so every `+` or `-` line is an added or removed one. */
+function patchSides(patch) {
+  const lines = patch.split('\n')
+  const side = (mark) => lines.filter((line) => line.startsWith(mark)).map((line) => line.slice(1))
+  return { added: side('+'), removed: side('-') }
 }
 
-export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
+/** `src/nodes/Foo.scene.test.tsx` → `src/nodes/Foo`: the directory and the name before the first dot. */
+const subjectKey = (p) => p.replace(/[^/]*$/, (base) => base.split('.')[0])
+
+function wentWithSubject(test, files) {
+  const left = files.flatMap((f) => (f.status === 'removed' ? [f.filename] : f.status === 'renamed' ? [f.previous_filename] : []))
+  return left.some((p) => p && !isWitnessFile(p) && subjectKey(p) === subjectKey(test))
+}
+
+/**
+ * The witnesses a PR's file list takes out of its tests, counted once for every rule that reads them.
+ * `witnesses` holds each shown test file's `expect(` lines, trimmed, so a line re-added elsewhere reads as moved.
+ * @returns {{witnesses:{filename:string,status:string,removed:string[],added:string[]}[], weakened:{filename:string,removed:number,added:number}[], removedTests:string[], unshown:string[], disabled:{filename:string,marker:string,removed:number,added:number}[]}}
+ */
+export function testWitnessLoss(files) {
+  const shown = files.flatMap((file) => (typeof file.patch === 'string' ? [{ file, ...patchSides(file.patch) }] : []))
+  const asserting = (lines) => lines.filter((line) => line.includes(WITNESS)).map((line) => line.trim())
+  const witnesses = shown
+    .filter(({ file }) => isWitnessFile(file.filename))
+    .map(({ file, added, removed }) => ({ filename: file.filename, status: file.status, removed: asserting(removed), added: asserting(added) }))
+  const weakened = witnesses
+    .filter((w) => w.status !== 'removed')
+    .map((w) => ({ filename: w.filename, removed: occurrences(w.removed, WITNESS), added: occurrences(w.added, WITNESS) }))
+    .filter((w) => w.removed > w.added)
+  const tests = files.filter((f) => isWitnessFile(f.filename))
+  const removedTests = tests.filter((f) => f.status === 'removed' && !wentWithSubject(f.filename, files)).map((f) => f.filename)
+  // A diff that deletes nothing cannot lose a witness, so an unshown addition is not named.
+  const unshown = tests
+    .filter((f) => f.status !== 'removed' && typeof f.patch !== 'string' && f.deletions !== 0)
+    .map((f) => f.filename)
+  const disabled = shown.flatMap(({ file, added, removed }) =>
+    DISABLING_MARKERS.map((marker) => ({ filename: file.filename, marker, removed: occurrences(removed, marker), added: occurrences(added, marker) }))
+      .filter((m) => m.added > m.removed),
+  )
+  return { witnesses, weakened, removedTests, unshown, disabled }
+}
+
+/** Flagged, not gated, like the protected paths: each finding warns. */
+function weakenedTests({ files }) {
+  const { weakened, removedTests, unshown, disabled } = testWitnessLoss(files)
+  const code = (text) => `\`${text}\``
+  const groups = [
+    ['tests lose assertions', weakened.map(({ filename, removed, added }) =>
+      `${code(filename)} loses ${plural(removed - added, '`expect(` call')} (${removed} removed, ${added} added)`), ''],
+    ['test files removed while their subject stays', removedTests.map(code),
+      ' — no non-test file in the same directory, with the same name before the first dot, is removed or renamed in this PR'],
+    ['test files not shown', unshown.map(code), ' — the API sent no patch, so their assertions were not counted; check them by hand'],
+    ['tests switched off', disabled.map(({ filename, marker, removed, added }) =>
+      `${code(filename)} adds ${code(marker)} (${added} added, ${removed} removed)`), ''],
+  ]
+  return groups
+    .filter(([, names]) => names.length > 0)
+    .map(([what, names, why]) => ({ rule: 'weakened-tests', level: 'warn', message: `${what}: ${listUpTo(names)}${why}` }))
+}
+
+export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath, weakenedTests]
 
 /**
  * Run every rule over one PR.
