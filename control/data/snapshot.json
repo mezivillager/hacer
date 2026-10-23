@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T20:21:14.695Z",
+  "generatedAt": "2026-10-23T20:22:24.755Z",
   "head": {
     "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
     "date": "2026-10-23T23:20:00+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T20:21:14.695Z",
+      "fetchedAt": "2026-10-23T20:22:24.755Z",
       "status": "ok"
     }
   },
@@ -80,7 +80,7 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 23,
+        "open": 24,
         "ready": 3,
         "inProgress": 0,
         "needsHuman": 0,
@@ -293,13 +293,15 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 0,
-        "filedElsewhere": [],
+        "filedElsewhere": [
+          1003
+        ],
         "next": null,
         "title": "Epic: bugs",
         "subIssues": {
           "completed": 5,
-          "percentCompleted": 100,
-          "total": 5
+          "percentCompleted": 83,
+          "total": 6
         }
       },
       {
@@ -551,6 +553,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1004,
         514
       ]
     }
@@ -2559,6 +2562,22 @@
         "lane": "process",
         "pickable": false,
         "reason": "blocked:#993"
+      },
+      {
+        "number": 1003,
+        "title": "Autosave restore: report a restored cycle, an all-dropped slot and a non-object slot (PR #995 follow-up)",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2617,7 +2636,8 @@
         722,
         728,
         742,
-        942
+        942,
+        1003
       ],
       "upkeep": [
         930,
@@ -2728,6 +2748,22 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 1004,
+        "title": "docs(harness): close records for the loop to 97%",
+        "url": "https://github.com/mezivillager/hacer/pull/1004",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-close-3",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:21:57Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -6617,7 +6653,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T20:21:14.695Z",
+      "since": "2026-10-09T20:22:24.755Z",
       "merged": 136,
       "openToMergeHours": {
         "median": 0.3,
@@ -11419,6 +11455,48 @@
           "known": 68,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 1004,
+        "sha": "3a947e5cdee74358a2703a2c3576834507f7ef01",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T20:22:14Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40018653804/job/120637180936",
+        "line": "HYGIENE: WARN reviewable=318 test=0 excluded=0 files=3 issue=docs-only",
+        "verdict": "WARN",
+        "fields": {
+          "reviewable": 318,
+          "test": 0,
+          "excluded": 0,
+          "files": 3,
+          "issue": "docs-only"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1004,
+        "sha": "3a947e5cdee74358a2703a2c3576834507f7ef01",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T20:22:14Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40018653192/job/120637177481",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1004,
+        "sha": "3a947e5cdee74358a2703a2c3576834507f7ef01",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40018653045/job/120637176623",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
