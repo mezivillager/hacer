@@ -113,6 +113,15 @@ describe('layout', () => {
     }
   })
 
+  it('refuses a pitch that is not finite or is below 0.001', () => {
+    // Coordinates keep 3 decimals: at pitch 0.0004 layer 1 rounds to x 0, as layer 0 does.
+    for (const pitch of [Number.NaN, Number.POSITIVE_INFINITY, 0, -2, 0.0004]) {
+      expect(() => layout(CHAIN, '3d', { pitch }), String(pitch)).toThrow(RangeError)
+      expect(() => layout(CHAIN, '3d', { pitch })).toThrow(`layout: pitch must be finite and at least 0.001, got ${String(pitch)}`)
+    }
+    expect(layout(CHAIN, '3d', { pitch: 0.001 }).nodes['out:out']?.x).toBe(0.004)
+  })
+
   it('maps axes per surface: 3d is layer→x, index→z, depth→y; 2d is layer→x, index→y, z = 0', () => {
     const solid = layout(SWAP, '3d', { pitch: 1 })
     const flat = layout(SWAP, '2d', { pitch: 1 })
@@ -135,6 +144,14 @@ describe('layout', () => {
     // Not vacuous: on Swap the barycentre drawing is not the canonical one.
     expect(layout(SWAP, '3d').nodes).not.toEqual(layout(SWAP, '3d', { order: 'id' }).nodes)
     expect(field(layout(SWAP, '3d'), 'index')).toEqual({ 'in:a': 0, 'in:b': 1, p1: 1, p2: 0, 'out:x': 1, 'out:y': 0 })
+  })
+
+  it('a node with no neighbour in the layer just placed is sorted by its own current slot, so the sort can move it aside', () => {
+    // `wire y = x` joins two OUTs inside one layer, so out:y has no neighbour in the layer above.
+    const alias = read('CHIP Alias { IN a, b; OUT x, y, z; PARTS: Not(in=b, out=x); Not(in=a, out=z); wire y = x; }')
+    expect(field(layout(alias, '3d', { order: 'id' }), 'index')).toMatchObject({ 'out:x': 0, 'out:y': 1, 'out:z': 2 })
+    // out:y weighs its slot, 1: out:z (0) sorts ahead of it and out:x (1) ties it and keeps canonical rank.
+    expect(field(layout(alias, '3d'), 'index')).toMatchObject({ 'out:x': 1, 'out:y': 2, 'out:z': 0 })
   })
 
   it('order: \'id\' keeps the canonical order in every layer', () => {

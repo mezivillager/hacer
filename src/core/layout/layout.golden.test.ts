@@ -10,6 +10,8 @@ const GOLDENS: Array<[string, LayoutOrder]> = [
   ['Xor', 'id'],
   ['Mux4Way16', 'barycentre'],
   ['Mux4Way16', 'id'],
+  // Barycentre swaps in:b and in:sel here (0 crossings against 5 under id), so this golden pins a reordering.
+  ['Mux', 'barycentre'],
 ]
 
 describe('layout goldens, previous-free (ADR-0020 §12 G)', () => {
