@@ -373,3 +373,47 @@ reused.
   equal count passes (inferred), and a legitimate refactor that deletes an assertion fails and must split
   or retitle (1 of 10 here). Both are small.
 - **Decides:** the judge (`judge-brief.md`); the owner may override
+
+### JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?
+- **Date:** 2026-10-23 · **Kind:** decision · **Raised by:** the fidelity verdict on #982 (the spine epic #139 and the Phase 0.6 plan #177), `docs/research/2026-10-fidelity-review-spine-0.6.md`; #1006 and #1007
+- **Status:** proposed
+- **Evidence:**
+  - #1006 (D1) and #1007 (D2) are open, `bug`, `bot-filed`, `sev:critical`, `fidelity`, `project:spine`, `risk:1`, sub-issues of #139, without `agent-ready`. `node scripts/backlog.mjs ready` prints both `unshaped` (2026-10-23). #984 is blocked by #1006 and #985 by #1007 (`gh api repos/<repo>/issues/<n>/dependencies/blocked_by`).
+  - Each carries an executable repro, and both fail on `main` `99cb0a61` (2026-10-23, `pnpm exec vitest run --project node`, as the issues give it):
+    - D1: `testChip` on a correct `Xor`+`And` HalfAdder with the official HalfAdder test script and compare file in `conformance/vectors/02/` reports `fail`, 3 of 4 rows, row 4, column `car`, expected 1, got 0. The compare file's header cuts `carry` to `car`, and `src/core/testing/engine.ts:166` binds `.cmp` columns by header text.
+    - D2: `parseTST` on the official ALU test script in `conformance/vectors/02/` returns `'set' must end with ','` at 11:1 (`src/core/testing/tstParser.ts`, where `set` requires `,`).
+  - The reference passes both: the fidelity review re-ran all six Project 2 scripts through the web IDE at `91ef428` and at the differential's pin `52611ad` (per the verdict, not re-run here). The differential agrees with HACER on D1, since it compares the reference's printed output with the compare file, so it does not catch it.
+  - The loop measured both itself: a fresh-context fidelity agent found them while ruling on #177, and the coordinator filed them under the bot issue contract (`docs/harness/issue-form.md`). JDG-001 let the judge alone make such an issue `agent-ready`.
+  - Pick rule 1 is "any open `sev:critical` bug" (`docs/portfolio.md`).
+  - Without them the slices cannot finish: with lines 11 and 194 of the ALU test script re-terminated by hand, a Project-1-only ALU passes 36 of 36 (per the verdict, not re-run), so the parser is all that stops it. Today 4 of the 6 Project 2 scripts pass `testChip` on Project-1-only HDL, and the other two fail on D1 and D2.
+- **Options:**
+  - (A) Yes: the judge makes #1006 and #1007 `agent-ready` after a shaper checks their tests and files, and they are built ahead of #984 and #985.
+  - (B) Only after the slices' other work: leave them `unshaped` until #984 and #985 are otherwise done.
+  - (C) Fold each fix into the slice it blocks, closing #1006 and #1007 into #984 and #985.
+
+  The coordinator recommends (A), because pick rule 1 puts a `sev:critical` bug first, both repros are executable and fail today, the fixes are small and sit in `src/core/testing/**` with no overlap, and #984 and #985 cannot go green without them. (C) would put an oracle fix into a slice whose PR is already near its size budget (inferred), and hides the fix from the Mission Control count (#950).
+- **Cost of delay:** The Project 2 slices stay blocked, so Phase 0.6's first rung does not move, and `hacer test` keeps failing a correct HalfAdder and refusing the official ALU test script. From 2026-10-23.
+- **Cost if wrong:** Two `risk:1` builders and verifiers, about 622k subagent tokens (inferred, twice JDG-001's 311k), spent on defects reproduced today. If the fix design is wrong (for example D2's meaning of `!`), the slice that needs it waits for a corrected PR. Both fixes sit in code that stays.
+- **Decides:** the judge (`judge-brief.md`); the owner may override
+
+### JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?
+- **Date:** 2026-10-23 · **Kind:** decision · **Raised by:** #1003 (the follow-up of PR #995's verifier, issuecomment-6352629264); R898 in `docs/decisions/rulings/2026-10-22-hacer-loop-to-97.md`
+- **Status:** proposed
+- **Evidence:**
+  - #1003 is open, `bug`, `project:bugs`, `project:foundation`, `risk:2`, without `agent-ready`, filed 2026-10-23T20:21Z, a minute after PR #995 merged (`gh issue view 1003`, `gh pr view 995`). It carries three gaps from the verifier's nits, each with a named test in `src/store/actions/persistenceActions/autosave.test.ts`:
+    - a restored circuit with a cycle: `simulationTick()` raises its `notify.error` before the Toaster subscribes and it is dropped, and `lastSimulationError` has no UI reader, so after a reload the user never learns of the cycle;
+    - a slot whose every entry the reader drops restores nothing, shows no toast, and the next edit overwrites the slot;
+    - a slot that is a JSON array, number or string warns "Unsupported circuit version: undefined".
+  - The first and second are shown in the verifier's jsdom runs on PR #995 (per that comment, not re-run here); the third is a wording gap on a warning that already shows once.
+  - R898 makes #801 an exception to ADR-0020 §7's "legacy code gets no new work", "for #801 alone", and limits the fix to "the legacy boot read through `deserializeCircuit`". The code is deleted with the legacy serialiser at ADR-0020 §7.5d, and R898 adds "N.7 (#382) still owns row 16" (save, load and autosave). #382 is open, `risk:2`, `project:foundation`.
+  - #1003's own Note says whether it is built before §7.5d is the judge's decision, "not `agent-ready` here".
+  - The cycle needs no build change to reach: a user can leave a combinational cycle in the circuit when a tab closes. A fully dropped slot needs a build that no longer knows a chip the slot names; a non-object slot needs a hand-edited or corrupt slot (inferred).
+- **Options:**
+  - (A) Build all three under R898's exception.
+  - (B) Build the cycle report only; decline the other two until N.7 (#382) owns autosave.
+  - (C) Decline all three until N.7 (#382).
+
+  The coordinator recommends (B), because the cycle gap is the only one a user reaches with no change to the build, and it hides a real fault after every reload of such a circuit, while the other two are reachable only across a build that drops a chip or from a corrupt slot (inferred), and the code is deleted at §7.5d. A cycle report is a few lines in the restore (inferred from PR #995's 80 reviewable lines).
+- **Cost of delay:** Until N.7 lands, a reload of a circuit saved with a cycle restores it without telling the user. No data is lost, since the circuit is restored. From 2026-10-23.
+- **Cost if wrong:** (B) spends one `risk:2` builder and verifier, about 311k tokens (inferred, as in JDG-009), on legacy code the plan deletes; if the dropped-slot overwrite turns out to be reachable, a user loses a slot silently, which (B) leaves open. (A) spends about three times the code in legacy code. (C) leaves all three until N.7.
+- **Decides:** the judge (`judge-brief.md`); the owner may override
