@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T08:30:11.282Z",
+  "generatedAt": "2026-10-23T09:25:35.356Z",
   "head": {
     "sha": "100e399391361643f72f3ef066450e95b4836215",
     "date": "2026-10-23T01:25:19+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T08:30:11.282Z",
+      "fetchedAt": "2026-10-23T09:25:35.356Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 32,
+        "open": 31,
         "ready": 10,
         "inProgress": 4,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 17,
+        "agentReady": 16,
         "filedElsewhere": [
           151,
           941,
@@ -120,8 +120,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 52,
-          "percentCompleted": 74,
+          "completed": 53,
+          "percentCompleted": 75,
           "total": 70
         }
       },
@@ -913,7 +913,6 @@
           "risk:0"
         ],
         "blocking": [
-          981,
           257
         ],
         "project": "harness",
@@ -2546,21 +2545,6 @@
         "reason": "claimed"
       },
       {
-        "number": 981,
-        "title": "Weekly cloud routine: one risk:0/risk:1 pick a week, fired before the weekly reset, so work merges without the owner (JDG-003)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "blocked:#980"
-      },
-      {
         "number": 984,
         "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
         "labels": [
@@ -2655,7 +2639,6 @@
         972,
         973,
         974,
-        981,
         993,
         994
       ],
@@ -6681,7 +6664,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T08:30:11.282Z",
+      "since": "2026-10-09T09:25:35.356Z",
       "merged": 135,
       "openToMergeHours": {
         "median": 0.3,
@@ -10986,7 +10969,7 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T07:28:12.637Z",
+        "at": "2026-10-23T08:30:11.282Z",
         "byProject": {
           "harness": [
             975,
