@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T22:44:30.755Z",
+  "generatedAt": "2026-10-23T23:04:26.906Z",
   "head": {
-    "sha": "9aed0b661ca147a6f391a2de9c02ddcc6ab82292",
-    "date": "2026-10-24T01:43:24+03:00",
-    "subject": "fix(layout): round hinted coordinates to 3 decimals, and write -0 as 0 (#1014)"
+    "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
+    "date": "2026-10-24T02:03:49+03:00",
+    "subject": "feat(core): HACER's HDL for HalfAdder, FullAdder and Add16"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T22:44:30.755Z",
+      "fetchedAt": "2026-10-23T23:04:26.906Z",
       "status": "ok"
     }
   },
@@ -218,18 +218,21 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 16,
-        "ready": 0,
-        "inProgress": 1,
+        "open": 15,
+        "ready": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 2,
+        "agentReady": 1,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 985,
+          "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 8,
-          "percentCompleted": 33,
+          "completed": 9,
+          "percentCompleted": 37,
           "total": 24
         }
       },
@@ -439,6 +442,11 @@
         "number": 1024,
         "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
         "project": "mission-control"
+      },
+      {
+        "number": 985,
+        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
+        "project": "spine"
       },
       {
         "number": 1026,
@@ -653,6 +661,21 @@
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 985,
+        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2414,39 +2437,6 @@
         "reason": "claimed"
       },
       {
-        "number": 984,
-        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "blocking": [
-          985
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 985,
-        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#984"
-      },
-      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2626,6 +2616,7 @@
         584
       ],
       "spine": [
+        985,
         165,
         167,
         169,
@@ -2638,8 +2629,6 @@
         177,
         235,
         236,
-        984,
-        985,
         1017,
         1018
       ],
@@ -2837,11 +2826,38 @@
     ],
     "merged": [
       {
+        "number": 1027,
+        "title": "feat(core): Project 2 slice 1, HalfAdder, FullAdder and Add16 on the grading path",
+        "url": "https://github.com/mezivillager/hacer/pull/1027",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "feat/984-project2-adders",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:49:04Z",
+        "mergedAt": "2026-10-23T23:03:50Z",
+        "closes": [
+          984
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T23:02:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1027#issuecomment-6376457816"
+          }
+        ]
+      },
+      {
         "number": 1025,
         "title": "fix(layout): round hinted coordinates to 3 decimals, and pin the hint edge cases (#1014)",
         "url": "https://github.com/mezivillager/hacer/pull/1025",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -4391,33 +4407,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/877#issuecomment-6327977968"
           }
         ]
-      },
-      {
-        "number": 876,
-        "title": "fix(testing): a chip the registry refuses is an error report naming the chip, not a throw",
-        "url": "https://github.com/mezivillager/hacer/pull/876",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/868-testchip-report",
-        "isDraft": false,
-        "createdAt": "2026-10-21T21:51:39Z",
-        "mergedAt": "2026-10-21T22:20:05Z",
-        "closes": [
-          868
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T22:19:15Z",
-            "url": "https://github.com/mezivillager/hacer/pull/876#issuecomment-6327798995"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4484,31 +4473,6 @@
         }
       },
       {
-        "number": 1014,
-        "ref": "refs/heads/claim/1014",
-        "sha": "d2730102d29e94e74697f83e53427c0de3ac1223",
-        "state": "CLOSED",
-        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
-        "url": "https://github.com/mezivillager/hacer/issues/1014",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "fix/1014-hint-rounding",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T22:16:15Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1014#issuecomment-6375825023"
-        }
-      },
-      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -4531,32 +4495,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 950,
-        "ref": "refs/heads/claim/950",
-        "sha": "40b69bfbc3c4b3578db49c408e0474c68ed88dbf",
-        "state": "CLOSED",
-        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
-        "url": "https://github.com/mezivillager/hacer/issues/950",
-        "labels": [
-          "released",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/950-conformance-count",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T21:50:50Z",
-          "url": "https://github.com/mezivillager/hacer/issues/950#issuecomment-6375458583"
         }
       },
       {
@@ -4615,7 +4553,7 @@
         "number": 984,
         "ref": "refs/heads/claim/984",
         "sha": "bb71ce2f66ea4cc272c36f10b8966f3ad8d92b9e",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
         "url": "https://github.com/mezivillager/hacer/issues/984",
         "labels": [
@@ -4624,7 +4562,7 @@
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4637,7 +4575,7 @@
         }
       }
     ],
-    "onClosedIssues": 2
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -5885,9 +5823,14 @@
     },
     "releases": [
       {
+        "tag": "v2.69.1",
+        "publishedAt": "2026-10-23T22:46:25Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.69.0",
         "publishedAt": "2026-10-23T22:33:05Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.68.2",
@@ -6638,7 +6581,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 3
+        "merges": 2
       },
       {
         "date": "2026-10-22",
@@ -6646,20 +6589,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 12
+        "merges": 13
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T22:44:30.755Z",
-      "merged": 147,
+      "since": "2026-10-09T23:04:26.906Z",
+      "merged": 148,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 128,
+        "of": 129,
         "prs": [
           700,
           725,
@@ -6673,8 +6616,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 95,
-          "withVerdict": 95,
+          "merged": 96,
+          "withVerdict": 96,
           "without": []
         },
         "nonCode": {
@@ -6725,7 +6668,7 @@
             "tst": 6,
             "hdl": 5
           },
-          "passed": 0,
+          "passed": 3,
           "of": 6
         },
         {
@@ -6766,7 +6709,7 @@
       "files": 120,
       "runner": {
         "source": "src/scenarios/drivers/core.test.ts",
-        "passed": 16,
+        "passed": 19,
         "of": 39
       }
     },
@@ -11141,11 +11084,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "9aed0b661ca147a6f391a2de9c02ddcc6ab82292",
+        "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40035432340/job/120693606971",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40037469892/job/120700364963",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -20204,6 +20147,14 @@
         ]
       },
       {
+        "id": "#984",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R895"
+        ]
+      },
+      {
         "id": "#328",
         "kind": "github",
         "citedBy": [
@@ -20413,6 +20364,23 @@
         ]
       },
       {
+        "id": "#985",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R895"
+        ]
+      },
+      {
+        "id": "#206",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0020",
+          "R763",
+          "R883"
+        ]
+      },
+      {
         "id": "#915",
         "kind": "github",
         "citedBy": [
@@ -20435,15 +20403,6 @@
           "ADR-0020",
           "R512",
           "R895"
-        ]
-      },
-      {
-        "id": "#206",
-        "kind": "github",
-        "citedBy": [
-          "ADR-0020",
-          "R763",
-          "R883"
         ]
       },
       {
@@ -23473,20 +23432,6 @@
       },
       {
         "id": "#983",
-        "kind": "github",
-        "citedBy": [
-          "R895"
-        ]
-      },
-      {
-        "id": "#984",
-        "kind": "github",
-        "citedBy": [
-          "R895"
-        ]
-      },
-      {
-        "id": "#985",
         "kind": "github",
         "citedBy": [
           "R895"
