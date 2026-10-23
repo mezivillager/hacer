@@ -17,6 +17,8 @@ export type TSTCommand =
   | { type: 'set'; pin: string; value: number; line?: number }
   | { type: 'eval' }
   | { type: 'output' }
+  // A command written with '!' is followed by one: a run ends there, as the reference's run() does.
+  | { type: 'break' }
 
 export interface TSTScript {
   commands: TSTCommand[]

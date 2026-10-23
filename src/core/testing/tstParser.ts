@@ -5,9 +5,11 @@ import type {
   TSTParseResult,
 } from './types'
 
+type Terminator = ',' | ';' | '!'
+
 interface Statement {
   text: string
-  terminator: ',' | ';'
+  terminator: Terminator
   line: number
   column: number
 }
@@ -121,7 +123,7 @@ function splitStatements(
     hasStatementContent = true
   }
 
-  const pushStatement = (terminator: ',' | ';'): void => {
+  const pushStatement = (terminator: Terminator): void => {
     const text = current.trim()
     if (text.length > 0) {
       statements.push({
@@ -174,7 +176,7 @@ function splitStatements(
       continue
     }
 
-    if ((ch === ',' || ch === ';') && braceDepth === 0) {
+    if ((ch === ',' || ch === ';' || ch === '!') && braceDepth === 0) {
       pushStatement(ch)
       column++
       continue
@@ -291,13 +293,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         message: "Invalid 'load' command syntax",
       }
     }
-    if (statement.terminator !== ',') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'load' must end with ','",
-      }
-    }
     return { type: 'load', filename: match[1] }
   }
 
@@ -308,13 +303,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         line: statement.line,
         column: statement.column,
         message: "Invalid 'output-file' command syntax",
-      }
-    }
-    if (statement.terminator !== ',') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'output-file' must end with ','",
       }
     }
     return { type: 'output-file', filename: match[1] }
@@ -329,13 +317,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         message: "Invalid 'compare-to' command syntax",
       }
     }
-    if (statement.terminator !== ',') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'compare-to' must end with ','",
-      }
-    }
     return { type: 'compare-to', filename: match[1] }
   }
 
@@ -346,13 +327,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         line: statement.line,
         column: statement.column,
         message: "Invalid 'output-list' command syntax",
-      }
-    }
-    if (statement.terminator !== ';') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'output-list' must end with ';'",
       }
     }
 
@@ -390,13 +364,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         message: "Invalid 'set' command syntax",
       }
     }
-    if (statement.terminator !== ',') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'set' must end with ','",
-      }
-    }
 
     const pin = match[1]
     const valueToken = match[2].trim()
@@ -428,13 +395,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         message: "Invalid 'eval' command syntax",
       }
     }
-    if (statement.terminator !== ',') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'eval' must end with ','",
-      }
-    }
     return { type: 'eval' }
   }
 
@@ -444,13 +404,6 @@ function parseStatement(statement: Statement): TSTCommand | TSTParseError {
         line: statement.line,
         column: statement.column,
         message: "Invalid 'output' command syntax",
-      }
-    }
-    if (statement.terminator !== ';') {
-      return {
-        line: statement.line,
-        column: statement.column,
-        message: "'output' must end with ';'",
       }
     }
     return { type: 'output' }
@@ -499,6 +452,7 @@ export function parseTST(source: string): TSTParseResult {
       continue
     }
     commands.push(parsed)
+    if (statement.terminator === '!') commands.push({ type: 'break' })
   }
 
   if (errors.length > 0) {
