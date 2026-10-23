@@ -177,4 +177,45 @@ describe('layout', () => {
     expect(layered(chip('Xor'), 'id').crossings).toBe(3)
     expect(layered(chip('Xor'), 'barycentre').crossings).toBe(2)
   })
+
+  it('a hinted node lands at its hint rounded to 3 decimals, and -0 is written as 0', () => {
+    const solid = layout(chip('Mux'), '3d', { hints: { p3: { x: 1 / 3, y: 2 / 3, z: -0, origin: 'user' } } })
+    expect(solid.nodes.p3).toEqual({ x: 0.333, y: 0.667, z: 0, layer: 0, index: 0 })
+    // y 1.4996 is placed at 1.5, so its cell is slot 2, the one nearest where it is drawn.
+    const flat = layout(chip('Mux'), '2d', { pitch: 1, hints: { p3: { x: 4 / 3, y: 1.4996, z: -0.0004, origin: 'tidy' } } })
+    expect(flat.nodes.p3).toEqual({ x: 1.333, y: 1.5, z: 0, layer: 1, index: 2 })
+    for (const placed of [solid, flat]) {
+      for (const node of Object.values(placed.nodes)) {
+        for (const v of [node?.x, node?.y, node?.z]) expect(v).toBe(Number(v?.toFixed(3)))
+      }
+      expect(JSON.stringify(placed)).not.toMatch(/\.\d{4}/)
+    }
+  })
+
+  it('two hints may share a cell; the cell is blocked for other nodes', () => {
+    const hints = { p3: { x: 2.4, y: 0, z: 0.6, origin: 'user' as const }, p2: { x: 1.8, y: 0, z: -0.4, origin: 'user' as const } }
+    const placed = layout(chip('Mux'), '3d', { hints })
+    expect(placed.nodes.p3).toEqual({ x: 2.4, y: 0, z: 0.6, layer: 1, index: 0 })
+    expect(placed.nodes.p2).toEqual({ x: 1.8, y: 0, z: -0.4, layer: 1, index: 0 })
+    expect(placed.nodes.p1).toEqual({ x: 2, y: 0, z: 2, layer: 1, index: 1 })
+    const others = Object.entries(placed.nodes).filter(([id]) => !(id in hints))
+    expect(others.map(([, n]) => `${String(n?.layer)}:${String(n?.index)}`)).not.toContain('1:0')
+  })
+
+  it('a hint for a node the document lacks changes nothing', () => {
+    // Cell 1:0 is p1's; a hint there that was read would push p1 aside.
+    for (const surface of ['3d', '2d'] as const) {
+      const hints = { p99: { x: 2, y: 0, z: 0, origin: 'user' as const }, 'in:q': { x: 0, y: 0, z: 0, origin: 'tidy' as const } }
+      expect(layout(chip('Mux'), surface, { hints })).toStrictEqual(layout(chip('Mux'), surface))
+    }
+  })
+
+  it('origin does not affect placement', () => {
+    for (const surface of ['3d', '2d'] as const) {
+      const [user, tidy] = (['user', 'tidy'] as const).map((origin) =>
+        layout(chip('Mux'), surface, { hints: { p3: { x: 2.4, y: 0.6, z: 0.6, origin }, 'in:sel': { x: -2, y: 1, z: 1, origin } } }),
+      )
+      expect(tidy).toStrictEqual(user)
+    }
+  })
 })
