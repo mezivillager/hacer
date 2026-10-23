@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T22:20:33.294Z",
+  "generatedAt": "2026-10-23T22:22:59.873Z",
   "head": {
-    "sha": "12a85d44e81386d95898040e01c11f2c6d2c31d4",
-    "date": "2026-10-24T01:17:05+03:00",
-    "subject": "docs(roadmap): name JDG-004's bounded exception in phase tracking"
+    "sha": "bb71ce2f66ea4cc272c36f10b8966f3ad8d92b9e",
+    "date": "2026-10-24T01:21:59+03:00",
+    "subject": "docs(harness): state the refactor rule and make its warning a verifier stop (#942)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T22:20:33.294Z",
+      "fetchedAt": "2026-10-23T22:22:59.873Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 24,
-        "ready": 2,
-        "inProgress": 2,
+        "open": 23,
+        "ready": 3,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
           "number": 979,
@@ -93,8 +93,8 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 25,
-          "percentCompleted": 67,
+          "completed": 26,
+          "percentCompleted": 70,
           "total": 37
         }
       },
@@ -111,7 +111,6 @@
         "agentReady": 13,
         "filedElsewhere": [
           151,
-          942,
           1023
         ],
         "next": {
@@ -437,6 +436,11 @@
         "project": "spine"
       },
       {
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "project": "foundation"
+      },
+      {
         "number": 933,
         "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
         "project": "upkeep"
@@ -546,7 +550,6 @@
       "dormant": false,
       "agentPrs": [
         1022,
-        1020,
         514
       ]
     }
@@ -631,6 +634,22 @@
         ],
         "project": "spine",
         "rank": 7,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
         "lane": "feature",
         "pickable": true,
         "reason": null
@@ -2344,25 +2363,6 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
-        "number": 942,
-        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [
-          1023
-        ],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 950,
         "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
         "labels": [
@@ -2541,22 +2541,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 1023,
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#942"
       }
     ],
     "byProject": {
@@ -2582,6 +2566,7 @@
       "foundation": [
         979,
         1003,
+        1023,
         151,
         184,
         325,
@@ -2601,9 +2586,7 @@
         722,
         728,
         742,
-        942,
-        1014,
-        1023
+        1014
       ],
       "harness": [
         257,
@@ -2743,33 +2726,6 @@
           950
         ],
         "verdicts": []
-      },
-      {
-        "number": 1020,
-        "title": "chore(pr-hygiene): a refactor PR may not take an assertion out of an existing test",
-        "url": "https://github.com/mezivillager/hacer/pull/1020",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "feat/942-refactor-test-rule",
-        "isDraft": false,
-        "createdAt": "2026-10-23T22:04:00Z",
-        "mergedAt": null,
-        "closes": [
-          942
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5), the tier backlog.mjs tier 1020 gives (scripts and docs only, risk:1, nothing under src/core/ or src/simulation/)",
-            "at": "2026-10-23T22:15:03Z",
-            "url": "https://github.com/mezivillager/hacer/pull/1020#issuecomment-6375808160"
-          }
-        ]
       },
       {
         "number": 1002,
@@ -2918,6 +2874,33 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-23T22:13:31Z",
             "url": "https://github.com/mezivillager/hacer/pull/1021#issuecomment-6375787079"
+          }
+        ]
+      },
+      {
+        "number": 1020,
+        "title": "chore(pr-hygiene): a refactor PR may not take an assertion out of an existing test",
+        "url": "https://github.com/mezivillager/hacer/pull/1020",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/942-refactor-test-rule",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:04:00Z",
+        "mergedAt": "2026-10-23T22:22:00Z",
+        "closes": [
+          942
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5), the tier backlog.mjs tier 1020 gives (scripts and docs only, risk:1, nothing under src/core/ or src/simulation/)",
+            "at": "2026-10-23T22:15:03Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1020#issuecomment-6375808160"
           }
         ]
       },
@@ -4448,34 +4431,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/872#issuecomment-6327014332"
           }
         ]
-      },
-      {
-        "number": 869,
-        "title": "feat(testing): hacer test grades only HDL the reference builds",
-        "url": "https://github.com/mezivillager/hacer/pull/869",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "feat/840-strict-grading",
-        "isDraft": false,
-        "createdAt": "2026-10-21T21:02:51Z",
-        "mergedAt": "2026-10-21T21:31:47Z",
-        "closes": [
-          840
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-21T21:15:25Z",
-            "url": "https://github.com/mezivillager/hacer/pull/869#issuecomment-6326720856"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4595,7 +4550,7 @@
         "number": 942,
         "ref": "refs/heads/claim/942",
         "sha": "fa2bc5877a941dea56d025db79807a55b4416dab",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
         "url": "https://github.com/mezivillager/hacer/issues/942",
         "labels": [
@@ -4605,7 +4560,7 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4720,7 +4675,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 2
   },
   "cloudLane": {
     "items": [
@@ -6716,7 +6671,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 6
+        "merges": 5
       },
       {
         "date": "2026-10-22",
@@ -6724,20 +6679,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 9
+        "merges": 10
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T22:20:33.294Z",
-      "merged": 144,
+      "since": "2026-10-09T22:22:59.873Z",
+      "merged": 145,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 125,
+        "of": 126,
         "prs": [
           700,
           725,
@@ -6751,8 +6706,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 92,
-          "withVerdict": 92,
+          "merged": 93,
+          "withVerdict": 93,
           "without": []
         },
         "nonCode": {
@@ -11034,8 +10989,53 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T21:24:18.417Z",
+        "at": "2026-10-23T22:20:33.294Z",
         "byProject": {
+          "upkeep": [
+            930,
+            933,
+            934,
+            935,
+            936,
+            937,
+            938,
+            939,
+            945,
+            946,
+            989,
+            990,
+            991,
+            1009,
+            1010,
+            229,
+            256
+          ],
+          "foundation": [
+            979,
+            1003,
+            151,
+            184,
+            325,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506,
+            719,
+            722,
+            728,
+            742,
+            942,
+            1014,
+            1023
+          ],
           "harness": [
             257,
             949,
@@ -11065,38 +11065,8 @@
             1011,
             1012
           ],
-          "foundation": [
-            942,
-            979,
-            1014,
-            151,
-            184,
-            325,
-            380,
-            381,
-            382,
-            383,
-            384,
-            385,
-            386,
-            389,
-            395,
-            400,
-            462,
-            506,
-            719,
-            722,
-            728,
-            742,
-            1003
-          ],
-          "mission-control": [
-            950,
-            509,
-            584
-          ],
           "spine": [
-            983,
+            984,
             165,
             167,
             169,
@@ -11109,29 +11079,9 @@
             177,
             235,
             236,
-            984,
             985,
-            1006,
-            1007
-          ],
-          "upkeep": [
-            930,
-            933,
-            934,
-            935,
-            936,
-            937,
-            938,
-            939,
-            945,
-            946,
-            989,
-            990,
-            991,
-            1009,
-            1010,
-            229,
-            256
+            1017,
+            1018
           ],
           "core": [
             179,
@@ -11188,6 +11138,11 @@
             502,
             569
           ],
+          "mission-control": [
+            509,
+            584,
+            950
+          ],
           "unfiled": [
             572
           ],
@@ -11206,11 +11161,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "12a85d44e81386d95898040e01c11f2c6d2c31d4",
+        "sha": "bb71ce2f66ea4cc272c36f10b8966f3ad8d92b9e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40032602375/job/120684258625",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40033136919/job/120686041424",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -11530,49 +11485,6 @@
           "known": 68,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 1020,
-        "sha": "bf1f8155b45276e7c78d54e9ff0230b96bdd71f7",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-23T22:18:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40032716796/job/120684642083",
-        "line": "HYGIENE: PASS reviewable=109 test=138 excluded=407 files=5 issue=#942 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 109,
-          "test": 138,
-          "excluded": 407,
-          "files": 5,
-          "issue": "#942",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1020,
-        "sha": "bf1f8155b45276e7c78d54e9ff0230b96bdd71f7",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-23T22:18:24Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40032719961/job/120684649966",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 1020,
-        "sha": "bf1f8155b45276e7c78d54e9ff0230b96bdd71f7",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40032720002/job/120684650089",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       },
       {
