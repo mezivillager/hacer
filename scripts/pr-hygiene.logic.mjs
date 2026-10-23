@@ -2,7 +2,7 @@
 // No I/O — fully unit tested in pr-hygiene.logic.test.mjs. The GitHub API and
 // the runner environment live in scripts/pr-hygiene.mjs.
 //
-// A rule is `(ctx) => finding[]` over { body, author, labels, files, measures, ratchet }; the verdict is the
+// A rule is `(ctx) => finding[]` over { title, body, author, labels, files, measures, ratchets }; the verdict is the
 // highest level any finding reaches. To add a rule (e.g. #151's tamper flag: protected
 // paths touched), append it to RULES — nothing else needs to change.
 
@@ -836,6 +836,8 @@ function protectedPath({ files }) {
 
 const WITNESS = 'expect('
 const DISABLING_MARKERS = ['.skip(', '.only(', 'passWithNoTests']
+/** An `expect(` behind a comment marker checks nothing, so it neither counts nor offsets a removed one. */
+const COMMENTED = /^\s*(?:\/\/|\/\*|\*)/
 
 /** A file of tests by its name; e2e helpers, snapshots and fixtures are not. */
 const isWitnessFile = (p) => /\.(test|spec)\.[^/.]+$/.test(p) && classifyFile(p).kind === 'test'
@@ -864,7 +866,7 @@ function wentWithSubject(test, files) {
  */
 export function testWitnessLoss(files) {
   const shown = files.flatMap((file) => (typeof file.patch === 'string' ? [{ file, ...patchSides(file.patch) }] : []))
-  const asserting = (lines) => lines.filter((line) => line.includes(WITNESS)).map((line) => line.trim())
+  const asserting = (lines) => lines.filter((line) => line.includes(WITNESS) && !COMMENTED.test(line)).map((line) => line.trim())
   const witnesses = shown
     .filter(({ file }) => isWitnessFile(file.filename))
     .map(({ file, added, removed }) => ({ filename: file.filename, status: file.status, removed: asserting(removed), added: asserting(added) }))
@@ -873,7 +875,15 @@ export function testWitnessLoss(files) {
     .map((w) => ({ filename: w.filename, removed: occurrences(w.removed, WITNESS), added: occurrences(w.added, WITNESS) }))
     .filter((w) => w.removed > w.added)
   const tests = files.filter((f) => isWitnessFile(f.filename))
-  const removedTests = tests.filter((f) => f.status === 'removed' && !wentWithSubject(f.filename, files)).map((f) => f.filename)
+  // A rename out of test naming takes a file out of the suite as surely as a deletion.
+  const leftSuite = files.flatMap((f) =>
+    f.status === 'removed' && isWitnessFile(f.filename)
+      ? [f.filename]
+      : f.status === 'renamed' && isWitnessFile(f.previous_filename ?? '') && !isWitnessFile(f.filename)
+        ? [f.previous_filename]
+        : [],
+  )
+  const removedTests = leftSuite.filter((p) => !wentWithSubject(p, files))
   // A diff that deletes nothing cannot lose a witness, so an unshown addition is not named.
   const unshown = tests
     .filter((f) => f.status !== 'removed' && typeof f.patch !== 'string' && f.deletions !== 0)
@@ -892,7 +902,7 @@ function weakenedTests({ files }) {
   const groups = [
     ['tests lose assertions', weakened.map(({ filename, removed, added }) =>
       `${code(filename)} loses ${plural(removed - added, '`expect(` call')} (${removed} removed, ${added} added)`), ''],
-    ['test files removed while their subject stays', removedTests.map(code),
+    ['test files removed, or renamed out of test naming, while their subject stays', removedTests.map(code),
       ' — no non-test file in the same directory, with the same name before the first dot, is removed or renamed in this PR'],
     ['test files not shown', unshown.map(code), ' — the API sent no patch, so their assertions were not counted; check them by hand'],
     ['tests switched off', disabled.map(({ filename, marker, removed, added }) =>
@@ -903,19 +913,81 @@ function weakenedTests({ files }) {
     .map(([what, names, why]) => ({ rule: 'weakened-tests', level: 'warn', message: `${what}: ${listUpTo(names)}${why}` }))
 }
 
-function refactorTests() {
-  return [{ rule: 'refactor-tests', level: 'pass', message: 'not implemented' }]
+// ---------------------------------------------------------------- refactor PRs
+
+/** A conventional-commit `refactor` type, scoped or not, breaking or not. */
+const REFACTOR_TITLE = /^\s*refactor(?:\([^)]*\))?!?:/i
+const PROCEED = 'Land the test change first, in its own PR, or retitle the PR if it is not a refactor'
+
+const tally = (lines) => lines.reduce((counts, line) => counts.set(line, (counts.get(line) ?? 0) + 1), new Map())
+const take = (counts, line) => {
+  const left = counts.get(line) ?? 0
+  if (left > 0) counts.set(line, left - 1)
+  return left > 0
+}
+
+/**
+ * Each kept test file's removed assertion lines that come back verbatim in another test file (`moved`) or nowhere
+ * (`lost`); one re-added in its own file is neither, and each added line answers one removed line at most.
+ */
+function assertionMoves(witnesses) {
+  const spare = new Map(witnesses.map((w) => [w, tally(w.added)]))
+  const kept = witnesses
+    .filter((w) => w.status !== 'removed')
+    .map((w) => ({ w, lines: w.removed.filter((line) => !take(spare.get(w), line)) }))
+  return kept.map(({ w, lines }) => {
+    const moved = []
+    const lost = []
+    for (const line of lines) {
+      if (witnesses.some((other) => other !== w && take(spare.get(other), line))) moved.push(line)
+      else lost.push(line)
+    }
+    const [removed, added, out] = [w.removed, w.added, moved].map((side) => occurrences(side, WITNESS))
+    return { filename: w.filename, removed, added, moved: out, net: removed - added - out, lost }
+  })
+}
+
+const span = (text) => (text.includes('`') ? `\`\` ${text} \`\`` : `\`${text}\``)
+
+/** Foundation rule 4, mechanised: a refactor PR may add or generalise assertions in existing tests, never lose one. */
+function refactorTests({ title, files }) {
+  if (!REFACTOR_TITLE.test(title ?? '')) return []
+  const { witnesses, removedTests, unshown } = testWitnessLoss(files)
+  const moves = assertionMoves(witnesses)
+  const code = (text) => `\`${text}\``
+  const finding = (level, message) => ({ rule: 'refactor-tests', level, message: `refactor PR — ${message}` })
+  const fails = [
+    ['existing tests lose assertions', moves.filter((m) => m.net > 0).map(({ filename, removed, added, moved, net }) =>
+      `${code(filename)} loses ${plural(net, '`expect(` call')} (${removed} removed, ${added} added, ${moved} moved to another test file)`)],
+    ['test files removed, or renamed out of test naming, while their subject stays', removedTests.map(code)],
+    ['test files the API sent without a patch, so their assertions cannot be counted', unshown.map(code)],
+  ]
+    .filter(([, names]) => names.length > 0)
+    .map(([what, names]) => finding('fail', `${what}: ${names.join(', ')}. ${PROCEED}`))
+  const warns = moves
+    .filter((m) => m.lost.length > 0)
+    .map(({ filename, lost }) =>
+      finding(
+        'warn',
+        `${code(filename)}: ${plural(lost.length, 'assertion line')} removed and re-added verbatim in no test file of this PR: ` +
+          `${lost.map(span).join(', ')}. The verifier stops on each: show it was generalised (the same check over more cases) or moved, or block`,
+      ),
+    )
+  if (fails.length + warns.length > 0) return [...fails, ...warns]
+  const moved = moves.reduce((total, m) => total + m.moved, 0)
+  const note = moved > 0 ? ` (${plural(moved, '`expect(` call')} moved to another test file)` : ''
+  return [finding('pass', `every existing test file keeps its assertions${note}`)]
 }
 
 export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath, weakenedTests, refactorTests]
 
 /**
  * Run every rule over one PR.
- * @param {{body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string, ratchet?:object, suppressions?:object}} input
+ * @param {{title?:string, body:string|null, author?:string, labels:string[], files:object[], gitattributes?:string, ratchet?:object, suppressions?:object}} input
  * @returns {{verdict:'PASS'|'WARN'|'FAIL', findings:object[], measures:object, linkedIssues:number[], closingIssues:number[], docsOnly:boolean, linkedIssueExemption:string|null}}
  */
 export function evaluate(input, rules = RULES) {
-  const { body, author, labels = [], files, gitattributes } = input
+  const { title, body, author, labels = [], files, gitattributes } = input
   const measures = measure(files, parseGeneratedPatterns(gitattributes))
   // Whether the config was edited is the PR's own file list, never something a caller asserts: a
   // claim of arming has to cost a reviewable line in the config.
@@ -924,7 +996,7 @@ export function evaluate(input, rules = RULES) {
     const configTouched = files.some((entry) => entry.filename === kind.config)
     return { kind, verdict: contents ? compareRatchetBaseline({ ...contents, configTouched, kind }) : null }
   })
-  const findings = rules.flatMap((rule) => rule({ body, author, labels, files, measures, ratchets }))
+  const findings = rules.flatMap((rule) => rule({ title, body, author, labels, files, measures, ratchets }))
   const worst = Math.max(0, ...findings.map((f) => LEVELS.indexOf(f.level)))
   const deletion = deletionWaiver(measures)
   return {

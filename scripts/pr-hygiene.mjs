@@ -4,7 +4,7 @@
 //   node scripts/pr-hygiene.mjs <pr-number>
 //
 // Needs GITHUB_TOKEN (or GH_TOKEN; locally: `GITHUB_TOKEN=$(gh auth token)`). GITHUB_REPOSITORY
-// defaults to mezivillager/hacer. The PR is read through the REST API only — its body, author,
+// defaults to mezivillager/hacer. The PR is read through the REST API only — its title, body, author,
 // labels and per-file line counts — so this script, checked out from the base branch, never sees or
 // runs the PR's code. `.gitattributes` (linguist-generated) is read from the checkout, i.e. main.
 //
@@ -143,6 +143,7 @@ const attributesPath = path.join(import.meta.dirname, '..', '.gitattributes')
 const gitattributes = existsSync(attributesPath) ? readFileSync(attributesPath, 'utf8') : ''
 
 const result = evaluate({
+  title: pull.title,
   body: pull.body,
   author: pull.user?.login,
   labels: pull.labels.map((label) => label.name),
