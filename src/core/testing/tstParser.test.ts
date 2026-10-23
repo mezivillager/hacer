@@ -5,6 +5,7 @@ import { parseTST } from './tstParser'
 const NAND_TST = project1TstFixtures.Nand
 const NOT_TST = project1TstFixtures.Not
 const MUX4WAY16_TST = project1TstFixtures.Mux4Way16
+const PROJECT2_TST = import.meta.glob<string>('../../../conformance/vectors/02/*.tst', { query: '?raw', import: 'default', eager: true })
 
 describe('TST Parser', () => {
   describe('basic parsing', () => {
@@ -265,6 +266,16 @@ while a {
     })
   })
 
+  describe('every command may end with a comma, a semicolon or a bang', () => {
+    const commands = ['load Not.hdl', 'output-file Not.out', 'compare-to Not.cmp', 'output-list in out', 'set in 0', 'eval', 'output']
+    const cases = commands.flatMap((command) => [',', ';', '!'].map((ending) => [command, ending]))
+
+    it.each(cases)("'%s' ending with '%s' parses as that command", (command, ending) => {
+      const result = parseTST(`${command}${ending}`)
+      expect(result.success ? result.script.commands[0]?.type : result.errors[0]).toBe(command.split(' ')[0])
+    })
+  })
+
   describe('all Project 1 TST files parse', () => {
     for (const [name, script] of Object.entries(project1TstFixtures)) {
       it(`parses ${name}.tst without errors`, () => {
@@ -272,5 +283,18 @@ while a {
         expect(result.success).toBe(true)
       })
     }
+  })
+
+  describe('all Project 2 TST files parse', () => {
+    const scripts = Object.entries(PROJECT2_TST).map(([path, source]) => [path.slice(path.lastIndexOf('/') + 1), source])
+
+    it('reads all six Project 2 scripts, ALU.tst among them', () => {
+      expect(scripts.map(([name]) => name).sort()).toEqual(['ALU-basic.tst', 'ALU.tst', 'Add16.tst', 'FullAdder.tst', 'HalfAdder.tst', 'Inc16.tst'])
+    })
+
+    it.each(scripts)('parses %s without errors', (_name, source) => {
+      const result = parseTST(source)
+      expect(result.success ? 'parsed' : result.errors).toBe('parsed')
+    })
   })
 })
