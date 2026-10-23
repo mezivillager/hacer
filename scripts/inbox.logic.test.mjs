@@ -40,6 +40,9 @@ const noteGrammarText = readFileSync(path.join(FIXTURES, 'note-grammar-inbox.md'
 
 const stateOf = (status) => status.split(/[ (]/)[0]
 const proposedIds = (inboxes) => inboxes.flatMap((inbox) => inbox.entries).filter((entry) => entry.status === 'proposed').map((entry) => entry.id)
+const hrnEntry = (n, extra = '') => `\n### HRN-${n} · Proposal ${n}\n- **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22\n- **Status:** proposed\n${extra}`
+const harnessWith = (...entries) => parseInbox(recordedText('HRN') + entries.join(''), inboxOf('HRN'))
+const listedIds = (drafts) => drafts.map((draft) => [...reviewedIds([draft])])
 
 describe('parseInbox', () => {
   it('reads the recorded inboxes to their measured counts: 24 FID (14 proposed), 9 HRN (5 proposed), 0 PRD', () => {
@@ -94,6 +97,15 @@ describe('parseInbox', () => {
     expect(() => parseInbox(template + entry('PRD-001', ''), inboxOf('PRD'))).toThrow(InboxError)
     expect(() => parseInbox(template + entry('PRD-001', '- **Status:** proposed') + entry('PRD-001', '- **Status:** proposed'), inboxOf('PRD')))
       .toThrow(/PRD-001/)
+  })
+
+  it('reads an optional **Review:** own line on an entry, and refuses any other value', () => {
+    const harness = harnessWith(hrnEntry('010', '- **Review:** own\n'), hrnEntry('011'))
+    expect(harness.entries.filter((entry) => entry.ownReview).map((entry) => entry.id)).toEqual(['HRN-010'])
+    expect(harness.entries.map((entry) => entry.ownReview)).toEqual([...Array(9).fill(false), true, false])
+    for (const value of ['Own', 'batch', '', 'own (a gate)']) {
+      expect(() => harnessWith(hrnEntry('010', `- **Review:** ${value}\n`)), JSON.stringify(value)).toThrow(/HRN-010/)
+    }
   })
 })
 
@@ -272,14 +284,82 @@ describe('queue', () => {
     expect([...reviewedIds(recordedIssues)].sort()).toEqual(['FID-006', 'HRN-005'])
   })
 
-  it('files one review issue per proposed entry with no review issue yet, open or closed, and prints each', () => {
+  it('files a review issue per proposed FID entry and one for the HRN entries, for every entry no issue reviews yet, open or closed, and prints each', () => {
     const gh = recordingGh(recordedIssues)
     const lines = queueReviews(recorded, gh)
     const expected = proposedIds(recorded).filter((id) => id !== 'FID-006' && id !== 'HRN-005')
     expect(expected).toHaveLength(17)
-    expect(gh.filed.map((draft) => draft.id)).toEqual(expected)
-    expect(lines).toHaveLength(17)
+    expect(listedIds(gh.filed).flat()).toEqual(expected)
+    expect(listedIds(gh.filed).at(-1)).toEqual(['HRN-006', 'HRN-007', 'HRN-008', 'HRN-009'])
+    expect(lines).toHaveLength(14)
     expect(lines[0]).toBe('filed https://github.com/mezivillager/hacer/issues/9100: Inbox review: FID-007 · Phase 0.6 accepts `CLOCKED` after all three builtin forms')
+  })
+
+  it('queueReviews files one review for the new proposed HRN entries together, one Inbox-entry line each', () => {
+    const gh = recordingGh(recordedIssues)
+    const lines = queueReviews([recorded[1]], gh)
+    expect(gh.filed).toHaveLength(1)
+    const [draft] = gh.filed
+    expect(draft.body.split('\n').filter((line) => line.startsWith('Inbox-entry:')))
+      .toEqual(['HRN-006', 'HRN-007', 'HRN-008', 'HRN-009'].map((id) => `Inbox-entry: ${id}`))
+    expect(draft.labels).toEqual(REVIEW_LABELS)
+    expect(draft.title).toBe('Inbox review: HRN-006, HRN-007, HRN-008, HRN-009 · a batch of 4 harness entries')
+    expect(lines).toEqual([`filed https://github.com/mezivillager/hacer/issues/9100: ${draft.title}`])
+  })
+
+  it('queueReviews starts a second review after five entries', () => {
+    const five = recordingGh([])
+    queueReviews([recorded[1]], five)
+    expect(listedIds(five.filed)).toEqual([['HRN-005', 'HRN-006', 'HRN-007', 'HRN-008', 'HRN-009']])
+    const eight = recordingGh([])
+    queueReviews([harnessWith(hrnEntry('010'), hrnEntry('011'), hrnEntry('012'))], eight)
+    expect(listedIds(eight.filed)).toEqual([['HRN-005', 'HRN-006', 'HRN-007', 'HRN-008', 'HRN-009'], ['HRN-010', 'HRN-011', 'HRN-012']])
+  })
+
+  it('queueReviews keeps a review of its own for an HRN entry marked Review: own, and for every FID, PRD and JDG entry', () => {
+    const harness = harnessWith(hrnEntry('010', '- **Review:** own\n'), hrnEntry('011'))
+    const product = parseInbox(`${recordedText('PRD')}\n### PRD-001 · A proposal\n- **Date:** 2026-10-17 · **Target epic:** #144 polish\n- **Status:** proposed\n`, inboxOf('PRD'))
+    const judge = parseInbox(recordedText('JDG'), inboxOf('JDG'))
+    const gh = recordingGh(recordedIssues)
+    queueReviews([recorded[0], harness, product, judge], gh)
+    const fidelity = proposedIds([recorded[0]]).filter((id) => id !== 'FID-006')
+    expect(listedIds(gh.filed)).toEqual([
+      ...fidelity.map((id) => [id]),
+      ['HRN-006', 'HRN-007', 'HRN-008', 'HRN-009', 'HRN-011'],
+      ['HRN-010'],
+      ['PRD-001'],
+      ['JDG-001'],
+    ])
+    const own = [...recorded[0].entries, ...harness.entries, ...product.entries, ...judge.entries]
+      .filter((entry) => entry.status === 'proposed' && entry.id !== 'FID-006' && (!entry.id.startsWith('HRN-') || entry.id === 'HRN-010'))
+    expect(gh.filed.filter((draft) => reviewedIds([draft]).size === 1)).toEqual(own.map(reviewIssue))
+  })
+
+  it('queueReviews files nothing for an entry that a batch review lists, open or closed', () => {
+    const batch = (number, state, ids, eol) => ({ number, title: 't', state, body: ['## Goal', 'A batch.', '', ...ids.map((id) => `Inbox-entry: ${id}`), ''].join(eol) })
+    const gh = recordingGh([batch(9300, 'CLOSED', ['HRN-005', 'HRN-006', 'HRN-007'], '\r\n'), batch(9301, 'OPEN', ['HRN-008', 'HRN-009'], '\n')])
+    const harness = harnessWith(hrnEntry('010'), hrnEntry('011'))
+    queueReviews([harness], gh)
+    expect(listedIds(gh.filed)).toEqual([['HRN-010', 'HRN-011']])
+    expect(queueReviews([harness], gh)).toEqual([])
+    expect(gh.filed).toHaveLength(1)
+  })
+
+  it('a batch review\'s body gives the status command for each entry it lists', () => {
+    const gh = recordingGh([])
+    queueReviews([recorded[1]], gh)
+    expect(gh.filed).toHaveLength(1)
+    const [{ body }] = gh.filed
+    const entries = recorded[1].entries.filter((entry) => entry.status === 'proposed')
+    const status = (id) => `node scripts/inbox.mjs status ${id} --not proposed`
+    const headings = body.split('\n').filter((line) => line.startsWith('## '))
+    expect(headings).toEqual(['## Goal', '## Acceptance criteria', '## Verification command', '## Scope', '## Files likely touched', '## Risk', '## Blocked by'])
+    expect(body).toContain(`## Verification command\n\`${entries.map((entry) => status(entry.id)).join(' && ')}\`\n\n## Scope`)
+    for (const entry of entries) expect(body).toContain(`- ${entry.id} · ${entry.title}\n`)
+    expect(body).toContain('`docs/harness/inbox-panel-brief.md`')
+    expect(body).toContain('`node scripts/inbox.mjs set <ID> <status>`')
+    expect(body).toMatch(/## Files likely touched\n`docs\/harness\/harness-inbox\.md`\n/)
+    expect(body.split('\n').slice(-entries.length)).toEqual(entries.map((entry) => `Inbox-entry: ${entry.id}`))
   })
 
   it('files nothing on a second run', () => {
@@ -296,7 +376,7 @@ describe('queue', () => {
       fileIssue: () => { throw new Error('a dry run filed an issue') },
       dryRun: true,
     })
-    expect(lines).toHaveLength(17)
+    expect(lines).toHaveLength(14)
     expect(lines[0]).toMatch(/^would file: Inbox review: FID-007 · /)
   })
 
@@ -408,7 +488,7 @@ describe('the judge inbox', () => {
       },
     }
     const all = [...recorded, judged()]
-    expect(queueReviews(all, gh)).toHaveLength(17)
+    expect(queueReviews(all, gh)).toHaveLength(14)
     expect(asked).toEqual(['inbox-review', 'judge-review'])
     expect(filed.map((draft) => draft.id)).not.toContain('JDG-001')
 
@@ -419,7 +499,7 @@ describe('the judge inbox', () => {
     expect(asked).toEqual(['inbox-review', 'judge-review'])
     expect(filed.at(-1)).toMatchObject({ id: 'JDG-001', labels: JUDGE_LABELS })
     expect(lines.at(-1)).toMatch(/^filed https:\/\/github\.com\/mezivillager\/hacer\/issues\/\d+: Judge review: JDG-001 · /)
-    expect(filed.slice(0, -1).map((draft) => draft.labels)).toEqual(Array(16).fill(REVIEW_LABELS))
+    expect(filed.slice(0, -1).map((draft) => draft.labels)).toEqual(Array(13).fill(REVIEW_LABELS))
     expect(filed.map((draft) => draft.id)).not.toContain('FID-007')
 
     asked.length = 0
