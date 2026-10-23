@@ -97,6 +97,31 @@ describe('runTest — comparison', () => {
     expect(result.passed).toBe(false)
     expect(result.error).toMatch(/compare-to|resolve/i)
   })
+
+  it('binds .cmp columns to the output list by position when a header is cut short', () => {
+    const reg = createChipRegistry()
+    registerBuiltin(reg, 'Split', [{ name: 'a', width: 1 }], [{ name: 'sum', width: 1 }, { name: 'carry', width: 1 }], (i) => ({ sum: i.a ^ 1, carry: i.a }))
+    const s = script('load Split.hdl, output-list a sum carry; set a 0, eval, output; set a 1, eval, output;')
+    expect(runTest(s, { registry: reg, cmpData: cmp('| a |sum|car|\n| 0 | 1 | 0 |\n| 1 | 0 | 1 |\n') })).toMatchObject({ passed: true, error: null })
+    const wrong = runTest(s, { registry: reg, cmpData: cmp('| a |sum|car|\n| 0 | 1 | 0 |\n| 1 | 0 | 0 |\n') })
+    expect(wrong.passed).toBe(false)
+    expect(wrong.firstFailure).toEqual({ row: 1, column: 'carry', expected: '0', actual: '1' })
+  })
+
+  it('still fails a wrong value in a column whose header is cut short', () => {
+    const vectors = import.meta.glob<string>('../../../conformance/vectors/02/HalfAdder.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+    const source = 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: Xor(a=a, b=b, out=sum); Or(a=a, b=b, out=carry); }'
+    const ast = parseHDL(source)
+    if (!ast.success) throw new Error('HalfAdder did not parse')
+    const user = createChipRegistry()
+    user.register(hdlChipDefinition(ast.chip, source))
+    const result = runTest(script(vectors['../../../conformance/vectors/02/HalfAdder.tst']), {
+      registry: combineRegistries(user, getBuiltinChipRegistry()),
+      cmpData: cmp(vectors['../../../conformance/vectors/02/HalfAdder.cmp']),
+    })
+    expect(result.passed).toBe(false)
+    expect(result.firstFailure).toEqual({ row: 1, column: 'carry', expected: '0', actual: '1' })
+  })
 })
 
 describe('runTest — error paths', () => {

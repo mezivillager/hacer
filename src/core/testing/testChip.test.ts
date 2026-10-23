@@ -38,6 +38,16 @@ describe("a BUILTIN body declares the builtin's own pins (#919)", () => {
   })
 })
 
+describe('a .cmp header is a label, not a key', () => {
+  const VECTORS = import.meta.glob<string>('../../../conformance/vectors/02/HalfAdder.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+  const vector = (file: string): TestSource => ({ path: file, source: VECTORS[`../../../conformance/vectors/02/${file}`] })
+  const halfAdder: TestSource = { path: 'HalfAdder.hdl', source: 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: Xor(a=a, b=b, out=sum); And(a=a, b=b, out=carry); }' }
+
+  it('a correct HalfAdder passes the official HalfAdder.tst and .cmp', () => {
+    expect(testChip(halfAdder, vector('HalfAdder.tst'), vector('HalfAdder.cmp'))).toEqual({ status: 'pass', chip: 'HalfAdder', rows: { passed: 4, expected: 4 }, failure: null, error: null })
+  })
+})
+
 describe('a bare output-list name takes its width from the chip (#599)', () => {
   const mux16 = { path: 'Mux16.hdl', source: project1HdlSources.Mux16 }
 
