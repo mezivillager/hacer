@@ -30,6 +30,26 @@ export const project2HdlSources: Record<string, string> = {
     FullAdder(a=a[14], b=b[14], c=c13, sum=out[14], carry=c14);
     FullAdder(a=a[15], b=b[15], c=c14, sum=out[15]);
   }`,
-  Inc16: '',
-  ALU: '',
+  Inc16: `CHIP Inc16 { IN in[16]; OUT out[16];
+    PARTS:
+    Add16(a=in, b[0]=true, out=out);
+  }`,
+  ALU: `CHIP ALU { IN x[16], y[16], zx, nx, zy, ny, f, no; OUT out[16], zr, ng;
+    PARTS:
+    Mux16(a=x, b=false, sel=zx, out=zerox);
+    Not16(in=zerox, out=notx);
+    Mux16(a=zerox, b=notx, sel=nx, out=xin);
+    Mux16(a=y, b=false, sel=zy, out=zeroy);
+    Not16(in=zeroy, out=noty);
+    Mux16(a=zeroy, b=noty, sel=ny, out=yin);
+    Add16(a=xin, b=yin, out=sum);
+    And16(a=xin, b=yin, out=conj);
+    Mux16(a=conj, b=sum, sel=f, out=fout);
+    Not16(in=fout, out=notfout);
+    Mux16(a=fout, b=notfout, sel=no, out=out, out[0..7]=low, out[8..15]=high, out[15]=ng);
+    Or8Way(in=low, out=orlow);
+    Or8Way(in=high, out=orhigh);
+    Or(a=orlow, b=orhigh, out=nonzero);
+    Not(in=nonzero, out=zr);
+  }`,
 }
