@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import fixture from '../../scripts/fixtures/mission-control/snapshot.json'
 import { Overview } from './Overview'
-import type { Snapshot } from './snapshot'
+import type { Conformance, Snapshot } from './snapshot'
 
 // `collect.mjs --json` at origin/main 561dcf1, 2026-09-25 03:16Z, whole, with the fields v1 declared since spliced in from
 // its own data at its own time (#539's flow and conformance among them) — see scripts/mission-control/collect.logic.test.mjs.
@@ -61,6 +61,29 @@ describe('Overview', () => {
       .toBe(`${GITHUB}/blob/main/docs/harness/sessions/2026-09-24.md`)
     expect(within(tile('Version')).getByRole('link', { name: 'v2.33.1' }).getAttribute('href'))
       .toBe(`${GITHUB}/releases/tag/v2.33.1`)
+  })
+
+  it('the Conformance vectors tile shows the pass count as N of M per project, and "no runner yet" when runner is null', () => {
+    const rows = [
+      { project: '01', files: 48, byExtension: { cmp: 16, hdl: 16, tst: 16 } },
+      { project: '02', files: 18, byExtension: { cmp: 6, hdl: 6, tst: 6 } },
+    ]
+    const counted: Conformance = {
+      projects: [{ ...rows[0], passed: 16, of: 16 }, { ...rows[1], passed: 0, of: 6 }], files: 66,
+      runner: { source: 'src/scenarios/drivers/core.test.ts', passed: 16, of: 22 },
+    }
+    const tile = (conformance: Conformance) => {
+      const { unmount } = render(<Overview snapshot={{ ...snapshot, metrics: { ...snapshot.metrics, conformance } }} />)
+      const shown = facts(screen.getByRole('region', { name: 'Conformance vectors' }))
+      unmount()
+      return shown
+    }
+    expect(tile(counted)).toEqual([
+      ['project 01', '48 files, 16 of 16 test scripts pass'], ['project 02', '18 files, 0 of 6 test scripts pass'], ['pass count', '16 of 22 (73%)'],
+    ])
+    expect(tile({ projects: rows, files: 66, runner: null })).toEqual([
+      ['project 01', '48 files, 16 test scripts'], ['project 02', '18 files, 6 test scripts'], ['pass count', 'no runner yet'],
+    ])
   })
 
   it('a flow or conformance the collector could not read says so, never zeros it did not count', () => {

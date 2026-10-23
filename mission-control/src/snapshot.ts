@@ -22,9 +22,11 @@ export interface Flow {
   days: number; since: string; merged: number; openToMergeHours: { median: number | null; p90: number | null }
   blockedOnce: { count: number; of: number; prs: number[] }; coverage: { code: Coverage; nonCode: Coverage }
 }
-/** `metrics.conformance` (#539): the vendored projects' files; `runner` stays null until something runs them (#194). */
+/** `metrics.conformance` (#539, #950): the vendored projects' files and, when a runner counted them, how many `.tst` pass;
+ *  a row carries `passed` and `of` only while `runner` is an object. */
 export interface Conformance {
-  projects: { project: string; files: number; byExtension: Record<string, number> }[]; files: number; runner: null
+  projects: { project: string; files: number; byExtension: Record<string, number>; passed?: number; of?: number }[]
+  files: number; runner: { source: string; passed: number; of: number } | null
 }
 /** `metrics.openTasks` (#478): one day's last archived reading of `tasks.byProject`, taken at `at`. */
 export interface TasksReading { date: string; at: string; byProject: Record<string, number[]> }
