@@ -119,7 +119,7 @@ function wiring(legacy: DeserializedCircuit): Wiring {
 /** Whether a part output or an IN reaches a bit of a bus input, through wires, junctions and bus components. */
 function driverCheck(legacy: DeserializedCircuit, partOf: Parts, { buses, junctions, into, feeds }: Wiring) {
   const drivenBit = (bus: LegacyBus, pinId: string, width: number, bit: number, seen: Set<string>): boolean => {
-    const key = `${bus.id}:${pinId}:${bit}`
+    const key = JSON.stringify([bus.id, pinId, bit])
     if (seen.has(key)) return false
     seen.add(key)
     return into(bus, pinId).some((w) => bit < Math.min(w.width ?? 1, width) && driven(w.from, bit, seen))
@@ -131,8 +131,8 @@ function driverCheck(legacy: DeserializedCircuit, partOf: Parts, { buses, juncti
     const out = bus?.outputs.findIndex((p) => p.id === end.pinId) ?? -1
     if (bus && out >= 0) return bus.kind === 'joiner' ? bit < bus.inputs.length && drivenBit(bus, bus.inputs[bit].id, 1, 0, seen) : bit === 0 && drivenBit(bus, 'in', bus.width, out, seen)
     const junction = end.type === 'junction' ? junctions.get(end.entityId) : undefined
-    if (!junction || seen.has(`${junction.id}:${bit}`)) return false
-    seen.add(`${junction.id}:${bit}`)
+    if (!junction || seen.has(JSON.stringify([junction.id, bit]))) return false
+    seen.add(JSON.stringify([junction.id, bit]))
     return feeds(junction).some((w) => driven(w.from, bit, seen))
   }
   const known = new Map<string, boolean>()
