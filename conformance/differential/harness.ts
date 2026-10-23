@@ -65,20 +65,20 @@ export function describeVerdict(verdict: Verdict): string {
   }
 }
 
-/** What `hacer run-tst <chip>.hdl <chip>.tst` prints: the shipped command's own `runCli`, reading the vector from memory. */
-function hacerOut({ chip, hdl, tst }: Vector): Out {
+/** What `hacer run-tst <chip>.hdl <script>.tst` prints: the shipped command's own `runCli`, reading the vector from memory. */
+function hacerOut({ script, chip, hdl, tst }: Vector): Out {
   const read = (file: string): string => {
     if (file === `${chip}.hdl`) return hdl
-    if (file === `${chip}.tst`) return tst
+    if (file === `${script}.tst`) return tst
     throw new Error(`${file}: not part of this vector`)
   }
-  const { exitCode, stdout, stderr } = runCli(['run-tst', `${chip}.hdl`, `${chip}.tst`], read)
+  const { exitCode, stdout, stderr } = runCli(['run-tst', `${chip}.hdl`, `${script}.tst`], read)
   return exitCode === 0 ? { out: stdout } : { error: stderr.trim() }
 }
 
 /** Both engines on one vector. A pass needs both: the same `.out` line for line, and the reference accepting it as the `.cmp`. */
 export async function differential(reference: ReferenceSimulator, vector: Vector): Promise<Verdict> {
-  const { chip: script } = vector
+  const { script } = vector
   const expected = await reference.run(vector.hdl, vector.tst)
   if ('error' in expected) return { script, status: 'error', engine: 'reference', error: expected.error }
   const actual = hacerOut(vector)
