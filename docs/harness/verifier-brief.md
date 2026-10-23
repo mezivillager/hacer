@@ -32,6 +32,7 @@ model its `VERIFIER-TIER:` line names.
 
 ## Verdict rules
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for taste.
+- **Refactor PRs:** each assertion line `pr-hygiene` names as changed in a refactor PR is a stop: show that it was generalised (the same check over more cases) or moved, or **BLOCK** on it, citing that line.
 - **NIT** ≤ 3; the rest as "plus N similar". Nits never block; the coordinator files the ones worth keeping as follow-up issues (depth 1, ≤ 3).
 - **PASS** when there are no blockers.
 - **Invalidates:** when a BLOCK's finding means a past decision (`ADR-NNNN`, `R<n>` or `P-<n>`) was
