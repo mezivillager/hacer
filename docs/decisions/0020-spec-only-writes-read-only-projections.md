@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916)) · §1.11 rule 5 amended 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878)) · §1.11 rule 5 amended 2026-10-23 ([#907](https://github.com/mezivillager/hacer/issues/907)) · §1.11 rule 4 amended 2026-10-24 ([#984](https://github.com/mezivillager/hacer/issues/984))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916)) · §1.11 rule 5 amended 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878)) · §1.11 rule 5 amended 2026-10-23 ([#907](https://github.com/mezivillager/hacer/issues/907)) · §1.11 rule 4 amended 2026-10-24 ([#984](https://github.com/mezivillager/hacer/issues/984)) · §1.11 rules 4 and 5 amended 2026-10-24 ([#985](https://github.com/mezivillager/hacer/issues/985))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -924,25 +924,28 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        builtin under one of them (Phase 0.6), that name resolves to the builtin, as in the web IDE,
        and leaves the list.
      - **The grading path has a second builtin set** ([#984](https://github.com/mezivillager/hacer/issues/984),
-       R895). The app registry's, `getBuiltinChipRegistry()`, holds the 16 names above. The grading
-       path's (`src/core/testing/testChip.ts:103-105`) holds those 16 plus `HalfAdder`, `FullAdder` and
-       `Add16`, with `Inc16` and `ALU` to follow in [#985](https://github.com/mezivillager/hacer/issues/985).
-       - A part under one of those three resolves to the builtin there, as in the web IDE. The chip
-         under test stays the file's own, so `BUILTIN HalfAdder;` in HalfAdder's own file is still
-         refused as a stand-in.
-       - A part under the other 24 of the 27 is still `Unknown chip-part` on the grading path, where
+       [#985](https://github.com/mezivillager/hacer/issues/985), R895). The app registry's,
+       `getBuiltinChipRegistry()`, holds the 16 names above. The grading path's
+       (`src/core/testing/testChip.ts:103-105`) holds those 16 plus `HalfAdder`, `FullAdder`, `Add16`,
+       `Inc16` and `ALU`, the 21 names Project 2 needs. The ALU builtin is rule 5's.
+       - A part under one of those five resolves to the builtin there, as in the web IDE. The chip
+         under test stays the file's own, so `hacer test` and the MCP `hacer_hdl` tool still refuse
+         `BUILTIN HalfAdder;` in HalfAdder's own file as a stand-in. `hacer run-tst` runs that file on
+         the builtin, as the web IDE does, since it compares nothing.
+       - A part under the other 22 of the 27 is still `Unknown chip-part` on the grading path, where
          the web IDE grades on its builtin.
        - So a course-shaped `FullAdder` over `HalfAdder` parts grades green and is `unknown-chip` on
          the spec path. FID-035 asks for one set, or a stated rule, before
          [#206](https://github.com/mezivillager/hacer/issues/206).
-       - Pinned by `src/core/testing/gradingBuiltins.test.ts` and the #984 stand-in cases in
+       - Pinned by `src/core/testing/gradingBuiltins.test.ts`, against the web IDE's 43 names in
+         `src/core/chips/referenceBuiltins.ts`, and by the #984 stand-in cases in
          `src/core/testing/testChip.test.ts`.
      - The order is pinned by the builtins-first and own-first `Not`/`And` cases of the #816 block
        in `src/core/hdl/compiler.test.ts`, and by the `Outer` over a broken user `Not` case of #901
        in `src/core/spec/compileSpec.nesting.test.ts`. The 27 names are rule 5's.
 5. **Divergences from the reference, inherited rather than fixed.** The refusal of an unconnected
    part input is not among them: §1.1 decides it. The bullets on a read of a chip OUT, on the 27
-   names, on a `BUILTIN` body's pins and on a pin's width are decided too.
+   names, on a `BUILTIN` body's pins, on a pin's width and on the ALU builtin are decided too.
    - `IN` and `OUT` lists are required. That is the parser's rule. A document with no IN compiles at
      top level but cannot be registered (`validateChipDefinition`).
    - A bit nothing drives reads 0 in the engine, silently
@@ -984,8 +987,9 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        (FID-027).
      - Pinned by the #901 cases in the #816 block of `src/core/hdl/compiler.test.ts` and in the #821
        block of `src/core/spec/compileSpec.nesting.test.ts`, and by
-       `src/core/chips/referenceBuiltins.test.ts`. That file keeps the web IDE's 43 builtin names
-       at `91ef428` and fails once a HACER builtin lands under one of the 27, until the list moves.
+       `src/core/chips/referenceBuiltins.test.ts`. That file checks the app registry against the web
+       IDE's 43 builtin names at `91ef428`, kept in `src/core/chips/referenceBuiltins.ts`, and fails
+       once an app builtin lands under one of the 27, until the list moves.
      - `XOr` and `XOr16` are among the 27; their alias divergence stays FID-008's
        (`src/core/hdl/acceptanceParity.test.ts`).
    - **A `BUILTIN` body whose `IN` or `OUT` differ from the builtin's is refused; the web IDE
@@ -1002,6 +1006,22 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        pins would ignore the file's own `IN` and `OUT`.
      - Every shipped primitive file declares its builtin's pins, `conformance/vectors/01/Nand.hdl`
        among them, so only a hand-edited primitive file is refused, by a message naming both sides.
+   - **The ALU builtin computes the book's bitwise definition; the web IDE's is an 18-word
+     table.** Decided 2026-10-23 by the fidelity verdict on
+     [#177](https://github.com/mezivillager/hacer/issues/177) ([#982](https://github.com/mezivillager/hacer/issues/982)),
+     built by [#985](https://github.com/mezivillager/hacer/issues/985). The grading path's ALU (rule 4)
+     zeroes and negates `x` and `y`, adds or ands them, and negates the result, on every one of the 64
+     `zx nx zy ny f no` words, as the header of `conformance/vectors/02/ALU.hdl` states and the
+     desktop simulator's `computeALU` does.
+     - The web IDE's `ALU` calls `alu()` (`../web-ide/simulator/src/cpu/alu.ts:253-316` at `91ef428`),
+       a table of the 18 Hack operations that returns 0 for any other word. Over a 64 by 64 grid of
+       `x` and `y` it differs from the bitwise definition on 36 of the 64 words and on none of the 18
+       documented ones (`docs/research/2026-10-fidelity-review-spine-0.6.md`).
+     - A builtin that stands in for a learner's part has to compute what a correct ALU HDL
+       computes, and the two official ALU scripts exercise only the 18 documented words, so the
+       vectors cannot tell the two apart.
+     - Pinned by `the ALU builtin agrees with HACER's ALU HDL on all 64 control words` in
+       `src/core/chips/builtins/project02.test.ts`.
    - **A pin wider than `MAX_PIN_WIDTH` is refused; the web IDE reads a declared width modulo
      65536.** Decided 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878), closing
      [#453](https://github.com/mezivillager/hacer/issues/453)). A signal value is held as 32 bits, and
