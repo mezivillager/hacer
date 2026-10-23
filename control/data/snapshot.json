@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T21:24:18.417Z",
+  "generatedAt": "2026-10-23T21:50:18.812Z",
   "head": {
-    "sha": "fa2bc5877a941dea56d025db79807a55b4416dab",
-    "date": "2026-10-24T00:23:34+03:00",
-    "subject": "chore(pr-hygiene): warn when a PR weakens a test (#941)"
+    "sha": "40b69bfbc3c4b3578db49c408e0474c68ed88dbf",
+    "date": "2026-10-24T00:49:14+03:00",
+    "subject": "fix(testing): bind each .cmp column to the output list by position"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T21:24:18.417Z",
+      "fetchedAt": "2026-10-23T21:50:18.812Z",
       "status": "ok"
     }
   },
@@ -82,14 +82,14 @@
         "epicNumber": 318,
         "open": 23,
         "ready": 3,
-        "inProgress": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
-          "number": 942,
-          "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)"
+          "number": 979,
+          "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -218,12 +218,12 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 17,
+        "open": 18,
         "ready": 1,
-        "inProgress": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 5,
+        "agentReady": 4,
         "filedElsewhere": [],
         "next": {
           "number": 983,
@@ -231,9 +231,9 @@
         },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 5,
-          "percentCompleted": 22,
-          "total": 22
+          "completed": 6,
+          "percentCompleted": 25,
+          "total": 24
         }
       },
       {
@@ -414,16 +414,6 @@
     ],
     "next": [
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
-        "number": 942,
-        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
-        "project": "foundation"
-      },
-      {
         "number": 950,
         "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
         "project": "mission-control"
@@ -444,14 +434,19 @@
         "project": "upkeep"
       },
       {
-        "number": 1014,
-        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "number": 1003,
+        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
         "project": "foundation"
       },
       {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
+      },
+      {
+        "number": 1014,
+        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "project": "foundation"
       },
       {
         "number": 933,
@@ -459,8 +454,8 @@
         "project": "upkeep"
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
       },
       {
@@ -469,8 +464,8 @@
         "project": "upkeep"
       },
       {
-        "number": 955,
-        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
         "project": "harness"
       },
       {
@@ -479,8 +474,8 @@
         "project": "upkeep"
       },
       {
-        "number": 958,
-        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
         "project": "harness"
       },
       {
@@ -489,8 +484,8 @@
         "project": "upkeep"
       },
       {
-        "number": 965,
-        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "number": 958,
+        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
         "project": "harness"
       },
       {
@@ -499,8 +494,8 @@
         "project": "upkeep"
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
         "project": "harness"
       },
       {
@@ -509,14 +504,19 @@
         "project": "upkeep"
       },
       {
-        "number": 992,
-        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "project": "harness"
       },
       {
         "number": 939,
         "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
         "project": "upkeep"
+      },
+      {
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
+        "project": "harness"
       },
       {
         "number": 945,
@@ -557,45 +557,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1019,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 942,
-        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 950,
         "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
@@ -660,6 +628,40 @@
         "reason": null
       },
       {
+        "number": 1003,
+        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 1014,
         "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
         "labels": [
@@ -671,21 +673,6 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -706,8 +693,8 @@
         "reason": null
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -737,12 +724,12 @@
         "reason": null
       },
       {
-        "number": 955,
-        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -768,8 +755,8 @@
         "reason": null
       },
       {
-        "number": 958,
-        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -799,8 +786,8 @@
         "reason": null
       },
       {
-        "number": 965,
-        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "number": 958,
+        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -830,12 +817,12 @@
         "reason": null
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -861,12 +848,12 @@
         "reason": null
       },
       {
-        "number": 992,
-        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:2"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -888,6 +875,21 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2383,6 +2385,23 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
+        "number": 942,
+        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 975,
         "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
         "labels": [
@@ -2431,7 +2450,7 @@
         "rank": 7,
         "lane": "feature",
         "pickable": false,
-        "reason": "blocked:#1006,#983"
+        "reason": "blocked:#983"
       },
       {
         "number": 985,
@@ -2480,44 +2499,6 @@
         "reason": "blocked:#993"
       },
       {
-        "number": 1003,
-        "title": "Autosave restore: report a restored cycle, an all-dropped slot and a non-object slot (PR #995 follow-up)",
-        "labels": [
-          "bug",
-          "project:bugs",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 1006,
-        "title": "A correct HalfAdder fails its official HalfAdder.tst/.cmp at row 4: the engine binds .cmp columns by header text",
-        "labels": [
-          "bug",
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity"
-        ],
-        "blocking": [
-          984
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 1007,
         "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused",
         "labels": [
@@ -2531,6 +2512,7 @@
           "fidelity"
         ],
         "blocking": [
+          1017,
           985
         ],
         "project": "spine",
@@ -2572,9 +2554,112 @@
         "lane": "process",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 1017,
+        "title": "hacer run-tst prints an output-list header that comes after a '!'",
+        "labels": [
+          "bug",
+          "project:spine",
+          "risk:1",
+          "bot-filed",
+          "fidelity"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
+      },
+      {
+        "number": 1018,
+        "title": "Test engine: a .cmp header is never graded, and a short .cmp passes (PR #1016 follow-up)",
+        "labels": [
+          "bug",
+          "project:spine",
+          "risk:1",
+          "bot-filed",
+          "fidelity"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
+      "mission-control": [
+        950,
+        509,
+        584
+      ],
+      "spine": [
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        984,
+        985,
+        1007,
+        1017,
+        1018
+      ],
+      "foundation": [
+        979,
+        1003,
+        1014,
+        151,
+        184,
+        325,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        389,
+        395,
+        400,
+        462,
+        506,
+        719,
+        722,
+        728,
+        742,
+        942
+      ],
+      "upkeep": [
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        989,
+        990,
+        991,
+        1009,
+        1010,
+        229,
+        256
+      ],
       "harness": [
         257,
         949,
@@ -2603,74 +2688,6 @@
         994,
         1011,
         1012
-      ],
-      "foundation": [
-        942,
-        979,
-        1014,
-        151,
-        184,
-        325,
-        380,
-        381,
-        382,
-        383,
-        384,
-        385,
-        386,
-        389,
-        395,
-        400,
-        462,
-        506,
-        719,
-        722,
-        728,
-        742,
-        1003
-      ],
-      "mission-control": [
-        950,
-        509,
-        584
-      ],
-      "spine": [
-        983,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        984,
-        985,
-        1006,
-        1007
-      ],
-      "upkeep": [
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        989,
-        990,
-        991,
-        1009,
-        1010,
-        229,
-        256
       ],
       "core": [
         179,
@@ -2741,6 +2758,27 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 1019,
+        "title": "fix(testing): any .tst command may end with ',', ';' or '!', and a run ends at '!' (#1007)",
+        "url": "https://github.com/mezivillager/hacer/pull/1019",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "project:spine",
+          "risk:1",
+          "sev:critical",
+          "fidelity"
+        ],
+        "headRefName": "fix/1007-tst-terminators",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:49:31Z",
+        "mergedAt": null,
+        "closes": [
+          1007
+        ],
+        "verdicts": []
+      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2865,6 +2903,35 @@
       }
     ],
     "merged": [
+      {
+        "number": 1016,
+        "title": "fix(testing): bind each .cmp column to the output list by position",
+        "url": "https://github.com/mezivillager/hacer/pull/1016",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "project:spine",
+          "risk:1",
+          "sev:critical",
+          "fidelity"
+        ],
+        "headRefName": "fix/1006-cmp-columns-by-position",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:31:46Z",
+        "mergedAt": "2026-10-23T21:49:15Z",
+        "closes": [
+          1006
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5), the tier the rule gives (VERIFIER-TIER: opus, engine change)",
+            "at": "2026-10-23T21:47:53Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1016#issuecomment-6375412078"
+          }
+        ]
+      },
       {
         "number": 1015,
         "title": "chore(pr-hygiene): protect the differential harness, see renames out of a protected path, flag weakened tests (#941)",
@@ -4414,32 +4481,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/865#issuecomment-6326174994"
           }
         ]
-      },
-      {
-        "number": 864,
-        "title": "docs(fidelity): review of PR #862, reference compile messages and lines",
-        "url": "https://github.com/mezivillager/hacer/pull/864",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0",
-          "fidelity"
-        ],
-        "headRefName": "docs/fidelity-review-862",
-        "isDraft": false,
-        "createdAt": "2026-10-21T20:26:36Z",
-        "mergedAt": "2026-10-21T20:36:55Z",
-        "closes": [],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T20:28:02Z",
-            "url": "https://github.com/mezivillager/hacer/pull/864#issuecomment-6325824417"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4453,35 +4494,6 @@
   },
   "claims": {
     "items": [
-      {
-        "number": 1006,
-        "ref": "refs/heads/claim/1006",
-        "sha": "e81871b9d81616412ad833328164edaed7a32928",
-        "state": "OPEN",
-        "title": "A correct HalfAdder fails its official HalfAdder.tst/.cmp at row 4: the engine binds .cmp columns by header text",
-        "url": "https://github.com/mezivillager/hacer/issues/1006",
-        "labels": [
-          "bug",
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "fix/1006-cmp-columns-by-position",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T21:14:26Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1006#issuecomment-6374868392"
-        }
-      },
       {
         "number": 1007,
         "ref": "refs/heads/claim/1007",
@@ -4589,12 +4601,12 @@
         }
       },
       {
-        "number": 941,
-        "ref": "refs/heads/claim/941",
-        "sha": "99cb0a61da3d4da89bdfbe5277118bc8d1d67acc",
-        "state": "CLOSED",
-        "title": "pr-hygiene: protect the differential harness, see a rename out of a protected path, and flag a PR that weakens a test (#151, foundation 1.6)",
-        "url": "https://github.com/mezivillager/hacer/issues/941",
+        "number": 942,
+        "ref": "refs/heads/claim/942",
+        "sha": "fa2bc5877a941dea56d025db79807a55b4416dab",
+        "state": "OPEN",
+        "title": "pr-hygiene: a refactor PR may not take assertions out of an existing test (foundation 1.5, tuned on Phase 1's refactor PRs)",
+        "url": "https://github.com/mezivillager/hacer/issues/942",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -4602,16 +4614,16 @@
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/941-tamper-flag",
+          "branch": "feat/942-refactor-test-rule",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-23T20:45:49Z",
-          "url": "https://github.com/mezivillager/hacer/issues/941#issuecomment-6374394712"
+          "at": "2026-10-23T21:36:33Z",
+          "url": "https://github.com/mezivillager/hacer/issues/942#issuecomment-6375220977"
         }
       },
       {
@@ -4667,7 +4679,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6653,7 +6665,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 9
+        "merges": 8
       },
       {
         "date": "2026-10-22",
@@ -6661,20 +6673,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 6
+        "merges": 7
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T21:24:18.417Z",
-      "merged": 141,
+      "since": "2026-10-09T21:50:18.812Z",
+      "merged": 142,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 122,
+        "of": 123,
         "prs": [
           700,
           725,
@@ -6688,8 +6700,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 90,
-          "withVerdict": 90,
+          "merged": 91,
+          "withVerdict": 91,
           "without": []
         },
         "nonCode": {
@@ -10971,27 +10983,8 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T21:20:22.374Z",
+        "at": "2026-10-23T21:24:18.417Z",
         "byProject": {
-          "spine": [
-            1007,
-            983,
-            165,
-            167,
-            169,
-            170,
-            171,
-            172,
-            173,
-            174,
-            176,
-            177,
-            235,
-            236,
-            984,
-            985,
-            1006
-          ],
           "harness": [
             257,
             949,
@@ -11022,6 +11015,7 @@
             1012
           ],
           "foundation": [
+            942,
             979,
             1014,
             151,
@@ -11043,14 +11037,31 @@
             722,
             728,
             742,
-            941,
-            942,
             1003
           ],
           "mission-control": [
             950,
             509,
             584
+          ],
+          "spine": [
+            983,
+            165,
+            167,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236,
+            984,
+            985,
+            1006,
+            1007
           ],
           "upkeep": [
             930,
@@ -11144,11 +11155,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "fa2bc5877a941dea56d025db79807a55b4416dab",
+        "sha": "40b69bfbc3c4b3578db49c408e0474c68ed88dbf",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40026429258/job/120663674538",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40029500073/job/120673935330",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -11468,6 +11479,49 @@
           "known": 68,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 1019,
+        "sha": "6da98657d199e50aa03fd77e559d82676f9cc58f",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T21:50:09Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40029531883/job/120674048413",
+        "line": "HYGIENE: PASS reviewable=68 test=91 excluded=0 files=3 issue=#1007 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 68,
+          "test": 91,
+          "excluded": 0,
+          "files": 3,
+          "issue": "#1007",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1019,
+        "sha": "6da98657d199e50aa03fd77e559d82676f9cc58f",
+        "check": "browser-qa",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40029531845/job/120674046912",
+        "line": null,
+        "verdict": null,
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1019,
+        "sha": "6da98657d199e50aa03fd77e559d82676f9cc58f",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40029529126/job/120674037516",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
