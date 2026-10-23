@@ -10,8 +10,8 @@ import path from 'node:path'
 import { parseArgs, promisify } from 'node:util'
 import { KNOWN_VIOLATIONS_FILE as BASELINE } from '../layer-ratchet.logic.mjs'
 import {
-  archiveDays, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePortfolio, parsePrevious, readClaimHistory, readFlowPages,
-  report,
+  SCENARIO_FILE, archiveDays, buildSnapshot, checksQuery, claimHistoryQuery, claimsQuery, flowQuery, parsePortfolio, parsePrevious, readClaimHistory,
+  readFlowPages, report,
 } from './collect.logic.mjs'
 
 const REPO = process.env.GITHUB_REPOSITORY ?? 'mezivillager/hacer'
@@ -60,6 +60,14 @@ async function archive() {
   return Promise.all(archiveDays(names, STARTED).map(async (name) => JSON.parse(await git('show', `origin/gh-pages:control/history/${name}`))))
 }
 
+/** The scenario file, run once under vitest's JSON reporter. Exit 1 with a report is failing scenarios, still a result;
+ *  any other exit, or output that is not a report, fails this input. */
+async function scenarioReport() {
+  const run = await exec('pnpm', ['exec', 'vitest', 'run', SCENARIO_FILE, '--reporter=json'], OPTIONS)
+    .catch((error) => { if (error.code === 1 && error.stdout) return error; throw error })
+  return JSON.parse(run.stdout)
+}
+
 const list = (kind, ...args) => gh(kind, 'list', '-R', REPO, ...args)
 const file = (name) => [name, () => read(name)]
 const SOURCES = {
@@ -80,6 +88,7 @@ const SOURCES = {
   sessions: ['docs/harness/sessions', () => readDir('docs/harness/sessions')],
   adrs: ['docs/decisions', () => readDir('docs/decisions')],
   vectors: ['conformance/vectors', () => listFiles('conformance/vectors')],
+  scenarios: [`vitest run ${SCENARIO_FILE} --reporter=json`, scenarioReport],
   lineage: ['node scripts/lineage.mjs graph --json', async () => JSON.parse((await exec('node', ['scripts/lineage.mjs', 'graph', '--json'], OPTIONS)).stdout)],
 }
 
