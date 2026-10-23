@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T09:25:35.356Z",
+  "generatedAt": "2026-10-23T10:22:42.415Z",
   "head": {
     "sha": "100e399391361643f72f3ef066450e95b4836215",
     "date": "2026-10-23T01:25:19+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T09:25:35.356Z",
+      "fetchedAt": "2026-10-23T10:22:42.415Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 31,
+        "open": 30,
         "ready": 10,
         "inProgress": 4,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 16,
+        "agentReady": 15,
         "filedElsewhere": [
           151,
           941,
@@ -120,8 +120,8 @@
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
-          "completed": 53,
-          "percentCompleted": 75,
+          "completed": 54,
+          "percentCompleted": 77,
           "total": 70
         }
       },
@@ -455,8 +455,8 @@
         "project": "foundation"
       },
       {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
       },
       {
@@ -470,8 +470,8 @@
         "project": "upkeep"
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
       },
       {
@@ -480,8 +480,8 @@
         "project": "upkeep"
       },
       {
-        "number": 955,
-        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
         "project": "harness"
       },
       {
@@ -490,8 +490,8 @@
         "project": "upkeep"
       },
       {
-        "number": 958,
-        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
         "project": "harness"
       },
       {
@@ -500,8 +500,8 @@
         "project": "upkeep"
       },
       {
-        "number": 965,
-        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "number": 958,
+        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
         "project": "harness"
       },
       {
@@ -510,8 +510,8 @@
         "project": "upkeep"
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
         "project": "harness"
       },
       {
@@ -520,8 +520,8 @@
         "project": "upkeep"
       },
       {
-        "number": 980,
-        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "project": "harness"
       },
       {
@@ -702,14 +702,16 @@
         "reason": null
       },
       {
-        "number": 949,
-        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:2"
         ],
-        "blocking": [],
+        "blocking": [
+          270
+        ],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -750,8 +752,8 @@
         "reason": null
       },
       {
-        "number": 951,
-        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
+        "number": 949,
+        "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -781,12 +783,12 @@
         "reason": null
       },
       {
-        "number": 955,
-        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
+        "number": 951,
+        "title": "`pr-hygiene` counts a review cycle's evidence toward the 400 lines, and the standing review brief still lists the cloud lane",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:1"
         ],
         "blocking": [],
         "project": "harness",
@@ -812,8 +814,8 @@
         "reason": null
       },
       {
-        "number": 958,
-        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
+        "number": 955,
+        "title": "One picking loop per repository at a time: the harness says so, and names what claims and blocked-by links do not guard (HRN-018)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -843,8 +845,8 @@
         "reason": null
       },
       {
-        "number": 965,
-        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
+        "number": 958,
+        "title": "The test-only rule drops its one-commit clause: a test-only PR rebase-merges like any red-first PR (HRN-019)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -874,12 +876,12 @@
         "reason": null
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 965,
+        "title": "Judge routing: the process review asks for decisions for the judge, and three wording gaps from #964's verifier",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -905,16 +907,14 @@
         "reason": null
       },
       {
-        "number": 980,
-        "title": "Cloud probe: one one-off routine measures clone, push, gh, backlog.mjs and the Playwright browser in a cloud session (JDG-003)",
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:0"
+          "risk:1"
         ],
-        "blocking": [
-          257
-        ],
+        "blocking": [],
         "project": "harness",
         "rank": 2,
         "lane": "process",
@@ -1584,23 +1584,6 @@
         "lane": "aux",
         "pickable": false,
         "reason": "foundation-gate"
-      },
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "blocked:#980"
       },
       {
         "number": 261,
@@ -2612,17 +2595,16 @@
       "harness": [
         975,
         976,
+        257,
         949,
         951,
         955,
         958,
         965,
         978,
-        980,
         992,
         154,
         156,
-        257,
         270,
         435,
         436,
@@ -6664,7 +6646,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T09:25:35.356Z",
+      "since": "2026-10-09T10:22:42.415Z",
       "merged": 135,
       "openToMergeHours": {
         "median": 0.3,
@@ -10969,7 +10951,7 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T08:30:11.282Z",
+        "at": "2026-10-23T09:25:35.356Z",
         "byProject": {
           "harness": [
             975,
@@ -11001,7 +10983,6 @@
             972,
             973,
             974,
-            981,
             993,
             994
           ],
