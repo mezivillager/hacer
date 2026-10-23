@@ -3,7 +3,8 @@
  * and the sticky comment; this module is the part #193 needs so the vendored
  * oracle is a protected path today, plus the legacy app's characterization
  * goldens (#331), which record behaviour that is deleted after they are taken,
- * and the reference verdicts of the acceptance-parity corpus (#811).
+ * the reference verdicts of the acceptance-parity corpus (#811), and the
+ * differential harness (#338).
  */
 /** Each protected glob with the reason it is protected, for the warning that names it. */
 export const PROTECTED_PATHS = [
@@ -21,6 +22,11 @@ export const PROTECTED_PATHS = [
     glob: 'conformance/acceptance/**',
     reason: "reference verdicts: the web IDE's answer for each HDL shape; a reader's change edits src/core/hdl/acceptanceParity.test.ts instead (#811)",
     matches: (path) => path.startsWith('conformance/acceptance/'),
+  },
+  {
+    glob: 'conformance/differential/**',
+    reason: 'differential oracle (#338): reference.json pins the web IDE commit it runs against, harness.ts decides what agrees',
+    matches: (path) => path.startsWith('conformance/differential/'),
   },
 ]
 
