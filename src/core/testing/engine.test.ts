@@ -241,6 +241,73 @@ describe('runTest — pins the chip does not have', () => {
   })
 })
 
+describe("runTest — a command's ending: ';' runs on as ',' does, and '!' ends the run (#1007)", () => {
+  const VECTORS = import.meta.glob<string>('../../../conformance/vectors/02/ALU.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+  const vector = (ext: 'tst' | 'cmp'): string => {
+    const text = VECTORS[`../../../conformance/vectors/02/ALU.${ext}`]
+    if (text === undefined) throw new Error(`conformance/vectors/02/ALU.${ext} is missing`)
+    return text
+  }
+  const hdl = (source: string): ChipDefinition => {
+    const ast = parseHDL(source)
+    if (!ast.success) throw new Error(`parse failed: ${ast.errors.map((e) => e.message).join('; ')}`)
+    return hdlChipDefinition(ast.chip, source)
+  }
+  // A script the parser refuses fails the test on this assertion instead of erroring it.
+  const run = (tst: string, options: Parameters<typeof runTest>[1]) => {
+    const parsed = parseTST(tst)
+    expect(parsed.success ? 'parsed' : parsed.errors).toBe('parsed')
+    return parsed.success ? runTest(parsed.script, options) : null
+  }
+
+  const fullAdder = (i: number): string =>
+    `Xor(a=a[${i}], b=b[${i}], out=p${i}); Xor(a=p${i}, b=c${i}, out=out[${i}]); And(a=a[${i}], b=b[${i}], out=g${i}); And(a=p${i}, b=c${i}, out=k${i}); Or(a=g${i}, b=k${i}, out=c${i + 1});`
+  const RIPPLE16 = `CHIP Ripple16 {
+  IN a[16], b[16];
+  OUT out[16];
+  PARTS:
+  Xor(a=a[0], b=b[0], out=out[0]); And(a=a[0], b=b[0], out=c1);
+  ${Array.from({ length: 15 }, (_, i) => fullAdder(i + 1)).join('\n  ')}
+}`
+  const ALU = `CHIP ALU {
+  IN x[16], y[16], zx, nx, zy, ny, f, no;
+  OUT out[16], zr, ng;
+  PARTS:
+  Mux16(a=x, b=false, sel=zx, out=x0);
+  Not16(in=x0, out=notx0);
+  Mux16(a=x0, b=notx0, sel=nx, out=x1);
+  Mux16(a=y, b=false, sel=zy, out=y0);
+  Not16(in=y0, out=noty0);
+  Mux16(a=y0, b=noty0, sel=ny, out=y1);
+  And16(a=x1, b=y1, out=xandy);
+  Ripple16(a=x1, b=y1, out=xplusy);
+  Mux16(a=xandy, b=xplusy, sel=f, out=fxy);
+  Not16(in=fxy, out=notfxy);
+  Mux16(a=fxy, b=notfxy, sel=no, out=out, out[0..7]=low, out[8..15]=high, out[15]=ng);
+  Or8Way(in=low, out=anylow);
+  Or8Way(in=high, out=anyhigh);
+  Or(a=anylow, b=anyhigh, out=nonzero);
+  Not(in=nonzero, out=zr);
+}`
+
+  it("ends the run at a command that ends with '!', as the reference's run() does", () => {
+    const result = run('load Not.hdl, output-list in out; set in 0, eval, output! set in 1, eval, output;', { registry: getBuiltinChipRegistry() })
+    expect(result?.error).toBeNull()
+    expect(result?.outputRows.map((row) => row.values)).toEqual([{ in: 0, out: 1 }])
+  })
+
+  it('ALU.tst and ALU.cmp pass on a Project-1-only ALU', () => {
+    const user = createChipRegistry()
+    user.register(hdl(RIPPLE16))
+    user.register(hdl(ALU))
+    const result = run(vector('tst'), { registry: combineRegistries(user, getBuiltinChipRegistry()), cmpData: cmp(vector('cmp')) })
+    expect(result?.error).toBeNull()
+    expect(result?.firstFailure).toBeNull()
+    expect(result?.passedSteps).toBe(36)
+    expect(result?.passed).toBe(true)
+  })
+})
+
 describe('gold standard A — all 16 Project-1 .tst pass against builtins', () => {
   beforeEach(() => resetAppRegistriesForTests())
 
