@@ -315,7 +315,7 @@ reused.
 
 ### JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** "Carried from the 2026-10-21 record" in `docs/harness/sessions/2026-10-22.md`; #889; #893
-- **Status:** proposed
+- **Status:** declined (judge, #975: option B, not relevant while every host that runs wt-new is single-user; #889 closed as not planned, with a reopen condition)
 - **Evidence:**
   - #889 was opened 2026-10-22T00:22Z from the nit of #886's verifier (issuecomment-6329377996) left after
     #887 closed the symlink half. It is `risk:2` and `project:harness`, without `agent-ready` (`unshaped`).
@@ -346,7 +346,7 @@ reused.
 
 ### JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?
 - **Date:** 2026-10-22 · **Kind:** decision · **Raised by:** #942 (foundation 1.5, filed by the R882 shaper); "Inbox panel decisions" and "The shaping step" in `docs/harness/sessions/2026-10-22.md`
-- **Status:** proposed
+- **Status:** filed (#942)
 - **Evidence:**
   - #942 is open (`project:harness`, `risk:1`, `project:foundation`), without `agent-ready`. A PR titled
     `refactor(...)` would fail `pr-hygiene` when an existing test file loses net `expect(` calls, or is
@@ -376,7 +376,7 @@ reused.
 
 ### JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?
 - **Date:** 2026-10-23 · **Kind:** decision · **Raised by:** the fidelity verdict on #982 (the spine epic #139 and the Phase 0.6 plan #177), `docs/research/2026-10-fidelity-review-spine-0.6.md`; #1006 and #1007
-- **Status:** proposed
+- **Status:** filed (#1006), with #1007; A by the judge on #1011
 - **Evidence:**
   - #1006 (D1) and #1007 (D2) are open, `bug`, `bot-filed`, `sev:critical`, `fidelity`, `project:spine`, `risk:1`, sub-issues of #139, without `agent-ready`. `node scripts/backlog.mjs ready` prints both `unshaped` (2026-10-23). #984 is blocked by #1006 and #985 by #1007 (`gh api repos/<repo>/issues/<n>/dependencies/blocked_by`).
   - Each carries an executable repro, and both fail on `main` `99cb0a61` (2026-10-23, `pnpm exec vitest run --project node`, as the issues give it):
@@ -398,7 +398,7 @@ reused.
 
 ### JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?
 - **Date:** 2026-10-23 · **Kind:** decision · **Raised by:** #1003 (the follow-up of PR #995's verifier, issuecomment-6352629264); R898 in `docs/decisions/rulings/2026-10-22-hacer-loop-to-97.md`
-- **Status:** proposed
+- **Status:** filed (#1003), B bounded by the judge on #1012
 - **Evidence:**
   - #1003 is open, `bug`, `project:bugs`, `project:foundation`, `risk:2`, without `agent-ready`, filed 2026-10-23T20:21Z, a minute after PR #995 merged (`gh issue view 1003`, `gh pr view 995`). It carries three gaps from the verifier's nits, each with a named test in `src/store/actions/persistenceActions/autosave.test.ts`:
     - a restored circuit with a cycle: `simulationTick()` raises its `notify.error` before the Toaster subscribes and it is dropped, and `lastSimulationError` has no UI reader, so after a reload the user never learns of the cycle;
