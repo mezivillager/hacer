@@ -48,6 +48,27 @@ describe('a .cmp header is a label, not a key', () => {
   })
 })
 
+describe('a Project 2 builtin is a part on the grading path, never the chip under test (#984)', () => {
+  const VECTORS = import.meta.glob<string>('../../../conformance/vectors/02/{HalfAdder,FullAdder,Add16}.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+  const vector = (file: string): TestSource => ({ path: file, source: VECTORS[`../../../conformance/vectors/02/${file}`] })
+  const PINS = { HalfAdder: 'IN a, b; OUT sum, carry;', FullAdder: 'IN a, b, c; OUT sum, carry;', Add16: 'IN a[16], b[16]; OUT out[16];' }
+
+  for (const [chip, pins] of Object.entries(PINS)) {
+    it(`still refuses BUILTIN ${chip} in ${chip}'s own file as a stand-in once ${chip} is a builtin`, () => {
+      const own = { path: `${chip}.hdl`, source: `CHIP ${chip} { ${pins} BUILTIN ${chip}; }` }
+      // `hacer run-tst` loads the file on the builtin, so it is one; only grading refuses it.
+      expect(loadChipTest(own, vector(`${chip}.tst`))).not.toHaveProperty('status')
+      expect(testChip(own, vector(`${chip}.tst`), vector(`${chip}.cmp`))).toEqual({
+        status: 'error',
+        chip,
+        rows: null,
+        failure: null,
+        error: `BUILTIN ${chip} in ${chip}: hacer test needs ${chip} built from parts; only a primitive (Nand, DFF, ARegister, DRegister, Screen, Keyboard, ROM32K) may be BUILTIN, as itself`,
+      })
+    })
+  }
+})
+
 describe('a bare output-list name takes its width from the chip (#599)', () => {
   const mux16 = { path: 'Mux16.hdl', source: project1HdlSources.Mux16 }
 

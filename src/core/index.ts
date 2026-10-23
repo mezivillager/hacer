@@ -16,7 +16,7 @@
  *   - `testing/implementationSources` — the Test Lab's "what to test against" picker: an app
  *     concern built ON this surface.
  *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct
- *     implementations, `project1HdlSources`, ARE exported: surfaces outside src/core test against
+ *     implementations, `project1HdlSources` and `project2HdlSources`, ARE exported: surfaces outside src/core test against
  *     them, and the layer rule lets them reach it only through here. `project1DependencyOrder` names
  *     the 15 of them, parts first: the differential harness (#338) runs each through both engines.
  *   - `resetAppRegistriesForTests`, `stripExt`, `printPinRef` — internal helpers.
@@ -37,7 +37,7 @@ export type {
   HDLPin,
   HDLSlice,
 } from './hdl'
-export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1DependencyOrder, project1HdlSources } from './hdl'
+export { compileHDL, hdlChipDefinition, parseHDL, printHDL, project1DependencyOrder, project1HdlSources, project2HdlSources } from './hdl'
 
 // ── The spec document: HDL-shaped text and its sidecar (ADR-0020 §1) ──────────────────────────────
 export type {
@@ -85,6 +85,7 @@ export {
   isHDLChip,
   registerBuiltin,
   registerProject1Builtins,
+  registerProject2Builtins,
   validateChipDefinition,
 } from './chips'
 

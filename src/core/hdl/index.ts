@@ -18,3 +18,4 @@ export type {
 } from './compiler'
 export { compileHDL, hdlChipDefinition } from './compiler'
 export { project1DependencyOrder, project1HdlSources } from './project1HdlSources'
+export { project2HdlSources } from './project2HdlSources'
