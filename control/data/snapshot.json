@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T23:04:26.906Z",
+  "generatedAt": "2026-10-23T23:19:12.390Z",
   "head": {
     "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
     "date": "2026-10-24T02:03:49+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T23:04:26.906Z",
+      "fetchedAt": "2026-10-23T23:19:12.390Z",
       "status": "ok"
     }
   },
@@ -219,16 +219,13 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 15,
-        "ready": 1,
-        "inProgress": 0,
+        "ready": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
         "filedElsewhere": [],
-        "next": {
-          "number": 985,
-          "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts"
-        },
+        "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 9,
@@ -444,11 +441,6 @@
         "project": "mission-control"
       },
       {
-        "number": 985,
-        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
-        "project": "spine"
-      },
-      {
         "number": 1026,
         "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
         "project": "foundation"
@@ -661,21 +653,6 @@
         "project": "mission-control",
         "rank": 14,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 985,
-        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2437,6 +2414,22 @@
         "reason": "claimed"
       },
       {
+        "number": 985,
+        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2616,7 +2609,6 @@
         584
       ],
       "spine": [
-        985,
         165,
         167,
         169,
@@ -2629,6 +2621,7 @@
         177,
         235,
         236,
+        985,
         1017,
         1018
       ],
@@ -2831,6 +2824,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1027",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:spine",
           "risk:1"
         ],
@@ -4550,32 +4544,32 @@
         }
       },
       {
-        "number": 984,
-        "ref": "refs/heads/claim/984",
-        "sha": "bb71ce2f66ea4cc272c36f10b8966f3ad8d92b9e",
-        "state": "CLOSED",
-        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
-        "url": "https://github.com/mezivillager/hacer/issues/984",
+        "number": 985,
+        "ref": "refs/heads/claim/985",
+        "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
+        "state": "OPEN",
+        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
+        "url": "https://github.com/mezivillager/hacer/issues/985",
         "labels": [
           "project:spine",
           "agent-ready",
           "in-progress",
           "risk:1"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/984-project2-adders",
+          "branch": "feat/985-project2-inc16-alu",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-23T22:28:04Z",
-          "url": "https://github.com/mezivillager/hacer/issues/984#issuecomment-6375988297"
+          "at": "2026-10-23T23:05:03Z",
+          "url": "https://github.com/mezivillager/hacer/issues/985#issuecomment-6376487375"
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5823,9 +5817,14 @@
     },
     "releases": [
       {
+        "tag": "v2.70.0",
+        "publishedAt": "2026-10-23T23:06:27Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.69.1",
         "publishedAt": "2026-10-23T22:46:25Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.69.0",
@@ -6594,7 +6593,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T23:04:26.906Z",
+      "since": "2026-10-09T23:19:12.390Z",
       "merged": 148,
       "openToMergeHours": {
         "median": 0.3,
@@ -10913,12 +10912,13 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T22:29:51.883Z",
+        "at": "2026-10-23T23:04:26.906Z",
         "byProject": {
           "foundation": [
             979,
             1003,
             1023,
+            1026,
             151,
             184,
             325,
@@ -10937,8 +10937,7 @@
             719,
             722,
             728,
-            742,
-            1014
+            742
           ],
           "upkeep": [
             930,
@@ -10994,6 +10993,7 @@
             584
           ],
           "spine": [
+            985,
             165,
             167,
             169,
@@ -11006,8 +11006,6 @@
             177,
             235,
             236,
-            984,
-            985,
             1017,
             1018
           ],
@@ -11086,12 +11084,15 @@
         "pr": null,
         "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T23:07:08Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40037469892/job/120700364963",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
