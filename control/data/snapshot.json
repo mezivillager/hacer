@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T22:11:25.504Z",
+  "generatedAt": "2026-10-23T22:17:59.557Z",
   "head": {
-    "sha": "d2730102d29e94e74697f83e53427c0de3ac1223",
-    "date": "2026-10-24T01:10:17+03:00",
-    "subject": "fix(testing): a run ends at a command that ends with '!' (#1007)"
+    "sha": "12a85d44e81386d95898040e01c11f2c6d2c31d4",
+    "date": "2026-10-24T01:17:05+03:00",
+    "subject": "docs(roadmap): name JDG-004's bounded exception in phase tracking"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T22:11:25.504Z",
+      "fetchedAt": "2026-10-23T22:17:59.557Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 23,
-        "ready": 3,
-        "inProgress": 1,
+        "open": 24,
+        "ready": 2,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
           "number": 979,
@@ -111,7 +111,8 @@
         "agentReady": 13,
         "filedElsewhere": [
           151,
-          942
+          942,
+          1023
         ],
         "next": {
           "number": 257,
@@ -120,8 +121,8 @@
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
           "completed": 55,
-          "percentCompleted": 78,
-          "total": 70
+          "percentCompleted": 77,
+          "total": 71
         }
       },
       {
@@ -218,18 +219,21 @@
         "lane": "feature",
         "slug": "spine",
         "epicNumber": 139,
-        "open": 17,
-        "ready": 0,
-        "inProgress": 1,
+        "open": 16,
+        "ready": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 2,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 984,
+          "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 7,
-          "percentCompleted": 29,
+          "completed": 8,
+          "percentCompleted": 33,
           "total": 24
         }
       },
@@ -408,18 +412,13 @@
     ],
     "next": [
       {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "project": "foundation"
-      },
-      {
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
         "project": "upkeep"
       },
       {
-        "number": 1003,
-        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
         "project": "foundation"
       },
       {
@@ -428,9 +427,14 @@
         "project": "harness"
       },
       {
-        "number": 1014,
-        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "number": 1003,
+        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
         "project": "foundation"
+      },
+      {
+        "number": 984,
+        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
+        "project": "spine"
       },
       {
         "number": 933,
@@ -541,6 +545,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1022,
         1020,
         514
       ]
@@ -548,21 +553,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 930,
         "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
@@ -580,13 +570,11 @@
         "reason": null
       },
       {
-        "number": 1003,
-        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
+        "number": 979,
+        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
         "labels": [
-          "bug",
-          "project:bugs",
           "agent-ready",
-          "risk:2",
+          "risk:1",
           "project:foundation"
         ],
         "blocking": [],
@@ -614,16 +602,35 @@
         "reason": null
       },
       {
-        "number": 1014,
-        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "number": 1003,
+        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
         "labels": [
+          "bug",
+          "project:bugs",
           "agent-ready",
-          "risk:1",
+          "risk:2",
           "project:foundation"
         ],
         "blocking": [],
         "project": "foundation",
         "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 984,
+        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [
+          985
+        ],
+        "project": "spine",
+        "rank": 7,
         "lane": "feature",
         "pickable": true,
         "reason": null
@@ -2346,7 +2353,9 @@
           "risk:1",
           "project:foundation"
         ],
-        "blocking": [],
+        "blocking": [
+          1023
+        ],
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
@@ -2402,41 +2411,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "claimed"
-      },
-      {
-        "number": 983,
-        "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [
-          984
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 984,
-        "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:1"
-        ],
-        "blocking": [
-          985
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "blocked:#983"
       },
       {
         "number": 985,
@@ -2519,6 +2493,22 @@
         "reason": "claimed"
       },
       {
+        "number": 1014,
+        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 1017,
         "title": "hacer run-tst prints an output-list header that comes after a '!'",
         "labels": [
@@ -2551,13 +2541,47 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "blocked:#942"
       }
     ],
     "byProject": {
+      "upkeep": [
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        989,
+        990,
+        991,
+        1009,
+        1010,
+        229,
+        256
+      ],
       "foundation": [
         979,
         1003,
-        1014,
         151,
         184,
         325,
@@ -2577,26 +2601,9 @@
         722,
         728,
         742,
-        942
-      ],
-      "upkeep": [
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        989,
-        990,
-        991,
-        1009,
-        1010,
-        229,
-        256
+        942,
+        1014,
+        1023
       ],
       "harness": [
         257,
@@ -2628,6 +2635,7 @@
         1012
       ],
       "spine": [
+        984,
         165,
         167,
         169,
@@ -2640,8 +2648,6 @@
         177,
         235,
         236,
-        983,
-        984,
         985,
         1017,
         1018
@@ -2721,6 +2727,24 @@
   "prs": {
     "open": [
       {
+        "number": 1022,
+        "title": "feat(mission-control): report the conformance pass count from the Project 1 scenarios",
+        "url": "https://github.com/mezivillager/hacer/pull/1022",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/950-conformance-count",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:13:23Z",
+        "mergedAt": null,
+        "closes": [
+          950
+        ],
+        "verdicts": []
+      },
+      {
         "number": 1020,
         "title": "chore(pr-hygiene): a refactor PR may not take an assertion out of an existing test",
         "url": "https://github.com/mezivillager/hacer/pull/1020",
@@ -2737,7 +2761,15 @@
         "closes": [
           942
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5), the tier backlog.mjs tier 1020 gives (scripts and docs only, risk:1, nothing under src/core/ or src/simulation/)",
+            "at": "2026-10-23T22:15:03Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1020#issuecomment-6375808160"
+          }
+        ]
       },
       {
         "number": 1002,
@@ -2864,12 +2896,39 @@
     ],
     "merged": [
       {
+        "number": 1021,
+        "title": "docs(roadmap): name JDG-004's bounded exception in phase tracking",
+        "url": "https://github.com/mezivillager/hacer/pull/1021",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:0"
+        ],
+        "headRefName": "docs/983-phase-tracking",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:13:07Z",
+        "mergedAt": "2026-10-23T22:17:05Z",
+        "closes": [
+          983
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T22:13:31Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1021#issuecomment-6375787079"
+          }
+        ]
+      },
+      {
         "number": 1019,
         "title": "fix(testing): any .tst command may end with ',', ';' or '!', and a run ends at '!' (#1007)",
         "url": "https://github.com/mezivillager/hacer/pull/1019",
         "author": "mezivillager",
         "labels": [
           "bug",
+          "released",
           "project:spine",
           "risk:1",
           "sev:critical",
@@ -4417,33 +4476,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/869#issuecomment-6326720856"
           }
         ]
-      },
-      {
-        "number": 866,
-        "title": "docs(harness): record where the subagent cap lives and the owner's working rule",
-        "url": "https://github.com/mezivillager/hacer/pull/866",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/857-agent-limits",
-        "isDraft": false,
-        "createdAt": "2026-10-21T20:33:02Z",
-        "mergedAt": "2026-10-21T20:42:39Z",
-        "closes": [
-          857
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T20:34:50Z",
-            "url": "https://github.com/mezivillager/hacer/pull/866#issuecomment-6325953869"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4457,35 +4489,6 @@
   },
   "claims": {
     "items": [
-      {
-        "number": 1007,
-        "ref": "refs/heads/claim/1007",
-        "sha": "e81871b9d81616412ad833328164edaed7a32928",
-        "state": "CLOSED",
-        "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused",
-        "url": "https://github.com/mezivillager/hacer/issues/1007",
-        "labels": [
-          "bug",
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "fix/1007-tst-terminators",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T21:23:32Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1007#issuecomment-6375013837"
-        }
-      },
       {
         "number": 1011,
         "ref": "refs/heads/claim/1011",
@@ -4536,6 +4539,31 @@
           "author": "mezivillager",
           "at": "2026-10-23T21:08:36Z",
           "url": "https://github.com/mezivillager/hacer/issues/1012#issuecomment-6374775089"
+        }
+      },
+      {
+        "number": 1014,
+        "ref": "refs/heads/claim/1014",
+        "sha": "d2730102d29e94e74697f83e53427c0de3ac1223",
+        "state": "OPEN",
+        "title": "layout: round hinted coordinates to the lattice's precision, and pin the hint edge cases (PR #1013 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1014",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "fix/1014-hint-rounding",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T22:16:15Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1014#issuecomment-6375825023"
         }
       },
       {
@@ -4670,7 +4698,7 @@
         "number": 983,
         "ref": "refs/heads/claim/983",
         "sha": "40b69bfbc3c4b3578db49c408e0474c68ed88dbf",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it",
         "url": "https://github.com/mezivillager/hacer/issues/983",
         "labels": [
@@ -4679,7 +4707,7 @@
           "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -5940,9 +5968,14 @@
     },
     "releases": [
       {
+        "tag": "v2.68.2",
+        "publishedAt": "2026-10-23T22:12:52Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.68.1",
         "publishedAt": "2026-10-23T21:53:26Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.68.0",
@@ -6683,7 +6716,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 7
+        "merges": 6
       },
       {
         "date": "2026-10-22",
@@ -6691,20 +6724,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 8
+        "merges": 9
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T22:11:25.504Z",
-      "merged": 143,
+      "since": "2026-10-09T22:17:59.557Z",
+      "merged": 144,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 124,
+        "of": 125,
         "prs": [
           700,
           725,
@@ -6723,8 +6756,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 51,
-          "withVerdict": 32,
+          "merged": 52,
+          "withVerdict": 33,
           "without": [
             692,
             693,
@@ -11173,11 +11206,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "d2730102d29e94e74697f83e53427c0de3ac1223",
+        "sha": "12a85d44e81386d95898040e01c11f2c6d2c31d4",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40031862169/job/120681787742",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40032602375/job/120684258625",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -11537,6 +11570,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-23T22:07:31Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40031154716/job/120679440806",
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1022,
+        "sha": "86d2ea4c2f87d22ef0b9589d38dc2972eaab50ca",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T22:13:43Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40032202998/job/120682934299",
+        "line": "HYGIENE: PASS reviewable=95 test=94 excluded=0 files=5 issue=#950 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 95,
+          "test": 94,
+          "excluded": 0,
+          "files": 5,
+          "issue": "#950",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1022,
+        "sha": "86d2ea4c2f87d22ef0b9589d38dc2972eaab50ca",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T22:13:40Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40032205029/job/120682946416",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1022,
+        "sha": "86d2ea4c2f87d22ef0b9589d38dc2972eaab50ca",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T22:16:07Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40032203018/job/120682933541",
         "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
