@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { connectInProcess, type InProcessClient } from '@/mcp/inProcessClient'
 import { threeGateScenario, type NandScenario, type Scenario } from '..'
 import { project1Scenario, project1Scenarios, project1Vector } from '../project1'
+import { project2Scenarios } from '../project2'
 import { runChipScenario, runScenario, SCENARIOS } from './core'
 import { runMcpScenario } from './mcp'
 
@@ -23,7 +24,7 @@ describe('mcp scenario driver', () => {
     expect(await runMcpScenario(scenario, mcp.client)).toEqual({ name: scenario.name, ok: true, errors: [] })
   })
 
-  it.each(project1Scenarios())('$name: hacer_hdl passes, as the core driver does', async (scenario) => {
+  it.each([...project1Scenarios(), ...project2Scenarios()])('$name: hacer_hdl passes, as the core driver does', async (scenario) => {
     expect(runChipScenario(scenario).ok).toBe(true)
     expect(await runMcpScenario(scenario, mcp.client)).toEqual({ name: scenario.name, ok: true, errors: [] })
   })

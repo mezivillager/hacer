@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { nand3Scenario, threeGateScenario } from '../nand3'
 import { project1Scenario, project1Scenarios, project1Vector } from '../project1'
+import { project2Scenarios } from '../project2'
 import { runAllScenarios, runChipScenario, runScenario, SCENARIOS, type CoreScenarioResult } from './core'
 
 const EXPECTED: CoreScenarioResult[] = [
@@ -70,7 +71,7 @@ describe('core scenario driver', () => {
     expect(runScenario(scenario)).toEqual(EXPECTED.find((result) => result.name === scenario.name))
   })
 
-  it.each(project1Scenarios())('$name: testChip passes', (scenario) => {
+  it.each([...project1Scenarios(), ...project2Scenarios()])('$name: testChip passes', (scenario) => {
     expect(runChipScenario(scenario)).toEqual({ name: scenario.name, ok: true, errors: [] })
   })
 

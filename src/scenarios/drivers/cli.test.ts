@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { threeGateScenario, type NandScenario, type Scenario } from '..'
 import { project1Scenario, project1Scenarios, project1Vector } from '../project1'
+import { project2Scenarios } from '../project2'
 import { runCliScenario } from './cli'
 import { runChipScenario, runScenario, SCENARIOS } from './core'
 
@@ -44,7 +45,7 @@ describe('cli scenario driver', { timeout: SPAWN_TIMEOUT }, () => {
     expect(runCliScenario(scenario, bin)).toEqual({ name: scenario.name, ok: true, errors: [] })
   })
 
-  it.each(project1Scenarios())('$name: hacer test passes, as the core driver does', (scenario) => {
+  it.each([...project1Scenarios(), ...project2Scenarios()])('$name: hacer test passes, as the core driver does', (scenario) => {
     expect(runChipScenario(scenario).ok).toBe(true)
     expect(runCliScenario(scenario, bin)).toEqual({ name: scenario.name, ok: true, errors: [] })
   })

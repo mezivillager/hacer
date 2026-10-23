@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { runCli } from '@/cli/runCli'
-import { project1DependencyOrder, project1HdlSources } from '@/core'
+import { project1DependencyOrder, project1HdlSources, project2HdlSources } from '@/core'
 import {
   compareOutputs,
   describeVerdict,
@@ -21,9 +21,16 @@ vi.mock('@/cli/runCli', async (importOriginal) => {
   return { ...original, runCli: vi.fn(original.runCli) }
 })
 
-const VECTORS = path.resolve(import.meta.dirname, '../vectors/01')
-const official = (chip: string, ext: 'hdl' | 'tst' | 'cmp'): string => readFileSync(path.join(VECTORS, `${chip}.${ext}`), 'utf-8')
-const vector = (chip: string, hdl: string): Vector => ({ chip, hdl, tst: official(chip, 'tst'), cmp: official(chip, 'cmp') })
+const VECTORS = path.resolve(import.meta.dirname, '../vectors')
+type Project = '01' | '02'
+const official = (chip: string, ext: 'hdl' | 'tst' | 'cmp', project: Project = '01'): string =>
+  readFileSync(path.join(VECTORS, project, `${chip}.${ext}`), 'utf-8')
+const vector = (chip: string, hdl: string, project: Project = '01'): Vector => ({
+  chip,
+  hdl,
+  tst: official(chip, 'tst', project),
+  cmp: official(chip, 'cmp', project),
+})
 
 describe('compareOutputs', () => {
   it('reports a disagreement as chip, line, expected, actual', () => {
@@ -62,6 +69,29 @@ describe('Project 1: HACER beside the reference simulator, on the official .tst'
     const verdicts: Verdict[] = []
     for (const chip of project1DependencyOrder) verdicts.push(await differential(reference, vector(chip, official(chip, 'hdl'))))
     expect(verdicts.map((verdict) => `${verdict.chip} ${verdict.status}`)).toEqual(project1DependencyOrder.map((chip) => `${chip} rejected`))
+  })
+})
+
+describe('Project 2: HalfAdder, FullAdder and Add16 beside the reference simulator, on the official .tst', () => {
+  const chips = Object.keys(project2HdlSources)
+  let reference: ReferenceSimulator
+  beforeAll(async () => {
+    reference = await loadReference(referenceDir)
+  })
+
+  it('covers HalfAdder, FullAdder and Add16, parts first', () => {
+    expect(chips).toEqual(['HalfAdder', 'FullAdder', 'Add16'])
+  })
+
+  it.each(chips)('%s: both engines write the same .out, and it is the official .cmp', async (chip) => {
+    const verdict = await differential(reference, vector(chip, project2HdlSources[chip], '02'))
+    expect(describeVerdict(verdict)).toBe(`AGREE ${chip}`)
+  })
+
+  it('is not vacuous: the upstream stub .hdl is rejected for every chip', async () => {
+    const verdicts: Verdict[] = []
+    for (const chip of chips) verdicts.push(await differential(reference, vector(chip, official(chip, 'hdl', '02'), '02')))
+    expect(verdicts.map((verdict) => `${verdict.chip} ${verdict.status}`)).toEqual(chips.map((chip) => `${chip} rejected`))
   })
 })
 
