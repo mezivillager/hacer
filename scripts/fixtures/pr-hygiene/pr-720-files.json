@@ -1,0 +1,111 @@
+{
+  "number": 720,
+  "title": "refactor(nodes): mesh types from src/types/scene.ts, no store imports; Wire3D mode required",
+  "files": [
+    {
+      "filename": ".dependency-cruiser.cjs",
+      "status": "modified",
+      "additions": 12,
+      "deletions": 0,
+      "patch": "@@ -65,6 +65,10 @@ const ENGINE = '^src/(core|simulation)/'\n const STATE = '^src/store/'\n /** everything that draws: R3F components, the DOM shell, per-gate bodies, hooks, theme. */\n const UI = '^src/(components|gates|nodes|hooks|theme|styles)/|^src/(App|main)\\\\.tsx$'\n+/** the mesh components that draw from props alone, named file by file: the renderers beside them\n+ *  in the same folders read the store and pass props down, so a folder pattern would flag them. */\n+const MESHES =\n+  '^src/(gates/common/BaseGate|nodes/components/(Input|Output)Node3D|nodes/Bus(Splitter|Joiner)3D|components/canvas/Wire3D)\\\\.tsx$'\n /** `preserveSymlinks` keeps these as `node_modules/<pkg>/…` under pnpm instead of\n  *  `.pnpm/<pkg>@<version>/…`, so neither the pattern nor the baseline breaks on a version bump.\n  *  Left unanchored so a nested or hoisted `node_modules` matches too. */\n@@ -109,6 +113,14 @@ module.exports = {\n       from: { path: STATE },\n       to: { path: RENDERING_PACKAGES },\n     },\n+    {\n+      name: 'mesh-no-state',\n+      severity: 'error',\n+      comment:\n+        'A mesh component draws from its props alone: no store import, not even a type. Its plain data types come from src/types/scene.ts.',\n+      from: { path: MESHES },\n+      to: { path: STATE },\n+    },\n     {\n       name: 'core-through-index',\n       severity: 'error',"
+    },
+    {
+      "filename": "scripts/fixtures/layer-ratchet/README.md",
+      "status": "modified",
+      "additions": 4,
+      "deletions": 0,
+      "patch": "@@ -12,3 +12,7 @@ at `src`. Keep the imports deliberately wrong.\n `src/components/widget.ts` reaching into `src/core/internal.ts` and must leave the front door alone.\n \n `src/cli` and `src/mcp` each hold one import of the store or the UI: `surfaces-through-core`.\n+\n+`src/nodes/BusSplitter3D.tsx` is a mesh component with a type-only store import: `mesh-no-state`\n+must catch it. `src/nodes/NodeRenderer.tsx` beside it is an adapter that reads the store, and the\n+rule must leave it alone — it names the mesh files, not their folders."
+    },
+    {
+      "filename": "scripts/fixtures/layer-ratchet/src/nodes/BusSplitter3D.tsx",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,4 @@\n+// A prop-only mesh component: violates `mesh-no-state` with a type-only import of the store.\n+import type { state } from '../store/state'\n+\n+export type BusSplitter3DProps = { read: typeof state }"
+    },
+    {
+      "filename": "scripts/fixtures/layer-ratchet/src/nodes/NodeRenderer.tsx",
+      "status": "added",
+      "additions": 4,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,4 @@\n+// An adapter beside the meshes: it reads the store and passes props down, which `mesh-no-state` allows.\n+import { state } from '../store/state'\n+\n+export const nodeRenderer = () => state()"
+    },
+    {
+      "filename": "scripts/layer-ratchet.logic.test.mjs",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 1,
+      "patch": "@@ -44,6 +44,8 @@ const result = (violations) => ({\n describe('the rules in .dependency-cruiser.cjs', () => {\n   /** @type {Set<string>} */\n   let fired\n+  /** @type {{ from: string, rule: { name: string } }[]} */\n+  let violations\n   /** @type {string} */\n   let sandbox\n \n@@ -63,7 +65,8 @@ describe('the rules in .dependency-cruiser.cjs', () => {\n       ruleSet: { forbidden: config.forbidden },\n       validate: true,\n     })\n-    fired = new Set(cruised.output.summary.violations.map((v) => v.rule.name))\n+    violations = cruised.output.summary.violations\n+    fired = new Set(violations.map((v) => v.rule.name))\n   }, 60_000)\n \n   afterAll(async () => {\n@@ -80,10 +83,16 @@ describe('the rules in .dependency-cruiser.cjs', () => {\n     ['src-no-e2e', 'src/core importing e2e/types'],\n     ['core-through-index', 'src/components importing src/core/internal instead of src/core/index'],\n     ['no-circular', 'src/simulation/cycleA ↔ cycleB'],\n+    ['mesh-no-state', 'a mesh component type-importing src/store'],\n   ])('catches %s (%s)', (rule) => {\n     expect([...fired]).toContain(rule)\n   })\n \n+  it('flags the named mesh files only, never the store-reading adapter beside them', () => {\n+    const flagged = violations.filter((v) => v.rule.name === 'mesh-no-state').map((v) => v.from)\n+    expect(flagged).toEqual(['src/nodes/BusSplitter3D.tsx'])\n+  })\n+\n   it('fires every rule it declares — no rule is dead', () => {\n     const declared = require(path.join(REPO_ROOT, CONFIG_FILE)).forbidden.map((r) => r.name)\n     expect([...fired].sort()).toEqual([...declared].sort())"
+    },
+    {
+      "filename": "src/components/canvas/Scene/SceneReadyBridge.test.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -120,7 +120,7 @@ function RenderedCircuit({ state }: { state: CircuitStore }) {\n         const { start, end, precomputedPath } = deriveWire3DProps(wire, state)\n         return (\n           <group key={wire.id} userData={{ describedId: wire.id }}>\n-            <Wire3D start={start} end={end} precomputedPath={precomputedPath} />\n+            <Wire3D start={start} end={end} precomputedPath={precomputedPath} performanceMode={state.performanceMode} />\n           </group>\n         )\n       })}"
+    },
+    {
+      "filename": "src/components/canvas/Scene/WirePreview.test.tsx",
+      "status": "modified",
+      "additions": 24,
+      "deletions": 2,
+      "patch": "@@ -30,8 +30,8 @@ vi.mock('@/utils/wiringScheme/core', () => ({\n \n // Mock Wire3D component\n vi.mock('../Wire3D', () => ({\n-  Wire3D: ({ start, end, isPreview }: { start: unknown; end: unknown; isPreview: boolean }) => (\n-    <div data-testid=\"wire-3d\" data-start={JSON.stringify(start)} data-end={JSON.stringify(end)} data-preview={isPreview}>\n+  Wire3D: ({ start, end, isPreview, performanceMode }: { start: unknown; end: unknown; isPreview: boolean; performanceMode: string }) => (\n+    <div data-testid=\"wire-3d\" data-start={JSON.stringify(start)} data-end={JSON.stringify(end)} data-preview={isPreview} data-performance-mode={performanceMode}>\n       Wire3D\n     </div>\n   ),\n@@ -60,6 +60,7 @@ describe('WirePreview', () => {\n     vi.clearAllMocks()\n     setState({\n       wiringFrom: null,\n+      performanceMode: 'normal',\n     })\n     vi.mocked(calculateWirePath).mockReturnValue({\n       segments: [\n@@ -119,6 +120,27 @@ describe('WirePreview', () => {\n     expect(wires[0].getAttribute('data-preview')).toBe('true')\n   })\n \n+  it.each(['low-power', 'normal'] as const)('passes the store\\'s %s performance mode to Wire3D', (mode) => {\n+    setState({\n+      performanceMode: mode,\n+      wiringFrom: {\n+        fromGateId: 'gate-1',\n+        fromPinId: 'pin-1',\n+        fromPinType: 'output',\n+        fromPosition: { x: 0, y: 0.2, z: 0 },\n+        previewEndPosition: { x: 2, y: 0.2, z: 2 },\n+        destinationGateId: null,\n+        destinationPinId: null,\n+        destinationNodeId: null,\n+        destinationNodeType: null,\n+        segments: null,\n+      },\n+      gates: [],\n+    })\n+    const { getByTestId } = render(<WirePreview />)\n+    expect(getByTestId('wire-3d').getAttribute('data-performance-mode')).toBe(mode)\n+  })\n+\n     it('renders segments from calculateWirePath', () => {\n     const fromPosition = { x: 1, y: 0.2, z: 1 }\n     const previewEndPosition = { x: 3, y: 0.2, z: 3 }"
+    },
+    {
+      "filename": "src/components/canvas/Wire3D.scene.test.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -44,7 +44,7 @@ const mounted: Renderer[] = []\n \n async function mount(overrides: Partial<ComponentProps<typeof Wire3D>> = {}): Promise<Renderer> {\n   const renderer = await ReactThreeTestRenderer.create(\n-    <Wire3D start={{ x: 0, y: 0.2, z: 0 }} end={{ x: 3, y: 0.2, z: 0 }} precomputedPath={PATH} {...overrides} />,\n+    <Wire3D start={{ x: 0, y: 0.2, z: 0 }} end={{ x: 3, y: 0.2, z: 0 }} precomputedPath={PATH} performanceMode=\"normal\" {...overrides} />,\n   )\n   mounted.push(renderer)\n   return renderer"
+    },
+    {
+      "filename": "src/components/canvas/Wire3D.tsx",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "patch": "@@ -1,7 +1,7 @@\n import { Line } from '@react-three/drei'\n import { colors } from '@/theme'\n import type { WireSegment, WirePath } from '@/utils/wiringScheme/types'\n-import type { PerformanceMode } from '@/store/types'\n+import type { PerformanceMode } from '@/types/scene'\n import { WIRE_HEIGHT, HOP_HEIGHT } from '@/utils/wiringScheme/types'\n import { getWireArcPointCount, getWireLineWidth } from './wireRenderConfig'\n \n@@ -19,7 +19,7 @@ interface Wire3DProps {\n   /** Whether the wire is selected */\n   isSelected?: boolean\n   /** 'low-power' draws hops with fewer points and selected wires thinner. */\n-  performanceMode?: PerformanceMode\n+  performanceMode: PerformanceMode\n }\n \n /**\n@@ -36,7 +36,7 @@ export function Wire3D({\n   isActive = false,\n   isPreview = false,\n   isSelected = false,\n-  performanceMode = 'normal',\n+  performanceMode,\n }: Wire3DProps) {\n \n   // Guard against undefined positions"
+    },
+    {
+      "filename": "src/nodes/BusJoiner3D.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -1,6 +1,6 @@\n // BusJoiner3D - N 1-bit inputs joined into 1 N-bit output\n import { useState } from 'react'\n-import type { BusComponent } from '@/store/types'\n+import type { BusComponent } from '@/types/scene'\n import type { DragBinding } from '@/gates/types'\n import { colors, materials } from '@/theme'\n import { NODE_DIMENSIONS } from './config'"
+    },
+    {
+      "filename": "src/nodes/BusSplitter3D.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -1,6 +1,6 @@\n // BusSplitter3D - 1 N-bit input fanned out to N 1-bit outputs\n import { useState } from 'react'\n-import type { BusComponent } from '@/store/types'\n+import type { BusComponent } from '@/types/scene'\n import type { DragBinding } from '@/gates/types'\n import { colors, materials } from '@/theme'\n import { NODE_DIMENSIONS } from './config'"
+    },
+    {
+      "filename": "src/nodes/components/InputNode3D.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'\n import { Group } from 'three'\n import { colors, materials } from '@/theme'\n import { NODE_DIMENSIONS, NODE_COLORS, INPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'\n-import type { Position, Rotation } from '@/store/types'\n+import type { Position, Rotation } from '@/types/scene'\n import type { DragBinding } from '@/gates/types'\n import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'\n import { FloatingLabel } from '@/components/canvas/FloatingLabel'"
+    },
+    {
+      "filename": "src/nodes/components/OutputNode3D.tsx",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -3,7 +3,7 @@ import { useState, useRef } from 'react'\n import { Group } from 'three'\n import { colors, materials } from '@/theme'\n import { NODE_DIMENSIONS, NODE_COLORS, OUTPUT_NODE_CONFIG, calculateNodePinPosition } from '../config'\n-import type { Position, Rotation } from '@/store/types'\n+import type { Position, Rotation } from '@/types/scene'\n import type { DragBinding } from '@/gates/types'\n import { formatSignalLabel, isSignalHigh } from '@/simulation/signalDisplay'\n import { FloatingLabel } from '@/components/canvas/FloatingLabel'"
+    },
+    {
+      "filename": "src/store/types.ts",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 36,
+      "patch": "@@ -2,19 +2,9 @@\n \n import type { TestResult } from '@/core/testing/engine'\n import type { TSTOutputColumn } from '@/core/testing/types'\n+import type { BusComponent, BusComponentKind, PerformanceMode, Pin, Position, Rotation } from '@/types/scene'\n \n-export type Position = { x: number; y: number; z: number }\n-export type Rotation = { x: number; y: number; z: number }\n-export type PerformanceMode = 'normal' | 'low-power'\n-\n-export interface Pin {\n-  id: string\n-  name: string\n-  type: 'input' | 'output'\n-  value: number\n-  /** Bit width of the pin. Defaults to 1 for primitive gates when omitted. */\n-  width?: number\n-}\n+export type { BusComponent, BusComponentKind, PerformanceMode, Pin, Position, Rotation } from '@/types/scene'\n \n import type { WireSegment } from '@/utils/wiringScheme/types'\n \n@@ -128,30 +118,6 @@ export interface GateInstance {\n   width: number\n }\n \n-/**\n- * Kind discriminator for bus components.\n- */\n-export type BusComponentKind = 'splitter' | 'joiner'\n-\n-/**\n- * Bus splitter/joiner entity. NOT a registry chip and NOT a GateInstance — a\n- * separate entity (like InputNode/OutputNode) whose pins are derived from\n- * kind+width via createBusPins.\n- *  - splitter: input `in` (N-bit) → outputs `out0..out{N-1}` (1-bit each).\n- *  - joiner:   inputs `in0..in{N-1}` (1-bit each) → output `out` (N-bit).\n- */\n-export interface BusComponent {\n-  id: string\n-  kind: BusComponentKind\n-  position: Position\n-  rotation: Rotation\n-  /** Bus width N (>= 2). */\n-  width: number\n-  inputs: Pin[]\n-  outputs: Pin[]\n-  selected: boolean\n-}\n-\n /**\n  * Source of a wire being created.\n  * Can be a gate pin or a node (input, output)."
+    },
+    {
+      "filename": "src/types/scene.ts",
+      "status": "added",
+      "additions": 36,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,36 @@\n+export type Position = { x: number; y: number; z: number }\n+export type Rotation = { x: number; y: number; z: number }\n+export type PerformanceMode = 'normal' | 'low-power'\n+\n+export interface Pin {\n+  id: string\n+  name: string\n+  type: 'input' | 'output'\n+  value: number\n+  /** Bit width of the pin. Defaults to 1 for primitive gates when omitted. */\n+  width?: number\n+}\n+\n+/**\n+ * Kind discriminator for bus components.\n+ */\n+export type BusComponentKind = 'splitter' | 'joiner'\n+\n+/**\n+ * Bus splitter/joiner entity. NOT a registry chip and NOT a GateInstance — a\n+ * separate entity (like InputNode/OutputNode) whose pins are derived from\n+ * kind+width via createBusPins.\n+ *  - splitter: input `in` (N-bit) → outputs `out0..out{N-1}` (1-bit each).\n+ *  - joiner:   inputs `in0..in{N-1}` (1-bit each) → output `out` (N-bit).\n+ */\n+export interface BusComponent {\n+  id: string\n+  kind: BusComponentKind\n+  position: Position\n+  rotation: Rotation\n+  /** Bus width N (>= 2). */\n+  width: number\n+  inputs: Pin[]\n+  outputs: Pin[]\n+  selected: boolean\n+}"
+    }
+  ]
+}

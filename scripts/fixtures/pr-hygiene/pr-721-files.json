@@ -1,5 +1,6 @@
 {
   "number": 721,
+  "title": "refactor(nodes): one BusComponent3D mesh for the bus splitter and joiner",
   "files": [
     {
       "filename": ".dependency-cruiser.cjs",

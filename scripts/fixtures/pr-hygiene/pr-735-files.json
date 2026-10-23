@@ -1,5 +1,6 @@
 {
   "number": 735,
+  "title": "refactor(session): completed-chip tracking leaves the engine for src/lib (#182)",
   "files": [
     {
       "filename": ".dependency-cruiser-known-violations.json",

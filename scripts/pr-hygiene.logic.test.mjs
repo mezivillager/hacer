@@ -599,10 +599,11 @@ function patched(filename, lines, status = 'modified', extra = {}) {
   }
 }
 
-// #735 and #721 as `gh api repos/{owner}/{repo}/pulls/<n>/files` returned them, trimmed to the
-// fields the weakened-test flag reads.
-const realFiles = (number) =>
-  JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'pr-hygiene', `pr-${number}-files.json`), 'utf8')).files
+// Merged PRs as `gh api repos/{owner}/{repo}/pulls/<n>/files` returned them, with their titles,
+// trimmed to the fields the weakened-test flag and the refactor rule read.
+const realFileList = (number) =>
+  JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'pr-hygiene', `pr-${number}-files.json`), 'utf8'))
+const realFiles = (number) => realFileList(number).files
 
 describe('the weakened-test flag (#941)', () => {
   const flagged = (result) => result.findings.filter((f) => f.rule === 'weakened-tests')
@@ -722,6 +723,135 @@ describe('the weakened-test flag (#941)', () => {
     expect(actions.removed).toEqual(["expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')"])
     expect(actions.added).toEqual([])
     expect(storage.added).toContain(actions.removed[0])
+  })
+})
+
+describe('the refactor rule (#942)', () => {
+  const found = (result) => result.findings.filter((f) => f.rule === 'refactor-tests')
+  const levels = (result) => found(result).map((f) => f.level)
+  const failures = (result) => found(result).filter((f) => f.level === 'fail').map((f) => f.message)
+  const warnings = (result) => found(result).filter((f) => f.level === 'warn').map((f) => f.message)
+  const refactor = (files) => evaluate(pr({ title: 'refactor(core): move the engine path', files }))
+  const HOW_TO_PROCEED = 'Land the test change first, in its own PR, or retitle the PR if it is not a refactor'
+
+  it('refactor rule: a PR titled refactor(…) or refactor!: fails when an existing test file loses net expect( calls, or is removed while its subject stays', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(a).toBe(1)', '-  expect(b).toBe(2)', '+  expect(a).toBe(1)']),
+      patched('src/same.test.ts', ['-  expect(s).toBe(1)', '+    expect(s).toBe(1)']),
+      patched('src/lib/gone.test.ts', ['-  expect(g).toBe(1)'], 'removed'),
+      patched('src/nodes/Foo.scene.test.tsx', ['-  expect(f).toBe(1)'], 'removed'),
+      patched('src/nodes/Foo.tsx', ['-export const Foo = 1'], 'removed'),
+    ]
+    for (const title of ['refactor(core): move the engine path', 'refactor!: drop the loader', 'refactor(nodes)!: one mesh', 'refactor: tidy']) {
+      const result = evaluate(pr({ title, files }))
+      expect(result.verdict).toBe('FAIL')
+      expect(levels(result)).toContain('fail')
+    }
+    const failed = failures(refactor(files))
+    const text = failed.join('\n')
+    expect(text).toContain('`src/a.test.ts` loses 1 `expect(` call')
+    expect(text).toContain('`src/lib/gone.test.ts`')
+    expect(text).not.toContain('same.test.ts')
+    expect(text).not.toContain('Foo.scene.test.tsx')
+    for (const message of failed) expect(message).toContain(HOW_TO_PROCEED)
+  })
+
+  it('refactor rule: a removed expect( line that the PR adds verbatim (trimmed) to another test file is not lost', () => {
+    const pr735 = realFileList(735)
+    const result = evaluate(pr({ title: pr735.title, files: pr735.files }))
+    expect(levels(result)).toEqual(['pass'])
+    expect(found(result)[0].message).not.toContain('testActions.test.ts')
+
+    const line = '-  expect(x).toBe(1)'
+    expect(levels(refactor([patched('src/from.test.ts', [line]), patched('src/to.test.ts', ['+      expect(x).toBe(1)'])]))).toEqual(['pass'])
+    expect(levels(refactor([patched('src/from.test.ts', [line]), patched('src/helper.ts', ['+  expect(x).toBe(1)'])]))).toContain('fail')
+    const twice = refactor([patched('src/from.test.ts', [line, line]), patched('src/to.test.ts', ['+  expect(x).toBe(1)'])])
+    expect(failures(twice).join('\n')).toContain('`src/from.test.ts` loses 1 `expect(` call')
+  })
+
+  it('refactor rule: an existing assertion line removed and not re-added verbatim in any test file of the PR is named in a warn, with its file and text, at any count', () => {
+    const files = [
+      patched('src/nand.test.ts', ['-  expect(nand(false, false)).toBe(true)', '+  expect(nand(false, false)).toBe(false)']),
+      patched('src/grown.test.ts', ['-  expect(or(a)).toBe(1)', '+  expect(or(a, b)).toBe(1)', '+  expect(or(b, a)).toBe(1)']),
+      patched('src/moved.test.ts', ['-  expect(m).toBe(1)', '-  expect(r).toBe(1)', '+    expect(r).toBe(1)']),
+      patched('src/target.test.ts', ['+  expect(m).toBe(1)']),
+    ]
+    const result = refactor(files)
+    expect(levels(result)).toEqual(['warn', 'warn'])
+    expect(result.verdict).toBe('WARN')
+    const [nand, grown] = warnings(result)
+    expect(nand).toContain('`src/nand.test.ts`')
+    expect(nand).toContain('`expect(nand(false, false)).toBe(true)`')
+    expect(nand).not.toContain('toBe(false)')
+    expect(nand).toMatch(/verifier/)
+    expect(grown).toContain('`src/grown.test.ts`')
+    expect(grown).toContain('`expect(or(a)).toBe(1)`')
+    expect(warnings(result).join('\n')).not.toContain('moved.test.ts')
+  })
+
+  it('refactor rule: any other title type gets no finding from this rule', () => {
+    const files = [patched('src/a.test.ts', ['-  expect(a).toBe(1)'])]
+    for (const title of ['feat(core): add a chip', 'fix: a bug', 'chore(refactor): tidy', 'docs: refactor notes', 'refactoring: tidy', undefined]) {
+      const result = evaluate(pr({ title, files }))
+      expect(found(result)).toEqual([])
+      expect(result.findings.filter((f) => f.rule === 'weakened-tests').map((f) => f.level)).toEqual(['warn'])
+    }
+  })
+
+  it('refactor rule: the 10 real refactor PRs give no failure, and the changed-assertion warn names only #706, #710 and #721', () => {
+    const numbers = [630, 698, 701, 706, 708, 710, 712, 720, 721, 735]
+    const results = numbers.map((number) => {
+      const { title, files } = realFileList(number)
+      expect(title).toMatch(/^refactor\(/)
+      return { number, result: evaluate(pr({ title, files })) }
+    })
+    expect(results.filter(({ result }) => failures(result).length > 0).map(({ number }) => number)).toEqual([])
+    expect(results.filter(({ result }) => warnings(result).length > 0).map(({ number }) => number)).toEqual([706, 710, 721])
+    const warned = (number) => warnings(results.find((r) => r.number === number).result).join('\n')
+    expect(warned(706)).toContain('`src/nodes/NodeRenderer.scene.test.tsx`')
+    expect(warned(710)).toContain('`src/nodes/BusComponentRenderer.scene.test.tsx`')
+    expect(warned(721)).toContain('`scripts/layer-ratchet.logic.test.mjs`')
+    expect(warned(721)).toContain('`src/nodes/BusComponent3D.scene.test.tsx`')
+  })
+
+  it('refactor rule: a test file the API sent without a patch fails closed in a refactor PR', () => {
+    const result = refactor([file('src/big.test.ts', 900, 40)])
+    expect(result.verdict).toBe('FAIL')
+    expect(failures(result).join('\n')).toContain('`src/big.test.ts`')
+    const unchanged = [
+      file('src/added.test.ts', 3000, 0, 'added'),
+      { ...file('src/moved.test.ts', 0, 0, 'renamed'), previous_filename: 'src/old.test.ts' },
+    ]
+    expect(levels(refactor(unchanged))).toEqual(['pass'])
+  })
+
+  it('refactor rule: a commented-out assertion does not offset the one it replaces', () => {
+    const files = [
+      patched('src/a.test.ts', [
+        '-  expect(a).toBe(1)',
+        '+  // expect(a).toBe(1)',
+        '-  expect(b).toBe(2)',
+        '+  /* expect(b).toBe(2) */',
+        '-  expect(c).toBe(3)',
+        '+   * expect(c).toBe(3)',
+      ]),
+      patched('src/b.test.ts', ['-  // expect(z) used to be checked here']),
+    ]
+    expect(testWitnessLoss(files).weakened).toEqual([{ filename: 'src/a.test.ts', removed: 3, added: 0 }])
+    const result = refactor(files)
+    expect(failures(result).join('\n')).toContain('`src/a.test.ts` loses 3 `expect(` calls')
+    expect(found(result).map((f) => f.message).join('\n')).not.toContain('b.test.ts')
+  })
+
+  it('refactor rule: a test renamed out of test naming counts as a removed test', () => {
+    const files = [{ ...file('src/a.disabled.ts', 0, 0, 'renamed'), previous_filename: 'src/a.test.ts' }]
+    expect(testWitnessLoss(files).removedTests).toEqual(['src/a.test.ts'])
+    const result = refactor(files)
+    expect(result.verdict).toBe('FAIL')
+    expect(failures(result).join('\n')).toContain('`src/a.test.ts`')
+    expect(evaluate(pr({ files })).findings.filter((f) => f.rule === 'weakened-tests')[0].message).toContain('`src/a.test.ts`')
+    const withSubject = [...files, { ...file('src/b.ts', 0, 0, 'renamed'), previous_filename: 'src/a.ts' }]
+    expect(testWitnessLoss(withSubject).removedTests).toEqual([])
   })
 })
 
