@@ -1,9 +1,11 @@
 import { Tile } from './Tile'
-import { REPO, when, type Snapshot } from './snapshot'
+import { REPO, when, type Conformance, type Snapshot } from './snapshot'
 
 /** A share as `<part> of <whole><of> (<n>%)`; of none, 0%. */
 const share = (part: number, whole: number, of = '') => `${part} of ${whole}${of} (${whole ? Math.round((part / whole) * 100) : 0}%)`
 const hours = (value: number | null) => (value === null ? null : `${value} h`)
+const vectors = ({ files, byExtension, passed, of }: Conformance['projects'][number]) =>
+  `${files} files, ${passed === undefined ? `${byExtension.tst ?? 0} test scripts` : `${passed} of ${of ?? 0} test scripts pass`}`
 
 /** Nine tiles, each read from one section of the snapshot and dated by that section's freshness. */
 export function Overview({ snapshot }: { snapshot: Snapshot }) {
@@ -46,8 +48,8 @@ export function Overview({ snapshot }: { snapshot: Snapshot }) {
             ['on docs, Dependabot, config', share(flow.coverage.nonCode.withVerdict, flow.coverage.nonCode.merged)]] : []} />
         <Tile snapshot={snapshot} section="metrics" title="Conformance vectors" href={`${REPO}/tree/main/conformance/vectors`}
           empty="No conformance vectors in the snapshot."
-          rows={conformance ? [...conformance.projects.map(({ project, files, byExtension }): [string, string] =>
-            [`project ${project}`, `${files} files, ${byExtension.tst ?? 0} test scripts`]), ['pass count', 'no runner yet']] : []} />
+          rows={conformance ? [...conformance.projects.map((row): [string, string] => [`project ${row.project}`, vectors(row)]),
+            ['pass count', conformance.runner ? share(conformance.runner.passed, conformance.runner.of) : 'no runner yet']] : []} />
       </div>
     </>
   )
