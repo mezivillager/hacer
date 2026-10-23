@@ -5,6 +5,7 @@
  */
 import { combineRegistries } from '../chips/combineRegistries'
 import { registerProject1Builtins } from '../chips/builtins/project01'
+import { registerProject2Builtins } from '../chips/builtins/project02'
 import { createChipRegistry, type ChipRegistry } from '../chips/registry'
 import { isBuiltinChip, validateChipDefinition, type ChipDefinition } from '../chips/types'
 import { builtinDisagreements, hdlChipDefinition } from '../hdl/compiler'
@@ -101,6 +102,7 @@ function parseSources(hdlFile: TestSource, tstFile: TestSource): Parsed | TestRe
   const chip = hdl.chip.name
   const builtins = createChipRegistry()
   registerProject1Builtins(builtins)
+  registerProject2Builtins(builtins)
   const refusal = gradingRefusal(hdl.chip, builtins)
   if (refusal !== null) return chipTestError(chip, refusal)
   const tst = parseTST(tstFile.source)

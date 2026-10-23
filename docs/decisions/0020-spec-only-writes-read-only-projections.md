@@ -1,7 +1,7 @@
 # 0020. Spec-only writes, read-only projections
 
 - **Status:** Accepted — the fresh-context adversarial review [#359](https://github.com/mezivillager/hacer/issues/359) required by #327 returned `sound with corrections`, and the second pass over the four post-review deltas returned `accept with corrections` (both on [#358](https://github.com/mezivillager/hacer/pull/358), 2026-09-23). Both sets of corrections are applied below — the second pass's seven under "What the second pass changed" — and no further review round is required. **Amended 2026-09-24** by the spike this ADR scheduled for 1.5/1.6 ([#372](https://github.com/mezivillager/hacer/issues/372)), which ran, found the mechanism 1.5 describes does not work, and replaced it — "What the spike changed". The status does **not** move: the spine, the review's acceptance and every decision stand, and correcting a mechanism is what a scheduled spike is for.
-- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916)) · §1.11 rule 5 amended 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878)) · §1.11 rule 5 amended 2026-10-23 ([#907](https://github.com/mezivillager/hacer/issues/907))
+- **Date:** 2026-09-23 · mechanism amended 2026-09-24 ([#372](https://github.com/mezivillager/hacer/issues/372)) · §7.1 and §9 amended 2026-09-29 ([#598](https://github.com/mezivillager/hacer/issues/598)) · §1.10 added 2026-10-15 ([#374](https://github.com/mezivillager/hacer/issues/374)) · §1.11 added 2026-10-15 ([#378](https://github.com/mezivillager/hacer/issues/378)) · §1.1 and §1.11.5 amended 2026-10-21 ([#813](https://github.com/mezivillager/hacer/issues/813)) · §1.11 rule 4 amended 2026-10-21 ([#825](https://github.com/mezivillager/hacer/issues/825)) · §1, §1.10 and the migration policy amended 2026-10-21 ([#814](https://github.com/mezivillager/hacer/issues/814)) · §1.11 rule 1 amended 2026-10-21 ([#855](https://github.com/mezivillager/hacer/issues/855)) · §1.10 item 10 amended 2026-10-21 ([#844](https://github.com/mezivillager/hacer/issues/844)) · §1.11.5 amended again 2026-10-21 ([#840](https://github.com/mezivillager/hacer/issues/840)) · §1.1 amended again 2026-10-22 ([#882](https://github.com/mezivillager/hacer/issues/882)) · §1.11 rule 2 amended 2026-10-22 ([#903](https://github.com/mezivillager/hacer/issues/903)) · §1.10.9 and §1.10 item 10 amended 2026-10-22 ([#905](https://github.com/mezivillager/hacer/issues/905)) · §1.11 rules 2 and 5 amended 2026-10-22 ([#919](https://github.com/mezivillager/hacer/issues/919)) · §1.11 rule 2 amended 2026-10-22 ([#912](https://github.com/mezivillager/hacer/issues/912)) · §1.10 item 10 amended 2026-10-22 ([#916](https://github.com/mezivillager/hacer/issues/916)) · §1.11 rule 5 amended 2026-10-22 ([#878](https://github.com/mezivillager/hacer/issues/878)) · §1.11 rule 5 amended 2026-10-23 ([#907](https://github.com/mezivillager/hacer/issues/907)) · §1.11 rule 4 amended 2026-10-24 ([#984](https://github.com/mezivillager/hacer/issues/984))
 - **Amended by:** R769, R817, R825, R826, R836, R837
 - **Amends:** ADR-0008 §6, ADR-0009
 - **Supersedes:** ADR-0007
@@ -905,7 +905,7 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
      - The engine builds that view at `src/simulation/topologicalEval.ts:314`,
        `combineRegistries(getBuiltinChipRegistry(), getUserChipRegistry())`. The grading path builds
        the `.hdl` file's own chip first and resolves its parts against the builtins
-       (`src/core/testing/testChip.ts:124-129`).
+       (`src/core/testing/testChip.ts:129-134`).
      - The web IDE's order is builtins first (`../web-ide/simulator/src/chip/builder.ts:48` at
        `91ef428`): all 43 `REGISTRY` names resolve to the builtin with 0 file reads, even beside a
        file of that name.
@@ -923,8 +923,20 @@ and these rules are pinned by `src/core/spec/compileSpec.test.ts`,
        does, and the web IDE its builtin. No name is reserved or refused. When HACER registers a
        builtin under one of them (Phase 0.6), that name resolves to the builtin, as in the web IDE,
        and leaves the list.
-     - On the grading path a part under one of the 27 is `Unknown chip-part` until HACER has that
-       builtin, where the web IDE grades on its builtin.
+     - **The grading path has a second builtin set** ([#984](https://github.com/mezivillager/hacer/issues/984),
+       R895). The app registry's, `getBuiltinChipRegistry()`, holds the 16 names above. The grading
+       path's (`src/core/testing/testChip.ts:103-105`) holds those 16 plus `HalfAdder`, `FullAdder` and
+       `Add16`, with `Inc16` and `ALU` to follow in [#985](https://github.com/mezivillager/hacer/issues/985).
+       - A part under one of those three resolves to the builtin there, as in the web IDE. The chip
+         under test stays the file's own, so `BUILTIN HalfAdder;` in HalfAdder's own file is still
+         refused as a stand-in.
+       - A part under the other 24 of the 27 is still `Unknown chip-part` on the grading path, where
+         the web IDE grades on its builtin.
+       - So a course-shaped `FullAdder` over `HalfAdder` parts grades green and is `unknown-chip` on
+         the spec path. FID-035 asks for one set, or a stated rule, before
+         [#206](https://github.com/mezivillager/hacer/issues/206).
+       - Pinned by `src/core/testing/gradingBuiltins.test.ts` and the #984 stand-in cases in
+         `src/core/testing/testChip.test.ts`.
      - The order is pinned by the builtins-first and own-first `Not`/`And` cases of the #816 block
        in `src/core/hdl/compiler.test.ts`, and by the `Outer` over a broken user `Not` case of #901
        in `src/core/spec/compileSpec.nesting.test.ts`. The 27 names are rule 5's.
