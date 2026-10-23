@@ -1,19 +1,21 @@
 import type { Hint, NodeId } from '../spec/types'
 import type { NodePlacement, Placements, Surface } from './types'
 
-const onLattice = (slot: number, pitch: number): number => Math.round(slot * pitch * 1000) / 1000 || 0
+const fixed = (at: number): number => Math.round(at * 1000) / 1000 || 0
+const onLattice = (slot: number, pitch: number): number => fixed(slot * pitch)
 const nearest = (at: number, pitch: number): number => Math.round(at / pitch) || 0
 
-/** Hinted nodes sit at their hints and hold the cell nearest each; the rest take their layer's free cells in order. */
+/** Hinted nodes sit at their hints to 3 decimals and hold the cell nearest each; the rest take their layer's free cells in order. */
 export function place(ids: NodeId[], layers: number[][], surface: Surface, pitch: number, hints: Partial<Record<NodeId, Hint>>): Placements['nodes'] {
   const placed: NodePlacement[] = []
   const taken = new Set<string>()
   ids.forEach((id, v) => {
     const hint = hints[id]
     if (hint === undefined) return
-    const cell = { layer: nearest(hint.x, pitch), index: nearest(surface === '3d' ? hint.z : hint.y, pitch) }
+    const [x, y, z] = [fixed(hint.x), fixed(hint.y), fixed(hint.z)]
+    const cell = { layer: nearest(x, pitch), index: nearest(surface === '3d' ? z : y, pitch) }
     taken.add(`${cell.layer}:${cell.index}`)
-    placed[v] = { x: hint.x, y: hint.y, z: hint.z, ...cell }
+    placed[v] = { x, y, z, ...cell }
   })
   layers.forEach((layer, l) => {
     let index = 0
