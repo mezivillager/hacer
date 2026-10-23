@@ -241,4 +241,40 @@ describe('restoreAutosave', () => {
     expect(notify.warning).toHaveBeenCalledTimes(1)
     expect(toastCount()).toBe(1)
   })
+
+  it('a restored circuit with a cycle reports it through the boot announcer', () => {
+    const a = circuitActions.addGate('Nand', { x: 0, y: 0, z: 0 })
+    const b = circuitActions.addGate('Nand', { x: 4, y: 0, z: 0 })
+    const segment = [{ start: { x: 1, y: 0.2, z: 0 }, end: { x: 3, y: 0.2, z: 0 }, type: 'horizontal' as const }]
+    circuitActions.addWire({ type: 'gate', entityId: a.id, pinId: a.outputs[0].id }, { type: 'gate', entityId: b.id, pinId: b.inputs[0].id }, segment)
+    circuitActions.addWire({ type: 'gate', entityId: b.id, pinId: b.outputs[0].id }, { type: 'gate', entityId: a.id, pinId: a.inputs[0].id }, segment)
+    vi.advanceTimersByTime(AUTOSAVE_DEBOUNCE_MS)
+    reload()
+    const notices: (() => void)[] = []
+
+    expect(() => restoreAutosave((show) => notices.push(show))).not.toThrow()
+    vi.clearAllMocks()
+    for (const show of notices) show()
+
+    expect(notify.error).toHaveBeenCalledTimes(1)
+    const [report] = vi.mocked(notify.error).mock.calls[0]
+    expect(report).toMatch(/cycle/i)
+    expect(report).toContain(a.id)
+    expect(report).toContain(b.id)
+    expect(vi.mocked(notify.info).mock.calls.map(([message]) => message)).toEqual(['Restored your last circuit'])
+
+    vi.clearAllMocks()
+    circuitActions.simulationTick()
+    expect(notify.error).not.toHaveBeenCalled()
+  })
+
+  it('evaluates the restored circuit before any collected notice runs', () => {
+    saveAndReload()
+    const notices: (() => void)[] = []
+
+    expect(() => restoreAutosave((show) => notices.push(show))).not.toThrow()
+
+    expect(notices.length).toBeGreaterThan(0)
+    expect(useCircuitStore.getState().outputNodes[0].value).toBe(1)
+  })
 })
