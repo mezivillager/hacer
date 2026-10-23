@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T20:26:27.464Z",
+  "generatedAt": "2026-10-23T20:34:43.728Z",
   "head": {
-    "sha": "52896cac152e1fb998c480e72c332e5208d2714f",
-    "date": "2026-10-23T23:25:48+03:00",
-    "subject": "docs(harness): session record 2026-10-22, third part, loop to 97%"
+    "sha": "99cb0a61da3d4da89bdfbe5277118bc8d1d67acc",
+    "date": "2026-10-23T23:33:45+03:00",
+    "subject": "docs(fidelity): the spine and Phase 0.6 verdict, ruling on Project 2's slices (#982)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T20:26:27.464Z",
+      "fetchedAt": "2026-10-23T20:34:43.728Z",
       "status": "ok"
     }
   },
@@ -2849,6 +2849,31 @@
     ],
     "merged": [
       {
+        "number": 1005,
+        "title": "docs(fidelity): the spine and Phase 0.6 verdict, ruling on Project 2's slices (#982)",
+        "url": "https://github.com/mezivillager/hacer/pull/1005",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/982-spine-fidelity",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:30:56Z",
+        "mergedAt": "2026-10-23T20:33:46Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T20:33:11Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1005#issuecomment-6374175631"
+          }
+        ]
+      },
+      {
         "number": 1004,
         "title": "docs(harness): close records for the loop to 97%",
         "url": "https://github.com/mezivillager/hacer/pull/1004",
@@ -4399,33 +4424,6 @@
             "model": "Opus (claude-opus-5-5)",
             "at": "2026-10-21T19:46:08Z",
             "url": "https://github.com/mezivillager/hacer/pull/860#issuecomment-6325013016"
-          }
-        ]
-      },
-      {
-        "number": 858,
-        "title": "docs(harness): the coordinator applies overturned under one definition",
-        "url": "https://github.com/mezivillager/hacer/pull/858",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/852-overturned-owner",
-        "isDraft": false,
-        "createdAt": "2026-10-21T19:09:12Z",
-        "mergedAt": "2026-10-21T19:21:00Z",
-        "closes": [
-          852
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-21T19:16:53Z",
-            "url": "https://github.com/mezivillager/hacer/pull/858#issuecomment-6324444693"
           }
         ]
       }
@@ -6656,7 +6654,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 13
+        "merges": 12
       },
       {
         "date": "2026-10-22",
@@ -6664,20 +6662,20 @@
       },
       {
         "date": "2026-10-23",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T20:26:27.464Z",
-      "merged": 137,
+      "since": "2026-10-09T20:34:43.728Z",
+      "merged": 138,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.6
       },
       "blockedOnce": {
         "count": 8,
-        "of": 118,
+        "of": 119,
         "prs": [
           700,
           725,
@@ -6696,8 +6694,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 49,
-          "withVerdict": 30,
+          "merged": 50,
+          "withVerdict": 31,
           "without": [
             692,
             693,
@@ -10974,42 +10972,26 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T20:22:24.755Z",
+        "at": "2026-10-23T20:26:27.464Z",
         "byProject": {
-          "harness": [
-            976,
-            257,
-            949,
-            951,
-            955,
-            958,
-            965,
-            978,
-            992,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            889,
-            971,
-            972,
-            973,
-            974,
-            975,
-            993,
-            994
+          "upkeep": [
+            930,
+            933,
+            934,
+            935,
+            936,
+            937,
+            938,
+            939,
+            945,
+            946,
+            989,
+            990,
+            991,
+            229,
+            256
           ],
           "foundation": [
-            940,
             941,
             979,
             151,
@@ -11031,25 +11013,40 @@
             722,
             728,
             742,
+            940,
             942,
             1003
           ],
-          "upkeep": [
-            930,
-            933,
-            934,
-            935,
-            936,
-            937,
-            938,
-            939,
-            945,
-            946,
-            989,
-            990,
-            991,
-            229,
-            256
+          "harness": [
+            257,
+            949,
+            951,
+            955,
+            958,
+            965,
+            978,
+            992,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            971,
+            972,
+            973,
+            974,
+            975,
+            976,
+            993,
+            994
           ],
           "mission-control": [
             950,
@@ -11147,11 +11144,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "52896cac152e1fb998c480e72c332e5208d2714f",
+        "sha": "99cb0a61da3d4da89bdfbe5277118bc8d1d67acc",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40019150907/job/120638867972",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40020183579/job/120642401347",
         "line": null,
         "verdict": null,
         "fields": {},
