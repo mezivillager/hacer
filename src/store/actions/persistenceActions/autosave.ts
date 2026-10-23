@@ -66,7 +66,10 @@ function deserializeAutosave(raw: string): DeserializeResult | null {
 const isEmptyCircuit = (c: DeserializedCircuit): boolean =>
   [c.gates, c.wires, c.inputNodes, c.outputNodes, c.junctions, c.busComponents].every((slice) => slice.length === 0)
 
-/** Loads the autosave slot into the store and evaluates it; `announce` decides when its one toast shows. */
+const cycleReport = (gateIds: readonly string[]): string =>
+  `Your restored circuit has a combinational cycle. Gates involved: ${gateIds.length > 0 ? gateIds.join(', ') : 'unknown gates'}. It will not simulate until the cycle is broken.`
+
+/** Loads the autosave slot into the store and evaluates it; `announce` decides when its toasts show. */
 export function restoreAutosave(announce: Announce = (show) => show()): void {
   const raw = readAutosave()
   if (!raw) return
@@ -90,6 +93,9 @@ export function restoreAutosave(announce: Announce = (show) => show()): void {
   const skipped = result.warnings.length
   const description = `Skipped ${String(skipped)} ${skipped === 1 ? 'entry' : 'entries'} this build could not read.`
   announce(() => notify.info('Restored your last circuit', skipped > 0 ? { description } : undefined))
+  // The tick's own cycle toast is raised before the Toaster listens, and later ticks never repeat it.
+  const cycle = useCircuitStore.getState().lastSimulationError
+  if (cycle) announce(() => notify.error(cycleReport(cycle.involvedGateIds)))
 }
 
 export function isAutosaveSubscribed(): boolean {
