@@ -76,7 +76,7 @@ The near-term product path is intentionally narrow:
 
 ## Dependency Rules
 
-- Finish Phase 0.5 before expanding into Projects 2-3.
+- Finish Phase 0.5 before expanding into Projects 2-3, except Project 2's headless chips (HalfAdder, FullAdder, Add16, Inc16, ALU), pulled forward by the JDG-004 ruling (R895); Project 3 still waits.
 - Finish Phase 0.6 before Projects 4-5.
 - Revisit core/plugin/API architecture after the Hack computer path is coherent.
 - Treat selected infrastructure as maintenance work, not as unstarted roadmap scope.
