@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T21:06:33.497Z",
+  "generatedAt": "2026-10-23T21:20:22.374Z",
   "head": {
     "sha": "e81871b9d81616412ad833328164edaed7a32928",
     "date": "2026-10-24T00:05:33+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T21:06:33.497Z",
+      "fetchedAt": "2026-10-23T21:20:22.374Z",
       "status": "ok"
     }
   },
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 27,
-        "ready": 9,
-        "inProgress": 3,
+        "ready": 8,
+        "inProgress": 4,
         "needsHuman": 3,
         "staleClaims": [],
         "agentReady": 13,
@@ -115,8 +115,8 @@
           942
         ],
         "next": {
-          "number": 1012,
-          "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?"
+          "number": 257,
+          "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -220,15 +220,15 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 17,
-        "ready": 1,
-        "inProgress": 0,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 3,
+        "agentReady": 5,
         "filedElsewhere": [],
         "next": {
-          "number": 983,
-          "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it"
+          "number": 1007,
+          "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused"
         },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
@@ -415,9 +415,9 @@
     ],
     "next": [
       {
-        "number": 1012,
-        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
-        "project": "harness"
+        "number": 1007,
+        "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused",
+        "project": "spine"
       },
       {
         "number": 257,
@@ -558,6 +558,7 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1015,
         514
       ]
     }
@@ -565,18 +566,23 @@
   "tasks": {
     "items": [
       {
-        "number": 1012,
-        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
+        "number": 1007,
+        "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused",
         "labels": [
-          "project:harness",
+          "bug",
+          "project:spine",
           "agent-ready",
-          "risk:0",
-          "judge-review"
+          "risk:1",
+          "sev:critical",
+          "bot-filed",
+          "fidelity"
         ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
+        "blocking": [
+          985
+        ],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2537,6 +2543,8 @@
         "labels": [
           "bug",
           "project:spine",
+          "agent-ready",
+          "in-progress",
           "risk:1",
           "sev:critical",
           "bot-filed",
@@ -2549,27 +2557,7 @@
         "rank": 7,
         "lane": "feature",
         "pickable": false,
-        "reason": "unshaped"
-      },
-      {
-        "number": 1007,
-        "title": "The official 02/ALU.tst does not parse: a set that ends a step with ';' is refused",
-        "labels": [
-          "bug",
-          "project:spine",
-          "risk:1",
-          "sev:critical",
-          "bot-filed",
-          "fidelity"
-        ],
-        "blocking": [
-          985
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
+        "reason": "claimed"
       },
       {
         "number": 1011,
@@ -2587,11 +2575,46 @@
         "lane": "process",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 1012,
+        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
+      "spine": [
+        1007,
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        984,
+        985,
+        1006
+      ],
       "harness": [
-        1012,
         257,
         949,
         951,
@@ -2617,7 +2640,8 @@
         976,
         993,
         994,
-        1011
+        1011,
+        1012
       ],
       "foundation": [
         979,
@@ -2649,25 +2673,6 @@
         950,
         509,
         584
-      ],
-      "spine": [
-        983,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        984,
-        985,
-        1006,
-        1007
       ],
       "upkeep": [
         930,
@@ -2757,6 +2762,25 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 1015,
+        "title": "chore(pr-hygiene): protect the differential harness, see renames out of a protected path, flag weakened tests (#941)",
+        "url": "https://github.com/mezivillager/hacer/pull/1015",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/941-tamper-flag",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:07:09Z",
+        "mergedAt": null,
+        "closes": [
+          941
+        ],
+        "verdicts": []
+      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2887,6 +2911,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1013",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2913,6 +2938,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1008",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -2937,6 +2963,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1005",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:spine",
           "risk:0",
           "fidelity"
@@ -2962,6 +2989,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1004",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:0"
         ],
@@ -4467,6 +4495,35 @@
   "claims": {
     "items": [
       {
+        "number": 1006,
+        "ref": "refs/heads/claim/1006",
+        "sha": "e81871b9d81616412ad833328164edaed7a32928",
+        "state": "OPEN",
+        "title": "A correct HalfAdder fails its official HalfAdder.tst/.cmp at row 4: the engine binds .cmp columns by header text",
+        "url": "https://github.com/mezivillager/hacer/issues/1006",
+        "labels": [
+          "bug",
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "sev:critical",
+          "bot-filed",
+          "fidelity"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "fix/1006-cmp-columns-by-position",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T21:14:26Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1006#issuecomment-6374868392"
+        }
+      },
+      {
         "number": 1011,
         "ref": "refs/heads/claim/1011",
         "sha": "5720caba590f3ec99122ed158ff7954dfa43365b",
@@ -4493,6 +4550,32 @@
         }
       },
       {
+        "number": 1012,
+        "ref": "refs/heads/claim/1012",
+        "sha": "e81871b9d81616412ad833328164edaed7a32928",
+        "state": "OPEN",
+        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
+        "url": "https://github.com/mezivillager/hacer/issues/1012",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "chore/judge-jdg-012",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T21:08:36Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1012#issuecomment-6374775089"
+        }
+      },
+      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -4515,31 +4598,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 940,
-        "ref": "refs/heads/claim/940",
-        "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
-        "state": "CLOSED",
-        "title": "N.4b: `layout(doc, surface, { previous, hints })`: hold what is placed, never move a hinted node",
-        "url": "https://github.com/mezivillager/hacer/issues/940",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/940-layout-previous",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T20:25:52Z",
-          "url": "https://github.com/mezivillager/hacer/issues/940#issuecomment-6374040478"
         }
       },
       {
@@ -4621,7 +4679,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5869,9 +5927,14 @@
     },
     "releases": [
       {
+        "tag": "v2.68.0",
+        "publishedAt": "2026-10-23T21:09:10Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.67.5",
         "publishedAt": "2026-10-23T20:23:56Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.67.4",
@@ -6615,7 +6678,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T21:06:33.497Z",
+      "since": "2026-10-09T21:20:22.374Z",
       "merged": 140,
       "openToMergeHours": {
         "median": 0.3,
@@ -11091,12 +11154,15 @@
         "pr": null,
         "sha": "e81871b9d81616412ad833328164edaed7a32928",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T21:09:08Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40024196120/job/120656107643",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
@@ -11407,6 +11473,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-22T23:18:19Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39870624860/job/120143842868",
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1015,
+        "sha": "81972eebd7bab53cc19ef99553dbd0098b99e30e",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T21:07:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40024402940/job/120656815755",
+        "line": "HYGIENE: PASS reviewable=100 test=163 excluded=217 files=2 issue=#941 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 100,
+          "test": 163,
+          "excluded": 217,
+          "files": 2,
+          "issue": "#941",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1015,
+        "sha": "81972eebd7bab53cc19ef99553dbd0098b99e30e",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T21:07:31Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40024402198/job/120656812538",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1015,
+        "sha": "81972eebd7bab53cc19ef99553dbd0098b99e30e",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-23T21:09:29Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40024398029/job/120656798850",
         "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
