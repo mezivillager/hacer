@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T19:19:30.809Z",
+  "generatedAt": "2026-10-23T20:21:14.695Z",
   "head": {
-    "sha": "100e399391361643f72f3ef066450e95b4836215",
-    "date": "2026-10-23T01:25:19+03:00",
-    "subject": "docs(harness): let the judge make a bot-filed issue agent-ready in the fidelity brief (R889)"
+    "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
+    "date": "2026-10-23T23:20:00+03:00",
+    "subject": "fix(store): restore the autosaved circuit on reload"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T19:19:30.809Z",
+      "fetchedAt": "2026-10-23T20:21:14.695Z",
       "status": "ok"
     }
   },
@@ -80,12 +80,12 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 24,
+        "open": 23,
         "ready": 3,
-        "inProgress": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
           "number": 940,
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 30,
-        "ready": 10,
-        "inProgress": 4,
+        "ready": 9,
+        "inProgress": 5,
         "needsHuman": 3,
         "staleClaims": [],
         "agentReady": 15,
@@ -115,8 +115,8 @@
           942
         ],
         "next": {
-          "number": 975,
-          "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?"
+          "number": 976,
+          "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -220,15 +220,15 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 16,
-        "ready": 2,
-        "inProgress": 0,
+        "ready": 1,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 4,
         "filedElsewhere": [],
         "next": {
-          "number": 982,
-          "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built"
+          "number": 983,
+          "title": "Phase tracking names JDG-004's bounded exception: Phase 0.5 stays current, and Project 2 runs headless beside it"
         },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
@@ -293,14 +293,12 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 0,
-        "filedElsewhere": [
-          801
-        ],
+        "filedElsewhere": [],
         "next": null,
         "title": "Epic: bugs",
         "subIssues": {
-          "completed": 4,
-          "percentCompleted": 80,
+          "completed": 5,
+          "percentCompleted": 100,
           "total": 5
         }
       },
@@ -415,11 +413,6 @@
     ],
     "next": [
       {
-        "number": 975,
-        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
-        "project": "harness"
-      },
-      {
         "number": 976,
         "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?",
         "project": "harness"
@@ -430,14 +423,9 @@
         "project": "foundation"
       },
       {
-        "number": 950,
-        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
-        "project": "mission-control"
-      },
-      {
-        "number": 982,
-        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
-        "project": "spine"
+        "number": 930,
+        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "project": "upkeep"
       },
       {
         "number": 941,
@@ -445,9 +433,9 @@
         "project": "foundation"
       },
       {
-        "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
-        "project": "upkeep"
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       },
       {
         "number": 979,
@@ -455,9 +443,9 @@
         "project": "foundation"
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
+        "number": 950,
+        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
+        "project": "mission-control"
       },
       {
         "number": 983,
@@ -563,29 +551,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        995,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 975,
-        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 976,
         "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?",
@@ -618,37 +589,18 @@
         "reason": null
       },
       {
-        "number": 950,
-        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
+        "number": 930,
+        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
         "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 982,
-        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
-        "labels": [
-          "project:spine",
+          "project:upkeep",
           "agent-ready",
           "risk:0",
-          "research",
-          "fidelity"
+          "inbox-review"
         ],
-        "blocking": [
-          985,
-          984
-        ],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -671,18 +623,19 @@
         "reason": null
       },
       {
-        "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "labels": [
-          "project:upkeep",
+          "project:harness",
           "agent-ready",
-          "risk:0",
-          "inbox-review"
+          "risk:2"
         ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -702,18 +655,16 @@
         "reason": null
       },
       {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "number": 950,
+        "title": "Mission Control's `metrics.conformance` reports a pass count from the scenario suite instead of `runner: null`",
         "labels": [
-          "project:harness",
           "agent-ready",
-          "risk:2"
+          "risk:1",
+          "project:mission-control"
         ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
         "lane": "process",
         "pickable": true,
         "reason": null
@@ -2317,25 +2268,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 801,
-        "title": "bug: an unsaved circuit is lost on reload — autosave is written but never read back",
-        "labels": [
-          "bug",
-          "project:bugs",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 802,
         "title": "polish: Clear All, Library Delete and Save-over-a-name destroy work with no confirmation and no undo",
         "labels": [
@@ -2528,6 +2460,44 @@
         "reason": "claimed"
       },
       {
+        "number": 975,
+        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 982,
+        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "research",
+          "fidelity"
+        ],
+        "blocking": [
+          985,
+          984
+        ],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 984,
         "title": "Project 2, slice 1: HalfAdder, FullAdder and Add16 pass their official vectors headless, and the differential agrees with the web IDE",
         "labels": [
@@ -2593,7 +2563,6 @@
     ],
     "byProject": {
       "harness": [
-        975,
         976,
         257,
         949,
@@ -2621,6 +2590,7 @@
         972,
         973,
         974,
+        975,
         993,
         994
       ],
@@ -2647,31 +2617,7 @@
         722,
         728,
         742,
-        801,
         942
-      ],
-      "mission-control": [
-        950,
-        509,
-        584
-      ],
-      "spine": [
-        982,
-        983,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        984,
-        985
       ],
       "upkeep": [
         930,
@@ -2689,6 +2635,29 @@
         991,
         229,
         256
+      ],
+      "mission-control": [
+        950,
+        509,
+        584
+      ],
+      "spine": [
+        983,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        982,
+        984,
+        985
       ],
       "core": [
         179,
@@ -2856,35 +2825,6 @@
         "verdicts": []
       },
       {
-        "number": 995,
-        "title": "fix(store): restore the autosaved circuit on reload (#801)",
-        "url": "https://github.com/mezivillager/hacer/pull/995",
-        "author": "mezivillager",
-        "labels": [
-          "bug",
-          "project:bugs",
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "headRefName": "fix/801-autosave-restore",
-        "isDraft": false,
-        "createdAt": "2026-10-22T22:11:03Z",
-        "mergedAt": null,
-        "closes": [
-          801
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T22:23:52Z",
-            "url": "https://github.com/mezivillager/hacer/pull/995#issuecomment-6352629264"
-          }
-        ]
-      },
-      {
         "number": 514,
         "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
         "url": "https://github.com/mezivillager/hacer/pull/514",
@@ -2935,6 +2875,35 @@
             "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
             "at": "2026-10-22T22:22:37Z",
             "url": "https://github.com/mezivillager/hacer/pull/996#issuecomment-6352609431"
+          }
+        ]
+      },
+      {
+        "number": 995,
+        "title": "fix(store): restore the autosaved circuit on reload (#801)",
+        "url": "https://github.com/mezivillager/hacer/pull/995",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "risk:2",
+          "sev:high",
+          "project:foundation"
+        ],
+        "headRefName": "fix/801-autosave-restore",
+        "isDraft": false,
+        "createdAt": "2026-10-22T22:11:03Z",
+        "mergedAt": "2026-10-23T20:20:01Z",
+        "closes": [
+          801
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T22:23:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/995#issuecomment-6352629264"
           }
         ]
       },
@@ -4463,33 +4432,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/856#issuecomment-6324161577"
           }
         ]
-      },
-      {
-        "number": 854,
-        "title": "docs(harness): report tokens per merged PR as a run average, owner minutes stay unmeasured",
-        "url": "https://github.com/mezivillager/hacer/pull/854",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/850-tokens-per-merge",
-        "isDraft": false,
-        "createdAt": "2026-10-21T18:42:28Z",
-        "mergedAt": "2026-10-21T18:46:35Z",
-        "closes": [
-          850
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "coordinator (claude-opus-5-5)",
-            "at": "2026-10-21T18:44:01Z",
-            "url": "https://github.com/mezivillager/hacer/pull/854#issuecomment-6323785144"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4526,34 +4468,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 801,
-        "ref": "refs/heads/claim/801",
-        "sha": "7fca96c6c020643e5462ec6b7458cb0fd0c03e9a",
-        "state": "OPEN",
-        "title": "bug: an unsaved circuit is lost on reload — autosave is written but never read back",
-        "url": "https://github.com/mezivillager/hacer/issues/801",
-        "labels": [
-          "bug",
-          "project:bugs",
-          "agent-ready",
-          "in-progress",
-          "risk:2",
-          "sev:high",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-22-hacer-loop-to-97",
-          "branch": "fix/801-autosave-restore",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-22T21:46:37Z",
-          "url": "https://github.com/mezivillager/hacer/issues/801#issuecomment-6352027214"
         }
       },
       {
@@ -4658,6 +4572,59 @@
           "author": "mezivillager",
           "at": "2026-10-22T22:03:32Z",
           "url": "https://github.com/mezivillager/hacer/issues/974#issuecomment-6352302825"
+        }
+      },
+      {
+        "number": 975,
+        "ref": "refs/heads/claim/975",
+        "sha": "100e399391361643f72f3ef066450e95b4836215",
+        "state": "OPEN",
+        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
+        "url": "https://github.com/mezivillager/hacer/issues/975",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "chore/judge-jdg-009",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T20:06:47Z",
+          "url": "https://github.com/mezivillager/hacer/issues/975#issuecomment-6373710711"
+        }
+      },
+      {
+        "number": 982,
+        "ref": "refs/heads/claim/982",
+        "sha": "100e399391361643f72f3ef066450e95b4836215",
+        "state": "OPEN",
+        "title": "Fidelity verdict on the spine epic #139 and the Phase 0.6 plan #177, ruling on Project 2's two slices before they are built",
+        "url": "https://github.com/mezivillager/hacer/issues/982",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "research",
+          "fidelity"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "docs/982-spine-fidelity",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T20:08:19Z",
+          "url": "https://github.com/mezivillager/hacer/issues/982#issuecomment-6373736893"
         }
       }
     ],
@@ -6637,24 +6604,28 @@
     "mergesPerDay": [
       {
         "date": "2026-10-21",
-        "merges": 15
+        "merges": 14
       },
       {
         "date": "2026-10-22",
         "merges": 45
+      },
+      {
+        "date": "2026-10-23",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T19:19:30.809Z",
-      "merged": 135,
+      "since": "2026-10-09T20:21:14.695Z",
+      "merged": 136,
       "openToMergeHours": {
         "median": 0.3,
-        "p90": 1.5
+        "p90": 1.6
       },
       "blockedOnce": {
         "count": 8,
-        "of": 116,
+        "of": 117,
         "prs": [
           700,
           725,
@@ -6668,8 +6639,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 87,
-          "withVerdict": 87,
+          "merged": 88,
+          "withVerdict": 88,
           "without": []
         },
         "nonCode": {
@@ -10951,7 +10922,7 @@
       },
       {
         "date": "2026-10-23",
-        "at": "2026-10-23T18:27:10.247Z",
+        "at": "2026-10-23T19:19:30.809Z",
         "byProject": {
           "harness": [
             975,
@@ -11124,17 +11095,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "100e399391361643f72f3ef066450e95b4836215",
+        "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T22:28:51Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39864836187/job/120124297493",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40018396305/job/120636309717",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -11179,58 +11147,6 @@
         "verdict": "PASS",
         "fields": {
           "known": 71,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 995,
-        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T22:11:20Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39863050082/job/120118306114",
-        "line": "HYGIENE: PASS reviewable=80 test=262 excluded=0 files=3 issue=#801 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 80,
-          "test": 262,
-          "excluded": 0,
-          "files": 3,
-          "issue": "#801",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 995,
-        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T22:13:51Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39863049298/job/120118303164",
-        "line": "BROWSER-QA: PASS suites=store passed=107 failed=0 flaky=0 skipped=0",
-        "verdict": "PASS",
-        "fields": {
-          "suites": "store",
-          "passed": 107,
-          "failed": 0,
-          "flaky": 0,
-          "skipped": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 995,
-        "sha": "4eed8c52bf6b6ac24c6cde1b341f40925e51dc6d",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-22T22:14:32Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/39863043224/job/120118280887",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
           "new": 0
         },
         "disagrees": false
