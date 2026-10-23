@@ -4,7 +4,7 @@ import type { ChipRegistry } from '../chips/registry'
 import { ChipCompileError, evaluateChip } from '../chips/evaluateChip'
 import { parseHDL } from '../hdl/parser'
 import type { TSTOutputColumn, TSTScript } from './types'
-import type { CmpFile } from './cmpParser'
+import type { CmpFile, CmpMismatch } from './cmpParser'
 import { compareCmpRow } from './cmpParser'
 
 export interface RunTestOptions {
@@ -74,6 +74,12 @@ export function resolveOutputColumns(script: TSTScript, chip: ChipDefinition): T
     return width === undefined ? column : { ...column, width }
   }
   return { commands: script.commands.map((cmd) => (cmd.type === 'output-list' ? { ...cmd, columns: cmd.columns.map(resolve) } : cmd)) }
+}
+
+/** Column i of the `.cmp` is output-list entry i: a header is only a label, which the reference cuts to its column's width. */
+function compareWithCmp(values: Record<string, number>, outputColumns: string[], cmp: CmpFile, row: number): CmpMismatch | null {
+  const columns = cmp.columns.map((c, i) => ({ ...c, name: i < outputColumns.length ? outputColumns[i] : c.name }))
+  return compareCmpRow(columns.map((c) => values[c.name] ?? 0), cmp.rows[row], columns, row)
 }
 
 export function runTest(script: TSTScript, options: RunTestOptions): TestResult {
@@ -162,9 +168,7 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
           if (cmpRowIndex >= cmpData.rows.length) {
             return fail(`Output row count ${outputRows.length} exceeds .cmp row count ${cmpData.rows.length}`)
           }
-          // Build the actual row in .cmp COLUMN order (the comparison's source of truth).
-          const actualRow = cmpData.columns.map((c) => values[c.name] ?? 0)
-          const mismatch = compareCmpRow(actualRow, cmpData.rows[cmpRowIndex], cmpData.columns, cmpRowIndex)
+          const mismatch = compareWithCmp(values, outputColumns, cmpData, cmpRowIndex)
           if (mismatch) {
             return {
               passed: false,
