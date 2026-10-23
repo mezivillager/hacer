@@ -56,6 +56,18 @@ describe('conformance/acceptance/**', () => {
   })
 })
 
+describe('conformance/differential/**', () => {
+  it('conformance/differential/** is protected as the differential oracle (#338)', () => {
+    expect(PROTECTED_GLOBS).toContain('conformance/differential/**')
+    expect(isProtectedPath('conformance/differential/reference.json')).toBe(true)
+    expect(isProtectedPath('conformance/differential/harness.ts')).toBe(true)
+    expect(isProtectedPath('conformance/differential/harness.test.ts')).toBe(true)
+    expect(protectedEntryFor('conformance/differential/harness.ts').reason).toContain('differential oracle (#338)')
+    expect(isProtectedPath('conformance/differential.json')).toBe(false)
+    expect(isProtectedPath('src/core/differential/harness.ts')).toBe(false)
+  })
+})
+
 describe('protectedEntryFor', () => {
   it('gives each glob its own reason', () => {
     expect(protectedEntryFor('conformance/vectors/01/Xor.tst').reason).toContain('held-out oracle')
