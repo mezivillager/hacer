@@ -30,4 +30,6 @@ export const project2HdlSources: Record<string, string> = {
     FullAdder(a=a[14], b=b[14], c=c13, sum=out[14], carry=c14);
     FullAdder(a=a[15], b=b[15], c=c14, sum=out[15]);
   }`,
+  Inc16: '',
+  ALU: '',
 }
