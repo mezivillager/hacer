@@ -1,0 +1,97 @@
+{
+  "number": 735,
+  "files": [
+    {
+      "filename": ".dependency-cruiser-known-violations.json",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 34,
+      "patch": "@@ -513,23 +513,6 @@\n       \"name\": \"core-through-index\"\n     }\n   },\n-  {\n-    \"type\": \"dependency\",\n-    \"from\": \"src/store/actions/testActions/testActions.ts\",\n-    \"to\": \"src/core/testing/chipCompletion.ts\",\n-    \"unresolvedTo\": \"@/core/testing/chipCompletion\",\n-    \"dependencyTypes\": [\n-      \"aliased\",\n-      \"aliased-tsconfig\",\n-      \"aliased-tsconfig-paths\",\n-      \"local\",\n-      \"import\"\n-    ],\n-    \"rule\": {\n-      \"severity\": \"error\",\n-      \"name\": \"core-through-index\"\n-    }\n-  },\n   {\n     \"type\": \"dependency\",\n     \"from\": \"src/store/actions/testActions/testActions.ts\",\n@@ -649,23 +632,6 @@\n       \"name\": \"core-through-index\"\n     }\n   },\n-  {\n-    \"type\": \"dependency\",\n-    \"from\": \"src/store/circuitStore.ts\",\n-    \"to\": \"src/core/testing/chipCompletion.ts\",\n-    \"unresolvedTo\": \"@/core/testing/chipCompletion\",\n-    \"dependencyTypes\": [\n-      \"aliased\",\n-      \"aliased-tsconfig\",\n-      \"aliased-tsconfig-paths\",\n-      \"local\",\n-      \"import\"\n-    ],\n-    \"rule\": {\n-      \"severity\": \"error\",\n-      \"name\": \"core-through-index\"\n-    }\n-  },\n   {\n     \"type\": \"dependency\",\n     \"from\": \"src/store/types.ts\","
+    },
+    {
+      "filename": "REPO_MAP.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 3,
+      "patch": "@@ -88,8 +88,8 @@ src/\n │   │   └── builtins/ # project01.ts — the 16 Project 1 builtins (definition + evaluate + test)\n │   ├── hdl/          # HACK HDL parser + compiler, Project 1 HDL sources/fixtures\n │   ├── serialization/ # Circuit document save/load format (wired via persistenceActions)\n-│   └── testing/      # .tst/.cmp parsers, test engine, implementation sources, chip completion\n-├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage\n+│   └── testing/      # .tst/.cmp parsers, test engine, implementation sources\n+├── lib/              # notify (Sonner-backed), utils (cn helper), demoTour, performanceModeStorage, chipCompletionStorage\n ├── styles/           # globals.css (Tailwind v4 + OKLch tokens + Geist fonts)\n ├── gates/            # Gate placement plumbing (per-chip components and icons live elsewhere — see core/chips/ and components/scene/)\n │   ├── GateRenderer.tsx  # Registry-driven 3D renderer dispatch for any placed chip\n@@ -294,9 +294,9 @@ Future directory layouts are specified in `docs/roadmap/`.\n - `src/core/testing/` - Test script execution (.tst/.cmp)\n   - `src/core/testing/engine.ts` - `runTest(script, options)` runs a parsed `.tst` against a chip (via the `evaluateChip` seam), records output rows, and compares to `.cmp` data; returns a UI-agnostic `TestResult`. Never throws — structural problems (unknown chip, eval-before-load, eval throw, row-count mismatch, unresolvable `compare-to`) become `error`; value mismatches become `firstFailure` (P05-17, ADR-0005).\n   - `src/core/testing/implementationSources.ts` - pluggable `ChipImplementationSource` registry (Test Lab's \"what to test against\"): `builtin` + `hdl-from-nand` today; user chips (P05-18) / canvas (P05-26) register later. (P05-22, ADR-0006)\n-  - `src/core/testing/chipCompletion.ts` - persists passed chips to `localStorage['hacer-completed-chips']` (the P05-19 completion contract).\n   - `src/store/actions/testActions/` - `runChipTest(chipName, sourceId)` store action (AI-Agent-Parity surface) → writes `testResult`/`testColumns`/`completedChips`.\n   - `src/components/ui/TestResultsPanel.tsx` - the Test Lab panel (RightActionBar `'tests'` drawer): chip/source selectors, Run, output table + diff highlight, ✓ on completed. Thin view over the store.\n+- `src/lib/chipCompletionStorage.ts` - session state, not engine: persists passed chips to `localStorage['hacer-completed-chips']` (the P05-19 completion contract).\n - `src/simulation/topologicalEval.ts` - Topological sort for correct evaluation; `evaluateCircuit` return + `getSignalSourceValue`; routes chip evaluation through `evaluateChipWithCtx` so HDL/composite chips evaluate on the canvas.\n - `src/scenarios/` - Headless circuits lifted from the deleted e2e scenario files. `src/scenarios/drivers/core.ts` runs each one through `compileHDL` and the chip registry (#195). Layout fields stay on the scenario for later drivers.\n - `CircuitState.lastSimulationError` — combinational cycle metadata after a failed `simulationTick` (cleared on success / `clearCircuit`)"
+    },
+    {
+      "filename": "docs/plans/phase-0.5-tickets/P05-22.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2,
+      "patch": "@@ -59,8 +59,8 @@ fallible source registers. The panel is honest about this via the \"implementatio\n \n ## Files\n \n-- **Create:** `src/core/testing/implementationSources.ts` (+test), `src/core/testing/chipCompletion.ts`\n-  (+test), `src/store/actions/testActions/testActions.ts` (+test),\n+- **Create:** `src/core/testing/implementationSources.ts` (+test), `src/lib/chipCompletionStorage.ts`\n+  (+test; created under `src/core/testing/`, moved out by #182), `src/store/actions/testActions/testActions.ts` (+test),\n   `src/components/ui/TestResultsPanel.tsx` (+test), `e2e/specs/testing/test-results.store.spec.ts`.\n - **Edit:** `src/store/types.ts`, `src/store/circuitStore.ts`, `src/components/ui/RightActionBar.tsx`,\n   `e2e/types/globals.ts`."
+    },
+    {
+      "filename": "docs/testing/vitest-projects.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "patch": "@@ -72,13 +72,12 @@ away when persistence moves behind a port rather than touching `localStorage` di\n \n | File | Reason |\n |------|--------|\n-| `src/core/testing/chipCompletion.test.ts` | `localStorage`: completed-chip persistence |\n+| `src/lib/chipCompletionStorage.test.ts` | `localStorage`: which chips this person has completed, across a reload |\n | `src/lib/performanceModeStorage.test.ts` | `localStorage`: the performance-mode preference itself |\n | `src/store/circuitStore.autosave.test.ts` | `localStorage`: autosave slot round-trip |\n | `src/store/legacyActions.dom.characterization.test.ts` | `localStorage`: goldens of the `@store` actions that persist (saved circuits, performance mode, completed chips) |\n | `src/store/actions/persistenceActions/autosave.test.ts` | `localStorage`: debounced autosave writes |\n | `src/store/actions/persistenceActions/persistenceActions.test.ts` | `localStorage` + `Blob`/`document`: save, load, export |\n-| `src/store/actions/testActions/testActions.test.ts` | `localStorage`: marks a chip completed on a passing run |\n | `src/store/actions/viewActions/viewActions.test.ts` | `localStorage`: persists the performance mode |\n \n To add one, put the path in `NEEDS_DOM` in `vite.config.ts` with a one-line reason. The config"
+    },
+    {
+      "filename": "eslint-suppressions.json",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 5,
+      "patch": "@@ -1,9 +1,4 @@\n {\n-  \"src/core/testing/chipCompletion.ts\": {\n-    \"no-restricted-globals\": {\n-      \"count\": 2\n-    }\n-  },\n   \"src/utils/wiringScheme/branching.ts\": {\n     \"no-console\": {\n       \"count\": 1"
+    },
+    {
+      "filename": "src/core/index.ts",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 1,
+      "patch": "@@ -13,7 +13,6 @@\n  * Deliberately NOT exported, each for a reason:\n  *   - `./serialization` — the canvas document's save format. `deserialize` imports the store, so\n  *     exporting it would make this index non-headless on its own.\n- *   - `testing/chipCompletion` — `localStorage`; it belongs behind a port, not in the engine's API.\n  *   - `testing/implementationSources` — the Test Lab's \"what to test against\" picker: an app\n  *     concern built ON this surface.\n  *   - the Project-1 `.tst`/`.cmp` corpora and the HDL parser stubs — test data, not API. The correct"
+    },
+    {
+      "filename": "src/core/testing/chipCompletion.test.ts",
+      "status": "removed",
+      "additions": 0,
+      "deletions": 26,
+      "patch": "@@ -1,26 +0,0 @@\n-import { describe, it, expect, beforeEach } from 'vitest'\n-import { readCompletedChips, markChipCompleted } from './chipCompletion'\n-\n-beforeEach(() => localStorage.clear())\n-\n-describe('chipCompletion', () => {\n-  it('reads an empty list when nothing is stored', () => {\n-    expect(readCompletedChips()).toEqual([])\n-  })\n-\n-  it('marks a chip completed and persists it', () => {\n-    expect(markChipCompleted('Not')).toEqual(['Not'])\n-    expect(readCompletedChips()).toEqual(['Not'])\n-    expect(JSON.parse(localStorage.getItem('hacer-completed-chips')!)).toEqual(['Not'])\n-  })\n-\n-  it('does not duplicate an already-completed chip', () => {\n-    markChipCompleted('Not')\n-    expect(markChipCompleted('Not')).toEqual(['Not'])\n-  })\n-\n-  it('returns an empty list on corrupt storage', () => {\n-    localStorage.setItem('hacer-completed-chips', 'not json{')\n-    expect(readCompletedChips()).toEqual([])\n-  })\n-})"
+    },
+    {
+      "filename": "src/lib/chipCompletionStorage.test.ts",
+      "status": "added",
+      "additions": 58,
+      "deletions": 0,
+      "patch": "@@ -0,0 +1,58 @@\n+import { describe, it, expect, beforeEach, vi } from 'vitest'\n+import { readCompletedChips, markChipCompleted } from './chipCompletionStorage'\n+\n+beforeEach(() => {\n+  localStorage.clear()\n+  vi.restoreAllMocks()\n+})\n+\n+describe('chipCompletionStorage', () => {\n+  it('reads an empty list when nothing is stored', () => {\n+    expect(readCompletedChips()).toEqual([])\n+  })\n+\n+  it('marks a chip completed and persists it', () => {\n+    expect(markChipCompleted('Not')).toEqual(['Not'])\n+    expect(readCompletedChips()).toEqual(['Not'])\n+    expect(JSON.parse(localStorage.getItem('hacer-completed-chips')!)).toEqual(['Not'])\n+  })\n+\n+  it('does not duplicate an already-completed chip', () => {\n+    markChipCompleted('Not')\n+    expect(markChipCompleted('Not')).toEqual(['Not'])\n+  })\n+\n+  it('returns an empty list on corrupt storage', () => {\n+    localStorage.setItem('hacer-completed-chips', 'not json{')\n+    expect(readCompletedChips()).toEqual([])\n+  })\n+\n+  it('degrades silently when storage refuses to be read', () => {\n+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {\n+      throw new Error('storage blocked')\n+    })\n+    expect(readCompletedChips()).toEqual([])\n+  })\n+\n+  it('keeps the in-memory list when storage refuses a write', () => {\n+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {\n+      throw new Error('storage blocked')\n+    })\n+    expect(markChipCompleted('Not')).toEqual(['Not'])\n+  })\n+})\n+\n+describe('completed chips across a reload', () => {\n+  it('a passing run is stored, and a freshly loaded store starts from it', async () => {\n+    const { circuitActions, useCircuitStore } = await import('@/store/circuitStore')\n+    circuitActions.runChipTest('Not', 'builtin')\n+    expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')\n+    // Emptied so that only a store re-created from storage can hold ['Not'] below.\n+    useCircuitStore.setState({ completedChips: [] })\n+\n+    // A reload is a fresh module graph over the same storage.\n+    vi.resetModules()\n+    const reloaded = await import('@/store/circuitStore')\n+    expect(reloaded.useCircuitStore.getState().completedChips).toEqual(['Not'])\n+  })\n+})"
+    },
+    {
+      "filename": "src/lib/chipCompletionStorage.ts",
+      "status": "renamed",
+      "previous_filename": "src/core/testing/chipCompletion.ts",
+      "additions": 1,
+      "deletions": 2,
+      "patch": "@@ -1,5 +1,4 @@\n-// src/core/testing/chipCompletion.ts\n-// Persisted \"verified chips\" contract — shared with the future P05-19 chip browser.\n+// The stored list is a contract: the future P05-19 chip browser reads the same key.\n const KEY = 'hacer-completed-chips'\n \n export function readCompletedChips(): string[] {"
+    },
+    {
+      "filename": "src/store/actions/testActions/testActions.test.ts",
+      "status": "modified",
+      "additions": 0,
+      "deletions": 2,
+      "patch": "@@ -7,7 +7,6 @@ import {\n import { createChipRegistry, registerBuiltin } from '@/core/chips/registry'\n \n beforeEach(() => {\n-  localStorage.clear()\n   resetImplementationSourcesForTests()\n   useCircuitStore.setState({ testResult: null, testColumns: [], completedChips: [] })\n })\n@@ -21,7 +20,6 @@ describe('runChipTest', () => {\n     expect(s.testColumns.map((c) => c.name)).toEqual(['in', 'out'])\n     expect(s.testColumns.every((c) => c.format === 'B')).toBe(true)\n     expect(s.completedChips).toContain('Not')\n-    expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')\n   })\n \n   it('sets an error result for an unknown source', () => {"
+    },
+    {
+      "filename": "src/store/actions/testActions/testActions.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -8,7 +8,7 @@ import { parseCmp } from '@/core/testing/cmpParser'\n import { project1TstFixtures } from '@/core/testing/project1TstFixtures'\n import { project1CmpFixtures } from '@/core/testing/project1CmpFixtures'\n import { getImplementationSource } from '@/core/testing/implementationSources'\n-import { markChipCompleted } from '@/core/testing/chipCompletion'\n+import { markChipCompleted } from '@/lib/chipCompletionStorage'\n import type { ChipRegistry } from '@/core/chips/registry'\n import type { ChipDefinition } from '@/core/chips/types'\n "
+    },
+    {
+      "filename": "src/store/circuitStore.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1,
+      "patch": "@@ -17,7 +17,7 @@ import { createPersistenceActions } from './actions/persistenceActions/persisten\n import { createTestActions } from './actions/testActions/testActions'\n import { createBusActions } from './actions/busActions/busActions'\n import { createBusPlacementActions } from './actions/busPlacementActions/busPlacementActions'\n-import { readCompletedChips } from '@/core/testing/chipCompletion'\n+import { readCompletedChips } from '@/lib/chipCompletionStorage'\n import { subscribeAutosave } from './actions/persistenceActions/autosave'\n import { readPerformanceMode } from '@/lib/performanceModeStorage'\n import { calculateWirePathFromConnection } from '@/utils/wiringScheme'"
+    },
+    {
+      "filename": "vite.config.ts",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2,
+      "patch": "@@ -35,13 +35,12 @@ const NODE_TEST_FILE = /\\.(test|spec)\\.(ts|mjs)$/\n // each fails under `node` with `ReferenceError: localStorage is not defined`. They stay in `jsdom`\n // until the persistence they exercise reaches `localStorage` through a port instead of directly.\n const NEEDS_DOM = [\n-  'src/core/testing/chipCompletion.test.ts', // localStorage: completed-chip persistence\n+  'src/lib/chipCompletionStorage.test.ts', // localStorage: which chips this person has completed, across a reload\n   'src/lib/performanceModeStorage.test.ts', // localStorage: the performance-mode preference itself\n   'src/store/circuitStore.autosave.test.ts', // localStorage: autosave slot round-trip\n   'src/store/legacyActions.dom.characterization.test.ts', // localStorage: goldens of the @store actions that persist\n   'src/store/actions/persistenceActions/autosave.test.ts', // localStorage: debounced autosave writes\n   'src/store/actions/persistenceActions/persistenceActions.test.ts', // localStorage + Blob/document: save, load, export\n-  'src/store/actions/testActions/testActions.test.ts', // localStorage: marks a chip completed on a passing run\n   'src/store/actions/viewActions/viewActions.test.ts', // localStorage: persists the performance mode\n ]\n "
+    }
+  ]
+}

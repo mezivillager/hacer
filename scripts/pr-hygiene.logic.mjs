@@ -831,6 +831,12 @@ function protectedPath({ files }) {
   return [{ rule: 'protected-path', level: 'warn', message: `protected path touched — ${parts.join('; ')}` }]
 }
 
+// ---------------------------------------------------------------- weakened tests
+
+export function testWitnessLoss() {
+  return { witnesses: [], weakened: [], removedTests: [], unshown: [], disabled: [] }
+}
+
 export const RULES = [sizeBudget, linkedIssue, ratchetGrowth, protectedPath]
 
 /**

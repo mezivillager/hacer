@@ -33,6 +33,7 @@ import {
   ratchetReads,
   readAtRef,
   stripFencedCode,
+  testWitnessLoss,
 } from './pr-hygiene.logic.mjs'
 import { UNLINKED_BASELINE_FILE } from './lineage.logic.mjs'
 
@@ -571,6 +572,156 @@ describe('protected path: conformance/vectors/**', () => {
   it('stays quiet when the oracle is left alone', () => {
     const result = evaluate(pr())
     expect(levelsOf(result, 'protected-path')).toEqual([])
+  })
+})
+
+describe('a rename out of a protected path (#941)', () => {
+  it('protected path: a file renamed out of a protected path is named by its previous path', () => {
+    const renamed = { ...file('tmp/Xor.cmp', 0, 0, 'renamed'), previous_filename: 'conformance/vectors/01/Xor.cmp' }
+    const result = evaluate(pr({ files: [renamed] }))
+    const found = result.findings.filter((f) => f.rule === 'protected-path')
+    expect(found.map((f) => f.level)).toEqual(['warn'])
+    expect(found[0].message).toContain('conformance/vectors/**')
+    expect(found[0].message).toContain('conformance/vectors/01/Xor.cmp')
+    expect(result.verdict).toBe('WARN')
+  })
+})
+
+/** A pulls-API file entry whose patch is one hunk of the given diff lines. */
+function patched(filename, lines, status = 'modified', extra = {}) {
+  return {
+    filename,
+    status,
+    additions: lines.filter((line) => line.startsWith('+')).length,
+    deletions: lines.filter((line) => line.startsWith('-')).length,
+    patch: ['@@ -1,9 +1,9 @@', ...lines].join('\n'),
+    ...extra,
+  }
+}
+
+// #735 and #721 as `gh api repos/{owner}/{repo}/pulls/<n>/files` returned them, trimmed to the
+// fields the weakened-test flag reads.
+const realFiles = (number) =>
+  JSON.parse(readFileSync(path.join(import.meta.dirname, 'fixtures', 'pr-hygiene', `pr-${number}-files.json`), 'utf8')).files
+
+describe('the weakened-test flag (#941)', () => {
+  const flagged = (result) => result.findings.filter((f) => f.rule === 'weakened-tests')
+
+  it('weakened tests: a modified or renamed test file whose patch removes more expect( than it adds is named, with the count', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(a).toBe(1); expect(b).toBe(2)', '+  expect(a).toBe(1)', '   expect(c).toBe(3)']),
+      patched('src/moved.test.ts', ['-  expect(d).toBe(4)'], 'renamed', { previous_filename: 'src/old.test.ts' }),
+      patched('src/rewritten.test.ts', ['-  expect(e).toBe(true)', '+  expect(e).toBe(false)']),
+      patched('src/grown.test.ts', ['+  expect(f).toBe(1)']),
+      patched('src/a.ts', ['-  // expect(a) is checked by the caller']),
+    ]
+    expect(testWitnessLoss(files).weakened).toEqual([
+      { filename: 'src/a.test.ts', removed: 2, added: 1 },
+      { filename: 'src/moved.test.ts', removed: 1, added: 0 },
+    ])
+    const result = evaluate(pr({ files }))
+    expect(flagged(result).map((f) => f.level)).toEqual(['warn'])
+    expect(result.verdict).toBe('WARN')
+    const { message } = flagged(result)[0]
+    expect(message).toContain('`src/a.test.ts` loses 1 `expect(` call (2 removed, 1 added)')
+    expect(message).toContain('`src/moved.test.ts` loses 1 `expect(` call (1 removed, 0 added)')
+    expect(message).not.toContain('rewritten')
+    expect(message).not.toContain('grown')
+    expect(message).not.toContain('`src/a.ts`')
+  })
+
+  it('weakened tests: a removed test file is named unless a non-test file in its directory, with the same name before the first dot, is removed or renamed in the same PR', () => {
+    const removed = (filename) => patched(filename, ['-  expect(x).toBe(1)'], 'removed')
+    const files = [
+      removed('src/nodes/Foo.scene.test.tsx'),
+      removed('src/nodes/Foo.tsx'),
+      removed('src/lib/bar.test.ts'),
+      { ...file('src/core/barMoved.ts', 1, 1, 'renamed'), previous_filename: 'src/lib/bar.ts' },
+      removed('src/lib/baz.test.ts'),
+      removed('src/other/baz.ts'),
+      removed('src/lib/qux.test.ts'),
+      removed('src/lib/quxHelpers.ts'),
+      removed('src/lib/zed.test.ts'),
+      { ...file('src/lib/zed.ts', 0, 0, 'renamed'), previous_filename: 'src/old/zed.ts' },
+      removed('src/lib/kept.test.ts'),
+      removed('src/lib/kept.spec.ts'),
+    ]
+    const named = ['src/lib/baz.test.ts', 'src/lib/qux.test.ts', 'src/lib/zed.test.ts', 'src/lib/kept.test.ts', 'src/lib/kept.spec.ts']
+    const loss = testWitnessLoss(files)
+    expect(loss.removedTests).toEqual(named)
+    expect(loss.weakened).toEqual([])
+    const found = flagged(evaluate(pr({ files })))
+    expect(found.map((f) => f.level)).toEqual(['warn'])
+    for (const name of named) expect(found[0].message).toContain(`\`${name}\``)
+    expect(found[0].message).not.toContain('Foo.scene.test.tsx')
+    expect(found[0].message).not.toContain('bar.test.ts')
+  })
+
+  it('weakened tests: an added .skip(, .only( or passWithNoTests is named, in any file, when the patch adds more than it removes', () => {
+    const files = [
+      patched('src/a.test.ts', ["+  it.skip('runs', () => {})"]),
+      patched('src/b.test.ts', ["-  it.only('was', () => {})", "+  it.only('is', () => {})"]),
+      patched('src/c.test.ts', ["-  describe.skip('x', () => {", "+  describe.only('x', () => {"]),
+      patched('vite.config.ts', ['+    passWithNoTests: true,']),
+      patched('src/d.test.ts', ["-  it.skip('gone', () => {})"]),
+    ]
+    expect(testWitnessLoss(files).disabled).toEqual([
+      { filename: 'src/a.test.ts', marker: '.skip(', removed: 0, added: 1 },
+      { filename: 'src/c.test.ts', marker: '.only(', removed: 0, added: 1 },
+      { filename: 'vite.config.ts', marker: 'passWithNoTests', removed: 0, added: 1 },
+    ])
+    const found = flagged(evaluate(pr({ files })))
+    expect(found.map((f) => f.level)).toEqual(['warn'])
+    expect(found[0].message).toContain('`src/a.test.ts` adds `.skip(`')
+    expect(found[0].message).toContain('`src/c.test.ts` adds `.only(`')
+    expect(found[0].message).toContain('`vite.config.ts` adds `passWithNoTests`')
+    expect(found[0].message).not.toContain('src/b.test.ts')
+    expect(found[0].message).not.toContain('src/d.test.ts')
+  })
+
+  it('weakened tests: a test file the API sent without a patch is named as not shown, to check by hand', () => {
+    const files = [
+      file('src/big.test.ts', 900, 40),
+      { ...file('src/moved.test.ts', 0, 0, 'renamed'), previous_filename: 'src/old.test.ts' },
+      file('src/added.test.ts', 3000, 0, 'added'),
+      file('src/big.ts', 10, 4),
+      patched('src/small.test.ts', ['+  expect(x).toBe(1)']),
+    ]
+    expect(testWitnessLoss(files).unshown).toEqual(['src/big.test.ts'])
+    const found = flagged(evaluate(pr({ files })))
+    expect(found.map((f) => f.level)).toEqual(['warn'])
+    expect(found[0].message).toContain('`src/big.test.ts`')
+    expect(found[0].message).toMatch(/not shown.*by hand/)
+    expect(found[0].message).not.toContain('added.test.ts')
+    expect(found[0].message).not.toContain('`src/big.ts`')
+  })
+
+  it("weakened tests: #735's real file list names testActions.test.ts (1 expect) and nothing else; #721's names nothing", () => {
+    const pr735 = testWitnessLoss(realFiles(735))
+    expect(pr735.weakened).toEqual([{ filename: 'src/store/actions/testActions/testActions.test.ts', removed: 1, added: 0 }])
+    expect([pr735.removedTests, pr735.unshown, pr735.disabled]).toEqual([[], [], []])
+    const found = flagged(evaluate(pr({ files: realFiles(735) })))
+    expect(found).toHaveLength(1)
+    expect(found[0].message).toBe(
+      'tests lose assertions: `src/store/actions/testActions/testActions.test.ts` loses 1 `expect(` call (1 removed, 0 added)',
+    )
+
+    const pr721 = testWitnessLoss(realFiles(721))
+    expect([pr721.weakened, pr721.removedTests, pr721.unshown, pr721.disabled]).toEqual([[], [], [], []])
+    expect(flagged(evaluate(pr({ files: realFiles(721) })))).toEqual([])
+  })
+
+  it("lists each shown test file's expect( lines, trimmed, so a line removed in one and added in another reads as a move", () => {
+    const { witnesses } = testWitnessLoss(realFiles(735))
+    expect(witnesses.map((w) => w.filename)).toEqual([
+      'src/core/testing/chipCompletion.test.ts',
+      'src/lib/chipCompletionStorage.test.ts',
+      'src/store/actions/testActions/testActions.test.ts',
+    ])
+    const [, storage, actions] = witnesses
+    expect(actions.removed).toEqual(["expect(JSON.parse(localStorage.getItem('hacer-completed-chips') ?? '[]')).toContain('Not')"])
+    expect(actions.added).toEqual([])
+    expect(storage.added).toContain(actions.removed[0])
   })
 })
 
