@@ -78,20 +78,53 @@ function rename(raw: string, prefix: string, taken: Set<string>): { name: string
   return { name, why: base !== raw ? 'not an HDL identifier' : RESERVED.has(base) ? 'a reserved word' : 'the name repeats' }
 }
 
-interface Walk { open: Set<string>; done: Set<string> }
-const walk = (): Walk => ({ open: new Set(), done: new Set() })
+/** Reads a key on one trace: as `loop` when the trace is inside the key already, otherwise through `read`. */
+type Walk = (key: string, loop: () => Value, read: () => Value[]) => Value[]
 /**
  * Reads a key once per walk; a key the walk is inside reads as `loop`. A finished key adds only readings the
  * walk already holds, or a 0 after the walk's first 0, and the import keeps the first reading of each driver.
  */
-function once(trace: Walk, key: string, loop: () => Value, read: () => Value[]): Value[] {
-  if (trace.open.has(key)) return [loop()]
-  if (trace.done.has(key)) return []
-  trace.open.add(key)
-  const values = distinct(read())
-  trace.open.delete(key)
-  trace.done.add(key)
-  return values
+function walk(): Walk {
+  const open = new Set<string>()
+  const done = new Set<string>()
+  return (key, loop, read) => {
+    if (open.has(key)) return [loop()]
+    if (done.has(key)) return []
+    open.add(key)
+    const values = distinct(read())
+    open.delete(key)
+    done.add(key)
+    return values
+  }
+}
+
+/** A value a wire would change: an empty one reads as a 0 at a bus pin, and a 0 with no place takes the wire's source. */
+const changeable = (v: Value): boolean => v.length === 0 || v.some((p) => p.source === null && p.lost === undefined)
+/** Every reading of each key, kept across walks; `met` is set when a key's readings meet a loop or a changeable value. */
+function everyReading(): { trace: Walk; met: boolean } {
+  const kept = new Map<string, Value[] | null>()
+  const open = new Set<string>()
+  const state = {
+    met: false,
+    trace: (key: string, loop: () => Value, read: () => Value[]): Value[] => {
+      const hit = kept.get(key)
+      if (hit) return hit
+      if (hit === null || open.has(key)) {
+        state.met = true
+        return [loop()]
+      }
+      const outer = state.met
+      state.met = false
+      open.add(key)
+      const values = distinct(read())
+      open.delete(key)
+      const met = state.met || values.some(changeable)
+      kept.set(key, met ? null : values)
+      state.met = outer || met
+      return values
+    },
+  }
+  return state
 }
 
 interface Wiring { buses: Map<string, LegacyBus>; junctions: Map<string, LegacyJunction>; into: (bus: LegacyBus, pinId: string) => LegacyWire[]; feeds: (junction: LegacyJunction) => LegacyWire[] }
@@ -166,21 +199,31 @@ function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: 
     if (bus && out >= 0) return bus.kind === 'joiner' ? joined(bus, trace, from, bits) : from > 0 ? [[]] : busBit(bus, 'in', bus.width, out, trace)
     const junction = end.type === 'junction' ? junctions.get(end.entityId) : undefined
     if (!junction) return [floating(bits)]
-    return once(trace, JSON.stringify([junction.id, from, bits]), () => floating(bits), () => {
+    return trace(JSON.stringify([junction.id, from, bits]), () => floating(bits), () => {
       const candidates = feeds(junction)
       return candidates.length === 0 ? [floating(bits)] : candidates.flatMap((w) => resolve(w.from, trace, from, bits))
     })
   }
+  const loopFree = everyReading()
+  /**
+   * Below a key with no loop and no changeable value, every path carries the same values, so a fresh walk, which keeps
+   * each value's first path, reads exactly the kept readings; otherwise the walk runs.
+   */
+  const fresh = (read: (trace: Walk) => Value[]): Value[] => {
+    loopFree.met = false
+    const values = read(loopFree.trace)
+    return loopFree.met ? read(walk()) : values
+  }
   /** `join` needs every reading of each input, so a window wider than one bit reads each input on a walk of its own. */
   const joined = (bus: LegacyBus, trace: Walk, from: number, bits: number): Value[] => {
-    const inputs = bus.inputs.slice(from, from + bits).map((p) => busBit(bus, p.id, 1, 0, bits === 1 ? trace : walk()))
+    const inputs = bus.inputs.slice(from, from + bits).map((p) => (bits === 1 ? busBit(bus, p.id, 1, 0, trace) : fresh((t) => busBit(bus, p.id, 1, 0, t))))
     return inputs.some((readings) => readings.length === 0) ? [] : join(inputs)
   }
   /** One bit of a bus input, as each wire into it reads: a wire carries the bits below `min(wire, pin)`, the rest read 0. */
   const busBit = (bus: LegacyBus, pinId: string, width: number, bit: number, trace: Walk): Value[] => {
     const pin = `${bus.kind} "${bus.id}" pin "${pinId}"`
     const self = `${pin}, whose bit ${bit} only loops back to itself`
-    return once(trace, JSON.stringify([bus.id, pinId, bit]), () => floating(1, self), () => {
+    return trace(JSON.stringify([bus.id, pinId, bit]), () => floating(1, self), () => {
       const wires = into(bus, pinId)
       if (wires.length === 0) return [floating(1, pin)]
       const readings = wires.flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, trace, bit, 1) : [[]]).map((v) =>
