@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-23T23:48:04.663Z",
+  "generatedAt": "2026-10-24T00:13:38.824Z",
   "head": {
-    "sha": "b137f85584156914698f87afe169adde0eb5476e",
-    "date": "2026-10-24T02:46:49+03:00",
-    "subject": "docs(decisions): ADR-0020 §1.11 rules 4 and 5 for Inc16 and ALU on the grading path"
+    "sha": "eedf451ff838e74a1e0f7ebfe9db5641ee71896a",
+    "date": "2026-10-24T03:12:35+03:00",
+    "subject": "fix(autosave): report a restored combinational cycle through the boot announcer (#1003)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-23T23:48:04.663Z",
+      "fetchedAt": "2026-10-24T00:13:38.824Z",
       "status": "ok"
     }
   },
@@ -80,16 +80,16 @@
         "lane": "feature",
         "slug": "foundation",
         "epicNumber": 318,
-        "open": 23,
-        "ready": 3,
+        "open": 22,
+        "ready": 2,
         "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 4,
+        "agentReady": 3,
         "filedElsewhere": [],
         "next": {
-          "number": 1003,
-          "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)"
+          "number": 1023,
+          "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -104,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 27,
-        "ready": 8,
-        "inProgress": 4,
+        "ready": 7,
+        "inProgress": 5,
         "needsHuman": 3,
         "staleClaims": [],
         "agentReady": 13,
@@ -292,14 +292,12 @@
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 0,
-        "filedElsewhere": [
-          1003
-        ],
+        "filedElsewhere": [],
         "next": null,
         "title": "Epic: bugs",
         "subIssues": {
-          "completed": 5,
-          "percentCompleted": 83,
+          "completed": 6,
+          "percentCompleted": 100,
           "total": 6
         }
       },
@@ -414,26 +412,6 @@
     ],
     "next": [
       {
-        "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
-        "project": "upkeep"
-      },
-      {
-        "number": 1003,
-        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
-        "project": "foundation"
-      },
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "project": "harness"
-      },
-      {
-        "number": 1023,
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "project": "foundation"
-      },
-      {
         "number": 1024,
         "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
         "project": "mission-control"
@@ -444,9 +422,24 @@
         "project": "spine"
       },
       {
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "project": "foundation"
+      },
+      {
+        "number": 930,
+        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "project": "upkeep"
+      },
+      {
         "number": 1026,
         "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
         "project": "foundation"
+      },
+      {
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "project": "harness"
       },
       {
         "number": 933,
@@ -504,19 +497,14 @@
         "project": "upkeep"
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "project": "harness"
       },
       {
         "number": 939,
         "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
         "project": "upkeep"
-      },
-      {
-        "number": 992,
-        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
-        "project": "harness"
       },
       {
         "number": 945,
@@ -557,78 +545,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1031,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1003,
-        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
-        "labels": [
-          "bug",
-          "project:bugs",
-          "agent-ready",
-          "risk:2",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 257,
-        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [
-          270
-        ],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1023,
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 1024,
         "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
@@ -660,6 +583,38 @@
         "reason": null
       },
       {
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 930,
+        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 1026,
         "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
         "labels": [
@@ -671,6 +626,23 @@
         "project": "foundation",
         "rank": 1,
         "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 257,
+        "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:2"
+        ],
+        "blocking": [
+          270
+        ],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -846,12 +818,12 @@
         "reason": null
       },
       {
-        "number": 978,
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "number": 992,
+        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "labels": [
           "project:harness",
           "agent-ready",
-          "risk:1"
+          "risk:2"
         ],
         "blocking": [],
         "project": "harness",
@@ -873,21 +845,6 @@
         "project": "upkeep",
         "rank": 11,
         "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 992,
-        "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:2"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
         "pickable": true,
         "reason": null
       },
@@ -2417,6 +2374,22 @@
         "reason": "claimed"
       },
       {
+        "number": 978,
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 979,
         "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
         "labels": [
@@ -2533,27 +2506,29 @@
       }
     ],
     "byProject": {
-      "upkeep": [
-        930,
-        933,
-        934,
-        935,
-        936,
-        937,
-        938,
-        939,
-        945,
-        946,
-        989,
-        990,
-        991,
-        1009,
-        1010,
-        229,
-        256
+      "mission-control": [
+        1024,
+        509,
+        584
+      ],
+      "spine": [
+        1029,
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        1017,
+        1018
       ],
       "foundation": [
-        1003,
         1023,
         1026,
         151,
@@ -2577,6 +2552,25 @@
         742,
         979
       ],
+      "upkeep": [
+        930,
+        933,
+        934,
+        935,
+        936,
+        937,
+        938,
+        939,
+        945,
+        946,
+        989,
+        990,
+        991,
+        1009,
+        1010,
+        229,
+        256
+      ],
       "harness": [
         257,
         949,
@@ -2584,7 +2578,6 @@
         955,
         958,
         965,
-        978,
         992,
         154,
         156,
@@ -2601,32 +2594,11 @@
         870,
         975,
         976,
+        978,
         993,
         994,
         1011,
         1012
-      ],
-      "mission-control": [
-        1024,
-        509,
-        584
-      ],
-      "spine": [
-        1029,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        1017,
-        1018
       ],
       "core": [
         179,
@@ -2697,6 +2669,24 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 1031,
+        "title": "chore(inbox): HRN entries reviewed in batches of at most five; a correctness-gate entry keeps its own review",
+        "url": "https://github.com/mezivillager/hacer/pull/1031",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/978-hrn-batches",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:10:14Z",
+        "mergedAt": null,
+        "closes": [
+          978
+        ],
+        "verdicts": []
+      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2822,11 +2812,40 @@
     ],
     "merged": [
       {
+        "number": 1030,
+        "title": "fix(autosave): report a restored combinational cycle through the boot announcer",
+        "url": "https://github.com/mezivillager/hacer/pull/1030",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "fix/1003-restore-cycle-report",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:00:49Z",
+        "mergedAt": "2026-10-24T00:12:36Z",
+        "closes": [
+          1003
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-24T00:11:23Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1030#issuecomment-6377324067"
+          }
+        ]
+      },
+      {
         "number": 1028,
         "title": "feat(core): Project 2's Inc16 and ALU on the grading path, all six scripts agree",
         "url": "https://github.com/mezivillager/hacer/pull/1028",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:spine",
           "risk:1"
         ],
@@ -4376,33 +4395,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/885#issuecomment-6329402528"
           }
         ]
-      },
-      {
-        "number": 880,
-        "title": "chore(harness): ready and next print whether a retro is due",
-        "url": "https://github.com/mezivillager/hacer/pull/880",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/873-retro-at-close",
-        "isDraft": false,
-        "createdAt": "2026-10-21T22:38:09Z",
-        "mergedAt": "2026-10-21T22:47:53Z",
-        "closes": [
-          873
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-21T22:47:22Z",
-            "url": "https://github.com/mezivillager/hacer/pull/880#issuecomment-6328248163"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4416,6 +4408,32 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 1003,
+        "ref": "refs/heads/claim/1003",
+        "sha": "b137f85584156914698f87afe169adde0eb5476e",
+        "state": "CLOSED",
+        "title": "Autosave restore: report a restored combinational cycle through the boot announcer (PR #995 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1003",
+        "labels": [
+          "bug",
+          "project:bugs",
+          "agent-ready",
+          "risk:2",
+          "project:foundation"
+        ],
+        "onClosedIssue": true,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "fix/1003-restore-cycle-report",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T23:50:09Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1003#issuecomment-6377060288"
+        }
+      },
       {
         "number": 1011,
         "ref": "refs/heads/claim/1011",
@@ -4546,6 +4564,31 @@
         }
       },
       {
+        "number": 978,
+        "ref": "refs/heads/claim/978",
+        "sha": "b137f85584156914698f87afe169adde0eb5476e",
+        "state": "OPEN",
+        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
+        "url": "https://github.com/mezivillager/hacer/issues/978",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-23-hacer-loop-to-12",
+          "branch": "feat/978-hrn-batches",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-23T23:48:03Z",
+          "url": "https://github.com/mezivillager/hacer/issues/978#issuecomment-6377029942"
+        }
+      },
+      {
         "number": 979,
         "ref": "refs/heads/claim/979",
         "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
@@ -4568,31 +4611,6 @@
           "author": "mezivillager",
           "at": "2026-10-23T23:33:15Z",
           "url": "https://github.com/mezivillager/hacer/issues/979#issuecomment-6376843236"
-        }
-      },
-      {
-        "number": 985,
-        "ref": "refs/heads/claim/985",
-        "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
-        "state": "CLOSED",
-        "title": "Project 2, slice 2: Inc16 and ALU pass their official vectors, ALU-basic included, and the differential agrees on all six Project 2 scripts",
-        "url": "https://github.com/mezivillager/hacer/issues/985",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/985-project2-inc16-alu",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T23:05:03Z",
-          "url": "https://github.com/mezivillager/hacer/issues/985#issuecomment-6376487375"
         }
       }
     ],
@@ -5844,9 +5862,14 @@
     },
     "releases": [
       {
+        "tag": "v2.71.0",
+        "publishedAt": "2026-10-23T23:49:10Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.70.0",
         "publishedAt": "2026-10-23T23:06:27Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.69.1",
@@ -6606,29 +6629,29 @@
     ],
     "mergesPerDay": [
       {
-        "date": "2026-10-21",
-        "merges": 1
-      },
-      {
         "date": "2026-10-22",
         "merges": 45
       },
       {
         "date": "2026-10-23",
         "merges": 14
+      },
+      {
+        "date": "2026-10-24",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-09T23:48:04.663Z",
-      "merged": 149,
+      "since": "2026-10-10T00:13:38.824Z",
+      "merged": 150,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.5
       },
       "blockedOnce": {
         "count": 8,
-        "of": 130,
+        "of": 131,
         "prs": [
           700,
           725,
@@ -6642,8 +6665,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 97,
-          "withVerdict": 97,
+          "merged": 98,
+          "withVerdict": 98,
           "without": []
         },
         "nonCode": {
@@ -11109,11 +11132,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b137f85584156914698f87afe169adde0eb5476e",
+        "sha": "eedf451ff838e74a1e0f7ebfe9db5641ee71896a",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40041565078/job/120713594381",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40043828001/job/120720820362",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -11433,6 +11456,49 @@
           "known": 68,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 1031,
+        "sha": "669df9f7b5432ec0ab7767cf425805c9aa4f121a",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-24T00:10:29Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40043626626/job/120720170253",
+        "line": "HYGIENE: PASS reviewable=184 test=92 excluded=0 files=6 issue=#978 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 184,
+          "test": 92,
+          "excluded": 0,
+          "files": 6,
+          "issue": "#978",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1031,
+        "sha": "669df9f7b5432ec0ab7767cf425805c9aa4f121a",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-24T00:10:27Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40043626256/job/120720168109",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1031,
+        "sha": "669df9f7b5432ec0ab7767cf425805c9aa4f121a",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40043625620/job/120720167051",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
