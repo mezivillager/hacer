@@ -4,8 +4,8 @@ The coordinator loop run of 2026-10-23 from 20:06Z, the first run started under 
 run). Owner's hand-over: "run the loop until weekly usage hits 12%". Weekly usage was 3% at the start
 (20:05Z); the meter resets on 2026-10-30T03:00Z. Publishing `on-green` under the standing grant. The run
 judged JDG-009 to JDG-012 of the judge queue, took the fidelity verdict on the spine epic and the Phase 0.6
-plan (#982), fixed the two oracle divergences that verdict found, and built the layout, harness and
-Mission Control items the earlier runs had left agent-ready.
+plan (#982), fixed the two oracle divergences that verdict found, built both Project 2 slices (#984, #985),
+and built the layout, harness, Mission Control and autosave items the earlier runs had left agent-ready.
 
 ## R906 — the run stops at weekly 12%; no new chain at 10% or above; the records start at 11%
 Builds on: R896
@@ -87,3 +87,60 @@ one, an unknown command, is refused on both sides. Parsing every vendored `.tst`
 from refused to parsed. The merge with #1016 is clean, and `src/core/testing` passes 277 tests on it.
 Cost if wrong: a test script whose endings the nine shapes do not cover is read differently from the
 reference.
+
+## R913 — PR #1027 (#984) merges without a separate fidelity review
+Builds on: R854
+Amends: R854
+Coordinator, 2026-10-23T23:05Z; amends R854 for #1027, as R911 and R912 did. It adds HalfAdder, FullAdder
+and Add16 as builtins on the grading path only, under R895. The Opus verifier ran the web IDE's grader at
+`52611ad`, scored as its `runner.ts` scores, on eight cases: course-shaped HDL, one broken HDL per chip, a
+chip used inside its own definition, a correct FullAdder beside a broken `HalfAdder.hdl` (the builtin wins
+in both), Inc16 over Add16, and bare `BUILTIN;` bodies. Verdicts, failing rows and values match
+`hacer test` in every case but the last, which HACER's grading refuses as a stand-in by its own decided
+rule, while `run-tst` reads it as the reference does. The app registry and the 3D toolbar are unchanged.
+Cost if wrong: a Project 2 HDL shape outside the eight grades differently from the reference.
+
+## R914 — PR #1028 (#985) merges without a separate fidelity review
+Builds on: R854
+Amends: R854
+Coordinator, 2026-10-23T23:46Z; amends R854 for #1028, as R911 to R913 did. It adds Inc16 and the ALU as
+builtins on the grading path only, under R895; the ALU computes the book's bitwise definition. The Opus
+verifier built the web IDE at `52611ad` and ran its grader on twelve cases: the PR's and its own
+course-shaped Inc16 and ALU, Inc16 adding 0, and ALUs with a wrong `zr`, a `no` and an `nx` that never
+negate, each on `ALU.tst` and `ALU-basic.tst` where they apply. Verdicts and first failing rows match
+`hacer test`, and all twelve `.out` files are byte-identical. It re-measured the recorded divergence: the
+web IDE's 18-word table differs from the bitwise definition on 36 of 64 control words and on none of the 18
+documented ones, and its own bitwise `alua()` differs on none. No official vector reaches the divergence.
+Cost if wrong: an ALU HDL using an undocumented control word through a part grades differently from the web
+IDE, as ADR-0020 §1.11 rule 5 already records.
+
+## R915 — #978 is taken ahead of #930 in the aux slot
+Builds on: R893
+Coordinator, 2026-10-23T23:47Z; under R893. `backlog.mjs next` names #930, the per-entry inbox review of
+HRN-020. #978 builds R893's HRN batches, and its own text turns #930 into one batch for whichever of
+HRN-020, -021, -022, -025, -026 and -027 are still `proposed` once it merges, closing #933, #934, #937, #938
+and #939. Its text still lets the loop decide any of them under R844 before then, but one batched panel
+replaces up to six per-entry panels at about 144k subagent tokens each (R893's measure).
+Cost if wrong: HRN-020 waits one build longer.
+
+## R916 — PR #1030's three verifier nits are not filed
+Builds on: R909
+Coordinator, 2026-10-24T00:12Z; under R909. The fresh Opus verifier passed #1030 (issuecomment-6377324067)
+with three nits: two error toasts when `restoreAutosave` is called without `announce` (no production caller
+does), `if (cycle)` not checking `cycle.type` (the only variant today), and `src/main.test.tsx` mocking the
+restore so the boot test never reaches the report (its own jsdom boot probe showed both toasts, the error
+in front). R909 bounds the legacy-code exception to the cycle report itself, with no other legacy
+persistence work, and `src/store/actions/persistenceActions/autosave.ts` goes at ADR-0020 §7.5d.
+Cost if wrong: a future caller without `announce` shows a doubled error until §7.5d removes the file.
+
+## R917 — the open HRN reviews become two batches, #930 and #939
+Builds on: R893
+Coordinator, 2026-10-24T00:27Z; under R893, after #978 merged as PR #1031. #978's after-merge step names
+six entries for #930, one over R893's limit of five. #930 becomes the batch for HRN-020, 021, 022, 025 and
+026, and #933, #934, #937 and #938 close as covered. #939 becomes the second batch, for HRN-027 to HRN-030,
+and #989, #990 and #991 close as covered, which #978's text did not name but R893's rule gives:
+`queueReviews` groups the same four the same way. #935 (HRN-023) and #936 (HRN-024) keep their own reviews
+(`Review: own`). Bodies are `reviewIssue`'s own batch form on main `b3325642`; all nine entries were
+`proposed`.
+Cost if wrong: one batch panel decides four entries that per-entry panels would have weighed separately;
+any entry can be reopened alone by setting it back to `proposed`.
