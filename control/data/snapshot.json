@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T00:27:21.154Z",
+  "generatedAt": "2026-10-24T00:50:58.763Z",
   "head": {
-    "sha": "b332564284efed17bbaa235c004154be958c8235",
-    "date": "2026-10-24T03:26:22+03:00",
-    "subject": "docs(harness): HRN entries are reviewed in batches of at most five"
+    "sha": "b05290d7c363599166197ed9318708ffca033731",
+    "date": "2026-10-24T03:49:49+03:00",
+    "subject": "fix(core): fresh joiner walks reuse every loop-free reading across walks (#979)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-24T00:27:21.154Z",
+      "fetchedAt": "2026-10-24T00:50:58.763Z",
       "status": "ok"
     }
   },
@@ -81,8 +81,8 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 22,
-        "ready": 2,
-        "inProgress": 1,
+        "ready": 3,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
@@ -93,9 +93,9 @@
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 27,
+          "completed": 28,
           "percentCompleted": 71,
-          "total": 38
+          "total": 39
         }
       },
       {
@@ -306,16 +306,16 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 17,
-        "ready": 15,
+        "open": 10,
+        "ready": 8,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 16,
+        "agentReady": 9,
         "filedElsewhere": [],
         "next": {
           "number": 930,
-          "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed"
+          "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -428,7 +428,7 @@
       },
       {
         "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
         "project": "upkeep"
       },
       {
@@ -442,8 +442,13 @@
         "project": "harness"
       },
       {
-        "number": 933,
-        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
+        "number": 1034,
+        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
+        "project": "foundation"
+      },
+      {
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
         "project": "upkeep"
       },
       {
@@ -452,8 +457,8 @@
         "project": "harness"
       },
       {
-        "number": 934,
-        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
         "project": "upkeep"
       },
       {
@@ -462,8 +467,8 @@
         "project": "harness"
       },
       {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "number": 939,
+        "title": "Inbox review: HRN-027, HRN-028, HRN-029, HRN-030 · a batch of 4 harness entries",
         "project": "upkeep"
       },
       {
@@ -472,8 +477,8 @@
         "project": "harness"
       },
       {
-        "number": 936,
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "number": 945,
+        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
         "project": "upkeep"
       },
       {
@@ -482,8 +487,8 @@
         "project": "harness"
       },
       {
-        "number": 937,
-        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "number": 946,
+        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
         "project": "upkeep"
       },
       {
@@ -492,8 +497,8 @@
         "project": "harness"
       },
       {
-        "number": 938,
-        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "number": 1009,
+        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
         "project": "upkeep"
       },
       {
@@ -502,49 +507,14 @@
         "project": "harness"
       },
       {
-        "number": 939,
-        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "number": 1010,
+        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
         "project": "upkeep"
       },
       {
         "number": 1032,
         "title": "Inbox: Review line accepts CRLF, the queue usage line says batches, the template marks Review optional (PR #1031 follow-up)",
         "project": "harness"
-      },
-      {
-        "number": 945,
-        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
-        "project": "upkeep"
-      },
-      {
-        "number": 946,
-        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
-        "project": "upkeep"
-      },
-      {
-        "number": 989,
-        "title": "Inbox review: HRN-028 · `.husky/pre-commit` stops at its first failing command, so a failing typecheck blocks the commit (L077)",
-        "project": "upkeep"
-      },
-      {
-        "number": 990,
-        "title": "Inbox review: HRN-029 · README § *Budgets* disagrees with four rulings the 2026-10-22 runs practised: the agent cap, what it counts, where the meter is read, and where a run stops",
-        "project": "upkeep"
-      },
-      {
-        "number": 991,
-        "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
-        "project": "upkeep"
-      },
-      {
-        "number": 1009,
-        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
-        "project": "upkeep"
-      },
-      {
-        "number": 1010,
-        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
-        "project": "upkeep"
       }
     ],
     "dormant": {
@@ -604,7 +574,7 @@
       },
       {
         "number": 930,
-        "title": "Inbox review: HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed",
+        "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -651,8 +621,23 @@
         "reason": null
       },
       {
-        "number": 933,
-        "title": "Inbox review: HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read",
+        "number": 1034,
+        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -682,8 +667,8 @@
         "reason": null
       },
       {
-        "number": 934,
-        "title": "Inbox review: HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it",
+        "number": 936,
+        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -713,8 +698,8 @@
         "reason": null
       },
       {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "number": 939,
+        "title": "Inbox review: HRN-027, HRN-028, HRN-029, HRN-030 · a batch of 4 harness entries",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -744,8 +729,8 @@
         "reason": null
       },
       {
-        "number": 936,
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
+        "number": 945,
+        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -775,8 +760,8 @@
         "reason": null
       },
       {
-        "number": 937,
-        "title": "Inbox review: HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief",
+        "number": 946,
+        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -806,8 +791,8 @@
         "reason": null
       },
       {
-        "number": 938,
-        "title": "Inbox review: HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it",
+        "number": 1009,
+        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -837,8 +822,8 @@
         "reason": null
       },
       {
-        "number": 939,
-        "title": "Inbox review: HRN-027 · Tokens per merged PR leave out every `run-reviews` session, which README's rule says makes the figure `unmeasured`: count them, or name them outside it",
+        "number": 1010,
+        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
         "labels": [
           "project:upkeep",
           "agent-ready",
@@ -864,118 +849,6 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 945,
-        "title": "Inbox review: FID-033 · #722 gains an unsliced wide `true` on a part whose chip the export's registry lacks, and §1.10.9 says the web IDE reads 16 bits there",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 946,
-        "title": "Inbox review: FID-034 · A chip that names a pin twice within `IN` or within `OUT` is refused on the spec and engine paths, as the web IDE refuses it, and a name shared by `IN` and `OUT` gets one decided reading",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 989,
-        "title": "Inbox review: HRN-028 · `.husky/pre-commit` stops at its first failing command, so a failing typecheck blocks the commit (L077)",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 990,
-        "title": "Inbox review: HRN-029 · README § *Budgets* disagrees with four rulings the 2026-10-22 runs practised: the agent cap, what it counts, where the meter is read, and where a run stops",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 991,
-        "title": "Inbox review: HRN-030 · A second close on one date appends to the dated record, which the retro trigger cannot see; and two orients passed a due retro",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1009,
-        "title": "Inbox review: FID-035 · Before #206 registers user chips, the grading path and the app registry hold one builtin set, or ADR-0020 states the split and a test pins it",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1010,
-        "title": "Inbox review: FID-036 · Project 2's plan text says what runs: #177's binding criterion, its real prerequisites, and the phase page's Project 2 lines",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2393,22 +2266,6 @@
         "reason": "claimed"
       },
       {
-        "number": 979,
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2534,6 +2391,7 @@
       "foundation": [
         1023,
         1026,
+        1034,
         151,
         184,
         325,
@@ -2552,23 +2410,15 @@
         719,
         722,
         728,
-        742,
-        979
+        742
       ],
       "upkeep": [
         930,
-        933,
-        934,
         935,
         936,
-        937,
-        938,
         939,
         945,
         946,
-        989,
-        990,
-        991,
         1009,
         1010,
         229,
@@ -2796,6 +2646,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 1033,
+        "title": "fix(core): driverCheck keys ids by JSON value, and fresh joiner walks reuse loop-free readings (#979)",
+        "url": "https://github.com/mezivillager/hacer/pull/1033",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/979-driver-check-keys",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:27:55Z",
+        "mergedAt": "2026-10-24T00:49:50Z",
+        "closes": [
+          979
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-24T00:48:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1033#issuecomment-6377742055"
+          }
+        ]
+      },
       {
         "number": 1031,
         "title": "chore(inbox): HRN entries reviewed in batches of at most five; a correctness-gate entry keeps its own review",
@@ -4352,33 +4228,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/890#issuecomment-6329843195"
           }
         ]
-      },
-      {
-        "number": 886,
-        "title": "chore(harness): each worktree gets its own scratch folder, printed by wt-new",
-        "url": "https://github.com/mezivillager/hacer/pull/886",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "chore/881-worktree-scratch",
-        "isDraft": false,
-        "createdAt": "2026-10-21T23:57:43Z",
-        "mergedAt": "2026-10-22T00:08:40Z",
-        "closes": [
-          881
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T00:07:19Z",
-            "url": "https://github.com/mezivillager/hacer/pull/886#issuecomment-6329377996"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4520,59 +4369,9 @@
           "at": "2026-10-23T20:23:53Z",
           "url": "https://github.com/mezivillager/hacer/issues/976#issuecomment-6374003799"
         }
-      },
-      {
-        "number": 978,
-        "ref": "refs/heads/claim/978",
-        "sha": "b137f85584156914698f87afe169adde0eb5476e",
-        "state": "CLOSED",
-        "title": "Inbox reviews batch HRN entries, at most five per review issue, while a policy entry that changes a correctness gate keeps its own panel",
-        "url": "https://github.com/mezivillager/hacer/issues/978",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:1"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "feat/978-hrn-batches",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T23:48:03Z",
-          "url": "https://github.com/mezivillager/hacer/issues/978#issuecomment-6377029942"
-        }
-      },
-      {
-        "number": 979,
-        "ref": "refs/heads/claim/979",
-        "sha": "194768e498df0c58c5edf66e9ae606ddd89ef577",
-        "state": "OPEN",
-        "title": "fromLegacyCircuit: key driverCheck's seen set by JSON value, and restore cross-walk reuse on wide loop-free lattices",
-        "url": "https://github.com/mezivillager/hacer/issues/979",
-        "labels": [
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "project:foundation"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "fix/979-driver-check-keys",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T23:33:15Z",
-          "url": "https://github.com/mezivillager/hacer/issues/979#issuecomment-6376843236"
-        }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -6593,7 +6392,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 44
+        "merges": 43
       },
       {
         "date": "2026-10-23",
@@ -6601,20 +6400,20 @@
       },
       {
         "date": "2026-10-24",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-10T00:27:21.154Z",
-      "merged": 151,
+      "since": "2026-10-10T00:50:58.763Z",
+      "merged": 152,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.4
       },
       "blockedOnce": {
         "count": 8,
-        "of": 132,
+        "of": 133,
         "prs": [
           700,
           725,
@@ -6628,8 +6427,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 99,
-          "withVerdict": 99,
+          "merged": 100,
+          "withVerdict": 100,
           "without": []
         },
         "nonCode": {
@@ -11095,11 +10894,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "b332564284efed17bbaa235c004154be958c8235",
+        "sha": "b05290d7c363599166197ed9318708ffca033731",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40044977816/job/120724519307",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40046901114/job/120730611683",
         "line": null,
         "verdict": null,
         "fields": {},
