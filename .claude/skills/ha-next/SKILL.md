@@ -11,16 +11,17 @@ The process is `docs/harness/README.md`; this skill only walks it. Read that pag
 ```bash
 node -v                                   # must be 22
 gh pr list --state open --author @me      # dormant mode: ≥ 5 open agent PRs → no new PR work
-node scripts/inbox.mjs queue              # the one write: a review issue per new proposed inbox entry
+node scripts/inbox.mjs queue              # the one write: review issues for new proposed inbox entries, HRN five to one
 node scripts/backlog.mjs projects
 node scripts/backlog.mjs ready
 git ls-remote origin 'refs/heads/claim/*' # open claims (holder is in the issue's claim comment)
 ls docs/harness/sessions/*-handoff.md 2>/dev/null   # foreign / paused coordinator state
 ```
-`inbox.mjs queue` files a review issue for each `proposed` entry in the four inboxes that has none
-yet, open or closed, so it never files one twice: `inbox-review` for the inbox panel
-(`docs/harness/inbox-panel-brief.md`), `judge-review` for a `docs/harness/judge-inbox.md` entry.
-The owner may override either.
+`inbox.mjs queue` files review issues for the `proposed` entries in the four inboxes that no review
+lists yet, open or closed, so it never files twice for one entry: `inbox-review` for the inbox panel
+(`docs/harness/inbox-panel-brief.md`), one per FID or PRD entry and one per batch of at most five
+HRN entries, each decided on its own (an HRN entry marked `**Review:** own` has its own); and
+`judge-review` for a `docs/harness/judge-inbox.md` entry. The owner may override either.
 
 A `judge due:` line from `ready` means the top pick is a decision: run `docs/harness/judge-brief.md`
 on it (claim, approval commit, reviews in the background) before the first other claim. The loop

@@ -7,12 +7,13 @@ never files an issue. It queues its proposals here. An entry is one of two kinds
   `project:harness` issue body (the ledger's second-occurrence rule).
 - **`policy`:** a change to a gate, a brief, the rotation, a tier, a budget or a cadence.
 
-**The inbox panel decides each `proposed` entry of either kind (`inbox-panel-brief.md`):
-`node scripts/inbox.mjs queue` files a review issue for it, Opus and Grok review it, and the panel
-sets `approved`, `declined (<reason>)` or `deferred (<until>)`. The owner may override any status at
-any time, by editing it or by saying "approve HRN-00N".** Only an approved entry is acted on, and the
-entry then records the issue or PR number. An approved policy that outlives a run is recorded as an
-ADR or an amendment.
+**The inbox panel decides each `proposed` entry of either kind (`inbox-panel-brief.md`), in
+batches: `node scripts/inbox.mjs queue` files one review issue for at most five new entries, Opus
+and Grok review them, and the panel sets each one `approved`, `declined (<reason>)` or
+`deferred (<until>)` on its own. An entry marked `**Review:** own` gets a review issue of its own.
+The owner may override any status at any time, by editing it or by saying "approve HRN-00N".** Only
+an approved entry is acted on, and the entry then records the issue or PR number. An approved
+policy that outlives a run is recorded as an ADR or an amendment.
 
 Declined entries stay, so the same proposal is not made twice. Ids are sequential and never reused.
 
@@ -22,6 +23,7 @@ Declined entries stay, so the same proposal is not made twice. Ids are sequentia
 ### HRN-NNN · <one-line proposal>
 - **Date:** YYYY-MM-DD · **Kind:** mechanise | policy · **Retro run:** <date in Runs>
 - **Status:** proposed | approved | declined (<reason>) | deferred (<until>) | filed (#n)
+- **Review:** own
 - **Evidence:** <ledger ids, PRs, record sections; each number measured (with its command) or inferred>
 - **Cost if wrong:** <what is wasted or broken if this is the wrong call>
 - **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
@@ -32,6 +34,17 @@ Declined entries stay, so the same proposal is not made twice. Ids are sequentia
 ## Verification command
 ## Blocked by
 ```
+
+**`**Review:** own` is optional.** Only a `policy` entry that changes a correctness gate carries it,
+which means any of:
+
+- the verifier's verdict or block rule (`verifier-brief.md`);
+- ADR-0018's fidelity review before merge;
+- what `merge-on-green` or a required check accepts.
+
+Such an entry gets a review issue and a panel of its own. Every other entry is reviewed in a batch;
+a `mechanise` entry always is, because its draft still goes to a builder and a fresh verifier.
+`scripts/inbox.mjs` refuses any other value of the field.
 
 ## Runs
 
@@ -935,6 +948,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 ### HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
 - **Status:** proposed
+- **Review:** own
 - **Evidence:**
   - The rule: ADR-0018 §2, "A PR that changes semantics under `src/core/**` or `src/simulation/**`
     gets one before merge". `ha-next` dispatches it. Neither names an exception.
@@ -970,6 +984,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 ### HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
 - **Status:** proposed
+- **Review:** own
 - **Evidence:**
   - The rule: `verifier-brief.md` § *Verdict rules* gives a BLOCK "only with `file:line` plus a
     failing command or a concrete input/output", and says nits "never block". It does not say when

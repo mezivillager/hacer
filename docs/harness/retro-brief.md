@@ -133,6 +133,10 @@ the window say about policy?
   Rank them by value over cost and list the rest as `held` in the run row.
 - **Every entry carries** its evidence (ledger ids, PRs, record sections and measured numbers), a
   **cost if wrong**, and a **Decides** line naming the inbox panel.
+- **`**Review:** own`** goes on a policy entry that changes a correctness gate (`harness-inbox.md`
+  § *Entry format*), which then gets a review of its own; the panel reviews every other entry in a
+  batch of at most five. Whoever writes an entry sets the field, and the coordinator's review of
+  the PR that adds the entry checks it.
 
 ## Boundaries
 

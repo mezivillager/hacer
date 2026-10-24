@@ -1,8 +1,10 @@
-# Inbox panel brief — one inbox entry, decided without waiting for the owner
+# Inbox panel brief — one inbox entry, or a batch of HRN entries, decided without waiting for the owner
 
 For the coordinator, on one `inbox-review` issue. `node scripts/inbox.mjs queue` files one per
-`proposed` entry in `fidelity-inbox.md`, `harness-inbox.md` and `product-inbox.md`, labelled
-`agent-ready` `risk:0` `project:upkeep`, so the loop picks them at the upkeep slot's pace. Opus
+`proposed` entry in `fidelity-inbox.md` and `product-inbox.md`, and one per batch of at most five
+new `proposed` entries in `harness-inbox.md` (§5). An HRN entry marked `**Review:** own`, a policy
+change to a correctness gate, gets one of its own. Each is labelled `agent-ready` `risk:0`
+`project:upkeep`, so the loop picks them at the upkeep slot's pace. Opus
 (verify) and Grok (read-only) review the entry through the `multi-review` skill on the owner's
 machine; a fresh-context Opus **panel** weighs the two reports and decides `approved`,
 `declined (<reason>)` or `deferred (<until>)`. Its decision stands in for the owner's (owner,
@@ -88,8 +90,52 @@ The coordinator writes it with `node scripts/inbox.mjs set <ID> "<status>"` in a
 `declined (inbox panel, #<n>: <reason>)`, or `deferred (inbox panel, #<n>: <until>)`. `set` refuses
 a value outside the file's own grammar. Once the PR merges,
 `node scripts/inbox.mjs status <ID> --not proposed` exits 0: close `<n>`, release the claim, and
-remove the review worktree and its branch.
+remove the review worktree and its branch. A batch issue is closed once every entry it lists is
+`--not proposed`, which is when its verification command, one `status` per entry, exits 0.
 
 The owner overrides by editing a status or saying "approve FID-00N", applied with `inbox.mjs set`.
 `queue` never files twice for one entry, so to have the panel look again, after an override or a
-deferral's condition, set the entry back to `proposed` and reopen its review issue.
+deferral's condition, set the entry back to `proposed` and reopen its review issue. A reopened
+batch issue is decided for that entry alone.
+
+## 5. A batch of HRN entries
+
+A batch issue lists up to five HRN entries, one `Inbox-entry:` line each; `<IDs>` are its ids.
+§1 to §4 apply, with these differences.
+
+- **The approval commit** sets each listed entry to `approved`, one line per entry:
+
+  ```bash
+  node scripts/backlog.mjs claim <n> --by <coordinator-id> --session <run> --branch chore/inbox-batch-<n>
+  bash scripts/wt-new chore/inbox-batch-<n>      # → ../hacer-wt-inbox-batch-<n>
+  cd ../hacer-wt-inbox-batch-<n> && for ID in <IDs>; do node scripts/inbox.mjs set "$ID" approved; done
+  git commit -am "docs(harness): <IDs> approved, for the inbox panel's batch review"
+  ```
+
+  The run dir is `<YYYY-MM-DD>-inbox-batch-<n>`.
+- **The summary** names the ids and points at the inbox for each entry's case, which keeps it
+  within the launcher's 1,200 characters:
+
+  > `<IDs>` in `docs/harness/harness-inbox.md` are <k> proposals, each with its Evidence, Proposal
+  > and Cost if wrong in that file. The commit sets each one's status to approved, which files each
+  > entry's draft issue as `agent-ready` `project:harness` with the draft's `risk:`, for an agent to
+  > build to its acceptance criteria.
+
+- **The panel** decides each entry on its own, by §3's steps 1 to 3, as if it were the only one: no
+  entry's status depends on another's. It gives one status and one reason per entry, all in one
+  verdict comment, and §3's step 5 files each approved entry's draft:
+
+  ```markdown
+  ## Inbox panel: batch
+  ### <ID>: APPROVED | DECLINED | DEFERRED
+  - **Opus (verify):** <position on this entry>
+  - **Grok (read-only):** <position on this entry>
+  - **Reason:** <why, and which position it found more reasonable>
+  - **Findings accepted:** <one line each, or none>
+
+  ### <next ID>: …
+
+  Verified on: panel Opus (<model id>); reviewers Opus (verify) and Grok (read-only) · origin/main <SHA> · run dir <YYYY-MM-DD>-inbox-batch-<n>
+  ```
+
+- **The status** of every listed entry is written in one PR, by §4.
