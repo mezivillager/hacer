@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-24T00:56:21.657Z",
+  "generatedAt": "2026-10-24T01:29:35.308Z",
   "head": {
     "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
     "date": "2026-10-24T03:55:33+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-24T00:56:21.657Z",
+      "fetchedAt": "2026-10-24T01:29:35.308Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 27,
+        "open": 23,
         "ready": 8,
-        "inProgress": 4,
+        "inProgress": 0,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 13,
+        "agentReady": 9,
         "filedElsewhere": [
           151,
           1023
@@ -2232,40 +2232,6 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
-        "number": 975,
-        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 976,
-        "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2295,40 +2261,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "blocked:#993"
-      },
-      {
-        "number": 1011,
-        "title": "Judge review: JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 1012,
-        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 1017,
@@ -2446,12 +2378,8 @@
         607,
         677,
         870,
-        975,
-        976,
         993,
-        994,
-        1011,
-        1012
+        994
       ],
       "core": [
         179,
@@ -4241,58 +4169,6 @@
   "claims": {
     "items": [
       {
-        "number": 1011,
-        "ref": "refs/heads/claim/1011",
-        "sha": "5720caba590f3ec99122ed158ff7954dfa43365b",
-        "state": "OPEN",
-        "title": "Judge review: JDG-011 · May D1 (#1006) and D2 (#1007), the two Project 2 oracle divergences the fidelity review measured, be made `agent-ready` and built ahead of the slices they block?",
-        "url": "https://github.com/mezivillager/hacer/issues/1011",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "chore/judge-jdg-011",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T20:47:52Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1011#issuecomment-6374429650"
-        }
-      },
-      {
-        "number": 1012,
-        "ref": "refs/heads/claim/1012",
-        "sha": "e81871b9d81616412ad833328164edaed7a32928",
-        "state": "OPEN",
-        "title": "Judge review: JDG-012 · Is #1003 (autosave restore reports a cycle, a fully dropped slot and a non-object slot; `risk:2`, legacy code) built under R898's exception, or declined until N.7 (#382) owns autosave?",
-        "url": "https://github.com/mezivillager/hacer/issues/1012",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "chore/judge-jdg-012",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T21:08:36Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1012#issuecomment-6374775089"
-        }
-      },
-      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -4315,58 +4191,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 975,
-        "ref": "refs/heads/claim/975",
-        "sha": "100e399391361643f72f3ef066450e95b4836215",
-        "state": "OPEN",
-        "title": "Judge review: JDG-009 · Is #889 (`risk:2`, `wt-new scratch` made private on a shared Linux `/tmp`) made `agent-ready`, or declined as not relevant on a single-user macOS laptop?",
-        "url": "https://github.com/mezivillager/hacer/issues/975",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "chore/judge-jdg-009",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T20:06:47Z",
-          "url": "https://github.com/mezivillager/hacer/issues/975#issuecomment-6373710711"
-        }
-      },
-      {
-        "number": 976,
-        "ref": "refs/heads/claim/976",
-        "sha": "ef1558be01090f821c5f7173d95d49eb698c28ba",
-        "state": "OPEN",
-        "title": "Judge review: JDG-010 · Is the tuned refactor-PR test rule (#942) adopted, so it becomes `agent-ready` when #941 lands?",
-        "url": "https://github.com/mezivillager/hacer/issues/976",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-23-hacer-loop-to-12",
-          "branch": "chore/judge-jdg-010",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-23T20:23:53Z",
-          "url": "https://github.com/mezivillager/hacer/issues/976#issuecomment-6374003799"
         }
       }
     ],
@@ -6417,7 +6241,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-10T00:56:21.657Z",
+      "since": "2026-10-10T01:29:35.308Z",
       "merged": 153,
       "openToMergeHours": {
         "median": 0.3,
@@ -10902,7 +10726,7 @@
       },
       {
         "date": "2026-10-24",
-        "at": "2026-10-24T00:51:44.109Z",
+        "at": "2026-10-24T00:56:21.657Z",
         "byProject": {
           "mission-control": [
             1024,
@@ -11066,12 +10890,15 @@
         "pr": null,
         "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-24T00:59:13Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40047370828/job/120732067039",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
