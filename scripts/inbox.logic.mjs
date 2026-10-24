@@ -10,10 +10,13 @@ export const REVIEW_LABELS = ['inbox-review', 'agent-ready', 'risk:0', 'project:
 export const JUDGE_LABELS = ['judge-review', 'agent-ready', 'risk:0', 'project:harness']
 /** `gh issue list --limit` for the dedupe read: a list this long may be cut short, so queue refuses it. */
 export const REVIEW_LIST_LIMIT = 1000
+/** New `proposed` HRN entries share a review issue, at most this many to one; `**Review:** own` keeps one apart. */
+export const BATCH_LIMIT = 5
 
 export class InboxError extends Error {}
 
 const STATUS_LINE = /^(- \*\*Status:\*\* )(.*?)(\r?)$/
+const REVIEW_LINE = /^- \*\*Review:\*\*(.*)$/
 const OPENING_FENCE = /^ {0,3}(`{3,}|~{3,})/
 const CLOSING_FENCE = /^ {0,3}(`{3,}|~{3,})\s*$/
 const keywordOf = (status) => /^[a-z]+/.exec(status)?.[0] ?? ''
@@ -55,10 +58,15 @@ export function parseInbox(text, inbox) {
   let current = null
   for (const line of lines.filter((candidate) => !candidate.inFence)) {
     const match = heading.exec(line.raw)
-    if (match) entries.push(current = { id: match[1], title: match[2], status: null, file: inbox.file, line: line.number, statusLine: null })
-    else if (/^#{1,3} /.test(line.raw)) current = null
+    if (match) {
+      entries.push(current = { id: match[1], title: match[2], status: null, file: inbox.file, line: line.number, statusLine: null, ownReview: false })
+    } else if (/^#{1,3} /.test(line.raw)) current = null
     else if (current?.status === null && STATUS_LINE.test(line.raw)) {
       Object.assign(current, { status: STATUS_LINE.exec(line.raw)[2], statusLine: line.number })
+    } else if (current && REVIEW_LINE.test(line.raw)) {
+      const value = REVIEW_LINE.exec(line.raw)[1].trim()
+      if (value !== 'own') throw new InboxError(`${inbox.file}:${line.number}: ${current.id} has **Review:** ${JSON.stringify(value)}; its one value is own`)
+      current.ownReview = true
     }
   }
   entries.forEach((entry, i) => {
@@ -141,8 +149,11 @@ const JUDGE = {
 }
 const reviewerOf = (prefix) => (prefix === 'JDG' ? JUDGE : PANEL)
 
-/** The review issue for one entry, in the agent-ready issue form (docs/harness/issue-form.md). */
-export function reviewIssue({ id, title, file }) {
+/** The review issue for one entry, or for a batch of HRN entries, in the agent-ready issue form (docs/harness/issue-form.md). */
+export function reviewIssue(entries) {
+  const group = [entries].flat()
+  if (group.length > 1) return batchReviewIssue(group)
+  const [{ id, title, file }] = group
   const reviewer = reviewerOf(id.split('-')[0])
   const body = `## Goal
 ${reviewer.decides} ${id} in \`${file}\`: ${reviewer.method}. Nothing waits for the owner, who may override the status at any time.
@@ -170,8 +181,54 @@ Inbox-entry: ${id}`
   return { id, title: `${reviewer.title}: ${id} · ${title}`, labels: [...reviewer.labels], body }
 }
 
+function batchReviewIssue(entries) {
+  const ids = entries.map((entry) => entry.id)
+  const { file } = entries[0]
+  const body = `## Goal
+${PANEL.decides} each of these ${ids.length} entries in \`${file}\` on its own: ${PANEL.method} § 5. Nothing waits for the owner, who may override any status at any time.
+
+${entries.map((entry) => `- ${entry.id} · ${entry.title}`).join('\n')}
+
+## Acceptance criteria
+- One panel verdict comment on this issue, headed \`## Inbox panel: batch\`, with a part per entry headed \`### <ID>: APPROVED | DECLINED | DEFERRED\`: one line per reviewer's position on it, the reason and the findings it accepted; then one \`Verified on:\`.
+- Each status is set with \`node scripts/inbox.mjs set <ID> <status>\`: ${PANEL.statuses}, otherwise the reason and this issue.
+
+## Verification command
+\`${ids.map((id) => `node scripts/inbox.mjs status ${id} --not proposed`).join(' && ')}\`
+
+## Scope
+In: the reviews, the verdict and the status lines. Out: building what an entry proposes, which an approval files as its own issue.
+
+## Files likely touched
+\`${file}\`
+
+## Risk
+\`risk:0\`: one status line per entry in an inbox.
+
+## Blocked by
+—
+
+${ids.map((id) => `Inbox-entry: ${id}`).join('\n')}`
+  return { id: ids.join(', '), title: `${PANEL.title}: ${ids.join(', ')} · a batch of ${ids.length} harness entries`, labels: [...PANEL.labels], body }
+}
+
+const batched = (entry) => entry.id.startsWith('HRN-') && !entry.ownReview
+
+/** Each entry's own group, except that batched entries fill groups of up to BATCH_LIMIT, each at its first entry's place. */
+function reviewGroups(entries) {
+  const groups = []
+  let batch = null
+  for (const entry of entries) {
+    if (!batched(entry)) groups.push([entry])
+    else if (batch !== null && batch.length < BATCH_LIMIT) batch.push(entry)
+    else groups.push(batch = [entry])
+  }
+  return groups
+}
+
 /**
- * Files a review issue for each proposed entry no issue reviews yet, open or closed; one line per issue.
+ * Files a review issue for the proposed entries no issue reviews yet, open or closed: one per entry, or one per batch
+ * of up to BATCH_LIMIT HRN entries; one line per issue.
  * `listReviewIssues(label)` is read once per review label the inboxes use, and an entry is reviewed if any list holds it.
  */
 export function queueReviews(inboxes, { listReviewIssues, fileIssue, dryRun = false }) {
@@ -184,7 +241,7 @@ export function queueReviews(inboxes, { listReviewIssues, fileIssue, dryRun = fa
   })
   const reviewed = reviewedIds(issues)
   const lines = []
-  for (const draft of proposed.filter((entry) => !reviewed.has(entry.id)).map(reviewIssue)) {
+  for (const draft of reviewGroups(proposed.filter((entry) => !reviewed.has(entry.id))).map(reviewIssue)) {
     try {
       lines.push(dryRun ? `would file: ${draft.title}` : `filed ${fileIssue(draft)}: ${draft.title}`)
     } catch (error) {
