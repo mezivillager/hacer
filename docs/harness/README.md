@@ -228,7 +228,7 @@ owner may override either.
 | **product** (usability & design) | the app's screens and flows, from the cloud UI tour (`.github/workflows/ui-tour.yml`) and the code, or one UI-facing PR or issue | `product-brief.md` · agent `.claude/agents/hacer-product.md` | at most five `project:polish` issues per review under #144, filed directly (owner, 2026-09-19); strategy proposals queued in `product-inbox.md` for the inbox panel to decide |
 | **process** (the flow itself) | the autonomous flow — how the platform moves forward without the owner — at least every two weeks: `node scripts/backlog.mjs ready` prints `process review due:` 14 days after the newest cycle with a `SYNTHESIS.md`, and the coordinator then starts the cycle: it issues the brief and starts the reviewers, two on Opus by default (`process-review-brief.md` §7) | `process-review-brief.md`, issued per cycle in `reviews/<date>/BRIEF.md` | one numbered review per reviewer in `reviews/<date>/reviews/`; the coordinator consolidates them in `SYNTHESIS.md` and files what survives |
 | **retro** (refinement) | a window of merged PRs: the ledger, the session records, the four numbers, verdicts, follow-ups, flake reruns and the three inboxes — at the first orient after a run's close record lands on `main`, or once `main` has moved and 7 days have passed since the last retro | `retro-brief.md` · agent `.claude/agents/hacer-retro.md` | mechanise drafts and policy proposals in `harness-inbox.md` for the inbox panel to decide, plus one run row; never an issue, never a policy edit |
-| **inbox panel** (decisions) | one `proposed` inbox entry, from an Opus (verify) and a Grok (read-only) review run by the `multi-review` skill on the owner's machine; the review issues come from `node scripts/inbox.mjs queue` | `inbox-panel-brief.md` | one verdict comment on the review issue; on approval, the entry's issue, filed `agent-ready`. The owner may override any status |
+| **inbox panel** (decisions) | one `proposed` FID or PRD entry, or a batch of at most five new `proposed` HRN entries, each decided on its own (an HRN entry marked `**Review:** own` has a review of its own), from an Opus (verify) and a Grok (read-only) review run by the `multi-review` skill on the owner's machine; the review issues come from `node scripts/inbox.mjs queue` | `inbox-panel-brief.md` | one verdict comment on the review issue, with one status and reason per entry; on approval, each approved entry's issue, filed `agent-ready`. The owner may override any status |
 | **judge** (the owner's decisions) | one `proposed` entry in `judge-inbox.md`, a decision that used to wait for the owner, from a Fable (verify) and a Grok (read-only) review; `ready` picks its `judge-review` issue ahead of every other task | `judge-brief.md` | one decision comment; the issues or labels the decision needs, and a `needs-human` issue for what only the owner's hand can do. The owner may override any status |
 
 The `hacer-*` types register in a session started in the parent workspace only through the owner's
@@ -246,14 +246,15 @@ Four paths, from the smallest to the largest. Why they are shaped this way:
    stated once, in the ledger's header.
 2. **The retro checks the rule fired.** The retro role (`retro-brief.md`) runs on its cadence. A
    class seen twice with no mechanism becomes a *mechanise* draft in `harness-inbox.md`. The inbox
-   panel decides it (`inbox-panel-brief.md`), and an approved draft is filed as an `agent-ready`
-   `project:harness` issue.
+   panel decides it in a batch of at most five HRN entries (`inbox-panel-brief.md` § 5), and an
+   approved draft is filed as an `agent-ready` `project:harness` issue.
 3. **Policy changes go through the inbox panel.** A finding that a gate, brief, rotation, tier,
    budget or cadence is wrong becomes a *policy* entry in `harness-inbox.md`. The inbox panel decides
-   it, and the owner may override the decision. An approved change lands as a PR, and if it
-   outlives the run it is recorded as an ADR or an ADR amendment (`docs/decisions/`). A call that
-   binds only one run is a ruling. No role and no coordinator changes a standing knob on its own
-   (L019).
+   it in a batch, or in a review of its own when the entry is marked `**Review:** own` because it
+   changes a correctness gate (`harness-inbox.md` § *Entry format*), and the owner may override the
+   decision. An approved change lands as a PR, and if it outlives the run it is recorded as an ADR
+   or an ADR amendment (`docs/decisions/`). A call that binds only one run is a ruling. No role and
+   no coordinator changes a standing knob on its own (L019).
 4. **Prune, quarterly and when the default model changes.** Pick one component: a brief section, a
    hook, a check, a skill or a rule. Delete it on a branch, and run the definition of done plus
    whatever replay or window exercises it. If nothing breaks, propose the deletion as a policy entry,
@@ -392,7 +393,7 @@ one section without warning, so they keep the default merge.
 - `routines/fidelity-digest.md` — the change-triggered re-check of the roadmap (ADR-0018 §5).
 - `product-brief.md` — the brief the product role receives for a usability and design review.
 - `product-inbox.md` — product-strategy proposals from product reviews, which the inbox panel decides.
-- `inbox-panel-brief.md` — how one `proposed` inbox entry is decided: the review issue `node scripts/inbox.mjs queue` files, the Opus and Grok reviews, the panel's verdict, and the status `inbox.mjs set` writes; the owner may override.
+- `inbox-panel-brief.md` — how one `proposed` inbox entry, or a batch of HRN entries, is decided: the review issue `node scripts/inbox.mjs queue` files, the Opus and Grok reviews, the panel's verdict, and the status `inbox.mjs set` writes; the owner may override.
 - `judge-inbox.md` — decisions that used to wait for the owner, which the judge decides on his behalf (R889).
 - `judge-brief.md` — how one `judge-inbox.md` entry is decided: the `judge-review` issue picked first, the Fable and Grok reviews, the Opus judge's decision, and the status `inbox.mjs set` writes; the owner may override.
 - `model-tiering.md` — which model tier each role gets, measured by replaying the verifier brief.
