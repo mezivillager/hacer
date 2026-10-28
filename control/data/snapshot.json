@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-28T14:18:25.344Z",
+  "generatedAt": "2026-10-28T15:17:02.584Z",
   "head": {
     "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
     "date": "2026-10-24T03:55:33+03:00",
@@ -9,69 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-28T13:16:43.567Z",
-      "status": "error",
-      "error": "prsMerged: HTTP 504: 504 Gateway Timeout (https://api.github.com/graphql)"
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
+      "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
-      "status": "partial",
-      "error": "prsMerged: HTTP 504: 504 Gateway Timeout (https://api.github.com/graphql); flowPrs: gh: HTTP 502"
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
+      "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-28T14:18:25.344Z",
+      "fetchedAt": "2026-10-28T15:17:02.584Z",
       "status": "ok"
     }
   },
@@ -6227,8 +6225,75 @@
         "isLatest": false
       }
     ],
-    "mergesPerDay": [],
-    "flow": null,
+    "mergesPerDay": [
+      {
+        "date": "2026-10-22",
+        "merges": 42
+      },
+      {
+        "date": "2026-10-23",
+        "merges": 14
+      },
+      {
+        "date": "2026-10-24",
+        "merges": 4
+      }
+    ],
+    "flow": {
+      "days": 14,
+      "since": "2026-10-14T15:17:02.584Z",
+      "merged": 153,
+      "openToMergeHours": {
+        "median": 0.3,
+        "p90": 1.4
+      },
+      "blockedOnce": {
+        "count": 8,
+        "of": 134,
+        "prs": [
+          700,
+          725,
+          727,
+          732,
+          743,
+          753,
+          774,
+          959
+        ]
+      },
+      "coverage": {
+        "code": {
+          "merged": 100,
+          "withVerdict": 100,
+          "without": []
+        },
+        "nonCode": {
+          "merged": 53,
+          "withVerdict": 34,
+          "without": [
+            692,
+            693,
+            694,
+            695,
+            696,
+            755,
+            756,
+            757,
+            758,
+            759,
+            760,
+            761,
+            762,
+            763,
+            775,
+            913,
+            925,
+            926,
+            927
+          ]
+        }
+      }
+    },
     "conformance": {
       "projects": [
         {
@@ -11277,7 +11342,7 @@
       },
       {
         "date": "2026-10-28",
-        "at": "2026-10-28T13:16:43.567Z",
+        "at": "2026-10-28T14:18:25.344Z",
         "byProject": {
           "mission-control": [
             1024,
