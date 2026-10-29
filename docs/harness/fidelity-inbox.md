@@ -762,7 +762,7 @@ One set of builtins answers "what does a part named X resolve to" on the grading
     - `IN a[32]`, `Not(in=a[31], out=out)`, `set a -1`: the web IDE prints `out` 1; HACER prints `out` 0.
     - A 1-bit pin agrees: `set in 153` and `set in 2` read 1 and 0 on both.
   - No official vector reaches it: none of the 50 course chips declares a pin wider than 16 bits (FID-033's count), and none of the 652 `set`s in the 21 Project 1–2 scripts that `load` a chip overflows its pin. A learner's own script reaches it through `hacer test`, `hacer run-tst` and the MCP `hacer_hdl` tool, and every chip past 16 bits does.
-- **Review note:** PR #957, the fidelity digest of 2026-10-30
+- **Review note:** PR #957 issuecomment-6510319007 (the fidelity digest of #956, #957, #987, #1016, #1019, #1027, #1028, #1045 and #1048; bug #1058 is its other finding)
 
 **Draft issue body**
 ## Goal
