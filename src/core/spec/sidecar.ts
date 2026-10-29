@@ -8,15 +8,22 @@ export function emptySidecar(): Sidecar {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
+const AXES = ['x', 'y', 'z'] as const
+const SURFACES = ['3d', '2d'] as const
+
 const isHint = (value: unknown): boolean =>
   isRecord(value) &&
-  ['x', 'y', 'z'].every((axis) => typeof value[axis] === 'number') &&
+  AXES.every((axis) => typeof value[axis] === 'number') &&
   (value.rotation === undefined || typeof value.rotation === 'number') &&
   (value.origin === 'user' || value.origin === 'tidy')
 
 const refuse = (code: SpecDiagnostic['code'], message: string) => ({
   diagnostics: [{ code, severity: 'error' as const, message }],
 })
+
+/** A JSON number too large for a double, such as `1e400`, reads as ±Infinity. */
+const notFinite = (hint: unknown): string[] =>
+  isRecord(hint) ? AXES.filter((axis) => !Number.isFinite(hint[axis])).map((axis) => `${axis} = ${String(hint[axis])}`) : []
 
 /** Read a sidecar's JSON at the version it was written at; a version this build does not know is refused, never read best-effort. */
 export function parseSidecar(json: string): { sidecar: Sidecar | SpecV1['sidecar'] } | { diagnostics: SpecDiagnostic[] } {
@@ -31,12 +38,20 @@ export function parseSidecar(json: string): { sidecar: Sidecar | SpecV1['sidecar
   if (!READABLE_VERSIONS.some((version) => version === schemaVersion)) {
     return refuse('unknown-schema-version', `Sidecar schemaVersion ${JSON.stringify(schemaVersion) ?? 'missing'} is not one this build reads (${READABLE_VERSIONS.join(', ')})`)
   }
-  const surfaces = isRecord(hints) ? [hints['3d'], hints['2d']] : []
+  const surfaces = isRecord(hints) ? SURFACES.map((surface) => hints[surface]) : []
   if (surfaces.length === 0 || !surfaces.every(isRecord) || !isRecord(meta) || !Array.isArray(tests) || !Array.isArray(notes)) {
     return refuse('invalid-sidecar', "Sidecar must carry hints['3d'], hints['2d'], meta, tests and notes")
   }
   if (!surfaces.every((surface) => Object.values(surface).every(isHint))) {
     return refuse('invalid-sidecar', 'Every hint needs numeric x, y and z and an origin of user or tidy')
   }
+  const unplaceable = SURFACES.flatMap((surface, s) =>
+    Object.entries(surfaces[s]).flatMap(([id, hint]) => {
+      const axes = notFinite(hint)
+      const message = `The '${surface}' hint for ${id} has ${axes.join(', ')}: a hint coordinate must be a finite number`
+      return axes.length === 0 ? [] : [{ code: 'invalid-sidecar' as const, severity: 'error' as const, message }]
+    }),
+  )
+  if (unplaceable.length > 0) return { diagnostics: unplaceable }
   return { sidecar: value as unknown as Sidecar | SpecV1['sidecar'] }
 }
