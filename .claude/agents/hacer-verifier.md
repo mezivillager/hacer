@@ -50,6 +50,10 @@ nothing looks. You are the only thing that looks.
 ## Rules of evidence
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for
   taste. Nits never block; at most three, the rest as "plus N similar".
+- **Introduced defects:** a defect you reproduce that the PR introduces, in lines it adds or changes or in older code
+  those lines newly reach, is a **BLOCK** unless a nit shows that its triggering input lies outside the code's contract
+  on `main` with the PR merged (every caller in that tree, the PR's own included, user files, CLI and MCP input,
+  anything exported from `src/core/index.ts`, and the hosts that run it), and a nit without that showing is a **BLOCK**.
 - A criterion is satisfied only when a test **you ran** proves it. A test whose *name* matches the
   criterion proves nothing — read what it asserts.
 - A failing test you cannot tie to the diff is a machine problem until you show otherwise: re-run it

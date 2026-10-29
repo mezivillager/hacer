@@ -33,6 +33,14 @@ model its `VERIFIER-TIER:` line names.
 ## Verdict rules
 - **BLOCK** only with `file:line` plus a failing command or a concrete input/output. Never for taste.
 - **Refactor PRs:** each assertion line `pr-hygiene` names as changed in a refactor PR is a stop: show that it was generalised (the same check over more cases) or moved, or **BLOCK** on it, citing that line.
+- **Introduced defects:** a defect you reproduce that the PR introduces, in lines it adds or changes or in older code
+  those lines newly reach, is a **BLOCK** unless a nit shows that its triggering input lies outside the code's contract
+  on `main` with the PR merged (every caller in that tree, the PR's own included, user files, CLI and MCP input,
+  anything exported from `src/core/index.ts`, and the hosts that run it), and a nit without that showing is a **BLOCK**.
+  Older code is newly reached when an input that works at the base fails at the head. A defect is a wrong result, a
+  throw, a hang, lost data, or a breach of a contract the PR states or cites (an acceptance criterion, an ADR, or a doc
+  comment it writes); a slowdown with no stated budget and the quality of a test are nits. The showing names where the
+  contract excludes the input. Write such a nit in full, never folded into "plus N similar".
 - **NIT** ≤ 3; the rest as "plus N similar". Nits never block; the coordinator files the ones worth keeping as follow-up issues (depth 1, ≤ 3).
 - **PASS** when there are no blockers.
 - **Invalidates:** when a BLOCK's finding means a past decision (`ADR-NNNN`, `R<n>` or `P-<n>`) was
@@ -60,7 +68,7 @@ _Independent fresh-context review; the verifier did not see the author's session
 ```
 
 ## Overturned verdicts
-**Overturned:** A verdict is overturned when it is a PASS whose ticked criterion, or whose `Blockers: none`, a later PR's fix or a later verifier pass shows was wrong, or a BLOCK whose finding a fresh verifier or a ruling rejects with no code change; it is not overturned when the defect lies in a path the verdict marked `unproven` or listed under `Not covered`, or when a later ruling changes the design or the issue's criteria.
+**Overturned:** A verdict is overturned when it is a PASS whose ticked criterion, or whose `Blockers: none`, a later PR's fix or a later verifier pass shows was wrong, or a BLOCK whose finding a fresh verifier or a ruling rejects with no code change; it is not overturned when the defect lies in a path the verdict marked `unproven` or listed under `Not covered`, when a nit showed the defect's input outside the code's contract and no later PR or verifier pass shows that showing wrong, or when a later ruling changes the design or the issue's criteria.
 
 - **Who applies the label.** The retro reports candidates: an unlabelled PASS whose defect a later
   PR fixed is a candidate, not an overturn. The coordinator classifies each against the definition
