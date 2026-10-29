@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T21:21:54.781Z",
+  "generatedAt": "2026-10-29T22:00:53.901Z",
   "head": {
-    "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
-    "date": "2026-10-30T00:20:52+03:00",
-    "subject": "chore(pr-hygiene): read block comments and count a cross-file move once (#1023)"
+    "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
+    "date": "2026-10-30T00:59:54+03:00",
+    "subject": "fix(spec): refuse non-finite hint coordinates where hints enter"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T21:21:54.781Z",
+      "fetchedAt": "2026-10-29T22:00:53.901Z",
       "status": "ok"
     }
   },
@@ -88,14 +88,14 @@
         "agentReady": 3,
         "filedElsewhere": [],
         "next": {
-          "number": 1026,
-          "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)"
+          "number": 1034,
+          "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
-          "completed": 28,
-          "percentCompleted": 71,
-          "total": 39
+          "completed": 29,
+          "percentCompleted": 72,
+          "total": 40
         }
       },
       {
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 26,
-        "ready": 8,
+        "open": 30,
+        "ready": 12,
         "inProgress": 2,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 15,
         "filedElsewhere": [
           151,
           1047
@@ -307,15 +307,15 @@
         "slug": "upkeep",
         "epicNumber": 146,
         "open": 10,
-        "ready": 7,
-        "inProgress": 1,
+        "ready": 6,
+        "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 9,
         "filedElsewhere": [],
         "next": {
-          "number": 935,
-          "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving"
+          "number": 936,
+          "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned"
         },
         "title": "Epic: upkeep — maintenance & documentation",
         "subIssues": {
@@ -412,16 +412,6 @@
     ],
     "next": [
       {
-        "number": 1026,
-        "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
-        "project": "foundation"
-      },
-      {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
-        "project": "upkeep"
-      },
-      {
         "number": 1034,
         "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
         "project": "foundation"
@@ -445,6 +435,11 @@
         "number": 1046,
         "title": "run-tst and the differential have no committed end-to-end script with a '!' terminator (PR #1045 follow-up)",
         "project": "spine"
+      },
+      {
+        "number": 1054,
+        "title": "Hints: a finite but huge coordinate still overflows to Infinity in fixed(), rotation is not checked finite, and parseSpec's docstring omits the invalid-sidecar case (PR #1053 follow-up)",
+        "project": "foundation"
       },
       {
         "number": 936,
@@ -510,48 +505,38 @@
         "number": 1032,
         "title": "Inbox: Review line accepts CRLF, the queue usage line says batches, the template marks Review optional (PR #1031 follow-up)",
         "project": "harness"
+      },
+      {
+        "number": 1049,
+        "title": "A `Decisions:` line may name an inbox or judge entry, a malformed one is warned by `pr-hygiene`, and `lineage parse --github` exits 0 (HRN-020)",
+        "project": "harness"
+      },
+      {
+        "number": 1050,
+        "title": "`merge-on-green` refuses a PR whose newest trusted verdict is not `## Verifier verdict: PASS`, read as Mission Control reads it (HRN-021)",
+        "project": "harness"
+      },
+      {
+        "number": 1051,
+        "title": "A test that runs a child process synchronously names its own limits, and a lint fails one that does not (HRN-022)",
+        "project": "harness"
+      },
+      {
+        "number": 1052,
+        "title": "The panel, implementer and verifier briefs carry four standing rules: R865, R868, L068 and L074 (HRN-025)",
+        "project": "harness"
       }
     ],
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1048,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 1026,
-        "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 1034,
         "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
@@ -631,6 +616,21 @@
         "reason": null
       },
       {
+        "number": 1054,
+        "title": "Hints: a finite but huge coordinate still overflows to Infinity in fixed(), rotation is not checked finite, and parseSpec's docstring omits the invalid-sidecar case (PR #1053 follow-up)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:foundation"
+        ],
+        "blocking": [],
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 936,
         "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
         "labels": [
@@ -823,6 +823,66 @@
           "project:harness",
           "agent-ready",
           "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1049,
+        "title": "A `Decisions:` line may name an inbox or judge entry, a malformed one is warned by `pr-hygiene`, and `lineage parse --github` exits 0 (HRN-020)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1050,
+        "title": "`merge-on-green` refuses a PR whose newest trusted verdict is not `## Verifier verdict: PASS`, read as Mission Control reads it (HRN-021)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1051,
+        "title": "A test that runs a child process synchronously names its own limits, and a lint fails one that does not (HRN-022)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:1"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1052,
+        "title": "The panel, implementer and verifier briefs carry four standing rules: R865, R868, L068 and L074 (HRN-025)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
         ],
         "blocking": [],
         "project": "harness",
@@ -2228,6 +2288,23 @@
         "reason": "claimed"
       },
       {
+        "number": 935,
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2328,9 +2405,9 @@
     ],
     "byProject": {
       "foundation": [
-        1026,
         1034,
         1047,
+        1054,
         151,
         184,
         325,
@@ -2351,18 +2428,6 @@
         728,
         742
       ],
-      "upkeep": [
-        935,
-        936,
-        939,
-        945,
-        946,
-        1009,
-        1010,
-        229,
-        256,
-        930
-      ],
       "harness": [
         257,
         949,
@@ -2372,6 +2437,10 @@
         965,
         992,
         1032,
+        1049,
+        1050,
+        1051,
+        1052,
         154,
         156,
         270,
@@ -2411,6 +2480,18 @@
         235,
         236,
         1018
+      ],
+      "upkeep": [
+        936,
+        939,
+        945,
+        946,
+        1009,
+        1010,
+        229,
+        256,
+        930,
+        935
       ],
       "core": [
         179,
@@ -2481,6 +2562,32 @@
   },
   "prs": {
     "open": [
+      {
+        "number": 1048,
+        "title": "fix(testing): grade a .cmp's column count and header as the reference does",
+        "url": "https://github.com/mezivillager/hacer/pull/1048",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "fix/1018-cmp-header-and-columns",
+        "isDraft": false,
+        "createdAt": "2026-10-29T21:42:25Z",
+        "mergedAt": null,
+        "closes": [
+          1018
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5), the tier the rule gives (VERIFIER-TIER: opus pr=1048, engine change)",
+            "at": "2026-10-29T21:59:45Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1048#issuecomment-6509300224"
+          }
+        ]
+      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2605,6 +2712,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 1053,
+        "title": "fix(spec): refuse non-finite hint coordinates where hints enter",
+        "url": "https://github.com/mezivillager/hacer/pull/1053",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/1026-hint-non-finite",
+        "isDraft": false,
+        "createdAt": "2026-10-29T21:45:16Z",
+        "mergedAt": "2026-10-29T21:59:55Z",
+        "closes": [
+          1026
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-29T21:58:30Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1053#issuecomment-6509279370"
+          }
+        ]
+      },
       {
         "number": 1045,
         "title": "fix(testing): outTable and the load check walk only the commands a run executes",
@@ -4156,33 +4289,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/904#issuecomment-6331748076"
           }
         ]
-      },
-      {
-        "number": 902,
-        "title": "chore(harness): ready and next say a process review is due; the coordinator starts it",
-        "url": "https://github.com/mezivillager/hacer/pull/902",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/895-process-review-due",
-        "isDraft": false,
-        "createdAt": "2026-10-22T02:29:28Z",
-        "mergedAt": "2026-10-22T02:45:35Z",
-        "closes": [
-          895
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-22T02:44:50Z",
-            "url": "https://github.com/mezivillager/hacer/pull/902#issuecomment-6331419934"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4225,14 +4331,13 @@
         }
       },
       {
-        "number": 1023,
-        "ref": "refs/heads/claim/1023",
-        "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
+        "number": 1026,
+        "ref": "refs/heads/claim/1026",
+        "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
         "state": "CLOSED",
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "url": "https://github.com/mezivillager/hacer/issues/1023",
+        "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1026",
         "labels": [
-          "project:harness",
           "agent-ready",
           "in-progress",
           "risk:1",
@@ -4243,11 +4348,11 @@
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "fix/1023-refactor-rule-gaps",
+          "branch": "fix/1026-hint-non-finite",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-29T20:31:33Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1023#issuecomment-6507641527"
+          "at": "2026-10-29T21:23:03Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1026#issuecomment-6508649467"
         }
       },
       {
@@ -4351,6 +4456,32 @@
           "author": "mezivillager",
           "at": "2026-10-29T20:55:57Z",
           "url": "https://github.com/mezivillager/hacer/issues/930#issuecomment-6508125731"
+        }
+      },
+      {
+        "number": 935,
+        "ref": "refs/heads/claim/935",
+        "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
+        "state": "OPEN",
+        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
+        "url": "https://github.com/mezivillager/hacer/issues/935",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "inbox-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-29-hacer-loop-to-90",
+          "branch": "chore/inbox-hrn-023",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-29T21:49:35Z",
+          "url": "https://github.com/mezivillager/hacer/issues/935#issuecomment-6509125283"
         }
       }
     ],
@@ -6393,7 +6524,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 36
+        "merges": 35
       },
       {
         "date": "2026-10-23",
@@ -6405,20 +6536,20 @@
       },
       {
         "date": "2026-10-29",
-        "merges": 6
+        "merges": 7
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T21:21:54.781Z",
-      "merged": 121,
+      "since": "2026-10-15T22:00:53.901Z",
+      "merged": 122,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 107,
+        "of": 108,
         "prs": [
           753,
           774,
@@ -6427,8 +6558,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 71,
-          "withVerdict": 71,
+          "merged": 72,
+          "withVerdict": 72,
           "without": []
         },
         "nonCode": {
@@ -11814,11 +11945,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
+        "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40957020844/job/123739631377",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40962364197/job/123758187225",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12132,6 +12263,52 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-22T23:18:19Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39870624860/job/120143842868",
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1048,
+        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T21:42:40Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40960040345/job/123750114408",
+        "line": "HYGIENE: PASS reviewable=95 test=58 excluded=0 files=7 issue=#1018 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 95,
+          "test": 58,
+          "excluded": 0,
+          "files": 7,
+          "issue": "#1018",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1048,
+        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T21:42:41Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40960039618/job/123750111889",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1048,
+        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
+        "check": "ci",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T21:45:53Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40960036300/job/123750096837",
         "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
