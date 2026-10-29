@@ -3,7 +3,7 @@
  * `padLeft + width + padRight` characters, names centred, B/X/S values left and D values right.
  * For a correct chip it is the chip's `.cmp`, byte for byte.
  */
-import { formatColumnValue, type OutputRow, type TSTOutputColumn, type TSTScript } from '@/core'
+import { commandsRun, formatColumnValue, type OutputRow, type TSTOutputColumn, type TSTScript } from '@/core'
 
 const line = (cells: readonly string[]): string => `|${cells.join('|')}|`
 
@@ -30,7 +30,7 @@ export function outTable(script: TSTScript, rows: readonly OutputRow[]): string 
   const lines: string[] = []
   let columns: TSTOutputColumn[] = []
   let next = 0
-  for (const cmd of script.commands) {
+  for (const cmd of commandsRun(script)) {
     if (cmd.type === 'output-list') {
       columns = cmd.columns
       lines.push(outHeader(columns))

@@ -12,7 +12,7 @@ import { builtinDisagreements, hdlChipDefinition } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import type { HDLChip } from '../hdl/types'
 import { parseCmp } from './cmpParser'
-import { resolveOutputColumns, runTest } from './engine'
+import { commandsRun, resolveOutputColumns, runTest } from './engine'
 import { formatColumnValue } from './formatColumnValue'
 import { gradingRefusal } from './gradingRefusal'
 import { parseTST } from './tstParser'
@@ -113,7 +113,7 @@ function parseSources(hdlFile: TestSource, tstFile: TestSource): Parsed | TestRe
 function loadChip({ ast, chip, script, builtins }: Parsed, hdlFile: TestSource, tstFile: TestSource): ChipTest | TestReport {
   // `load` swaps in whatever the registry holds under the name it gives, so a `.tst` naming
   // another chip would test that chip's builtin, not this file.
-  for (const cmd of script.commands) {
+  for (const cmd of commandsRun(script)) {
     if (cmd.type === 'load' && loadedChip(cmd.filename) !== chip) {
       return chipTestError(chip, `${tstFile.path} loads ${cmd.filename}, but ${hdlFile.path} defines ${chip}`)
     }

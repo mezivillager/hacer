@@ -46,7 +46,7 @@ export function stripExt(filename: string): string {
 }
 
 /** The commands a run executes: as the reference's run() does, it ends at the first `!`. */
-function commandsRun(script: TSTScript): TSTScript['commands'] {
+export function commandsRun(script: TSTScript): TSTScript['commands'] {
   const end = script.commands.findIndex((cmd) => cmd.type === 'break')
   return end < 0 ? script.commands : script.commands.slice(0, end)
 }
