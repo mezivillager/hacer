@@ -748,3 +748,36 @@ One set of builtins answers "what does a part named X resolve to" on the grading
 `pnpm run lint:docs`
 ## Blocked by
 — (if the slice rulings on #177 change the facts, edit after #984 and #985 land)
+
+### FID-037 · A `.tst` `set` whose value does not fit its pin gets one decided reading, and the output row prints the value the chip evaluated
+- **Date:** 2026-10-30 · **Target epic:** #139 spine
+- **Status:** proposed
+- **Why:** #878 (PR #957) records that HACER holds a signal as 32 bits and refuses a pin wider than `MAX_PIN_WIDTH`. The test-script layer was not measured. Measured 2026-10-30 with `hacer run-tst` on `main` `a208bf75`, and with the web IDE at the differential pin `52611ad` (its `ChipTest`, under tsx):
+  - **The book says such a `set` is an error.** Appendix B §6, "Set" (the HUJI 2003 draft, `https://www.cs.huji.ac.il/course/2002/nand2tet/docs/appendix_B.pdf`, p. 5, fetched 2026-10-30): "The magnitude of *value* must match the *variable*'s width. For example, if x is a 16-bit pin and y is a single bit pin, then set x 153 is valid whereas set y 153 will yield an error and halt the simulation."
+  - **The web IDE masks it, silently.** Every decimal is read `& 0xffff` (`../web-ide/simulator/src/languages/base.ts:25-29` calls `int10`, `../web-ide/simulator/src/util/twos.ts:63-73`), and a bus keeps only its own width (`../web-ide/simulator/src/chip/chip.ts:79-84`). Its formatters `bin`, `dec` and `hex`, beside `int10`, are 16-bit.
+  - **HACER stores it whole and prints it as 16 bits.** `runTest` keeps the value as written (`src/core/testing/engine.ts:177`), the evaluator reads it at the pin's width, and `formatColumnValue` prints `value & 0xffff` (`src/core/testing/formatColumnValue.ts:20`).
+  - So the output differs from the web IDE's, and on a pin wider than 16 bits HACER's own row contradicts itself:
+    - `IN in[4]`, `set in 17`, `in%D1.4.1`: the web IDE prints `1`; HACER prints `17`.
+    - `IN a[17]`, `Not(in=a[16], out=out)`, `set a 65536`: the web IDE prints `a` 0 and `out` 1; HACER prints `a` 0 and `out` 0, the same under `%D`, `%B1.17.1`, `%X1.5.1` and a bare `a`.
+    - `IN a[32]`, `Not(in=a[31], out=out)`, `set a -1`: the web IDE prints `out` 1; HACER prints `out` 0.
+    - A 1-bit pin agrees: `set in 153` and `set in 2` read 1 and 0 on both.
+  - No official vector reaches it: none of the 50 course chips declares a pin wider than 16 bits (FID-033's count), and none of the 652 `set`s in the 21 Project 1–2 scripts that `load` a chip overflows its pin. A learner's own script reaches it through `hacer test`, `hacer run-tst` and the MCP `hacer_hdl` tool, and every chip past 16 bits does.
+- **Review note:** PR #957, the fidelity digest of 2026-10-30
+
+**Draft issue body**
+## Goal
+A `.tst` `set` whose value does not fit its pin has one reading on the grading path, which a test pins and ADR-0020 §1.11 rule 5 records, and an output row never prints a value other than the one the chip evaluated.
+## Acceptance criteria
+- The panel picks one reading for a value that does not fit its pin:
+  - (a) refuse it, as Appendix B says: `runTest` returns an error naming the pin, its width and the value, and rule 5 records that the web IDE masks it instead;
+  - (b) mask it to the pin's width, as the web IDE's bus does, and rule 5 records that the book calls it an error.
+- On a pin wider than 16 bits, the printed column and the evaluated value agree. Either the formatters print the pin's full width, and rule 5 records that the web IDE prints 16 bits; or a `set` or `output-list` on such a pin is refused on the grading path.
+- Tests, in `src/core/testing/engine.test.ts` or `src/cli/runCli.test.ts`, each red first:
+  - `IN in[4]`, `set in 17`: the chosen reading;
+  - `IN a[17]`, `Not(in=a[16], out=out)`, `set a 65536`: the row's `a` and `out` agree;
+  - `IN a[32]`, `set a -1`: the same;
+  - a 1-bit `set in 153` and every Project 1–2 scenario are unchanged.
+## Verification command
+`pnpm exec vitest run --project node src/core/testing src/cli --maxWorkers=3 && pnpm run test:differential`
+## Blocked by
+—
