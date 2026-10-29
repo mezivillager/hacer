@@ -431,6 +431,12 @@ export const TWIN_SENTENCES = [
     ],
   },
   {
+    id: 'verifier-introduced-defect',
+    owner: 'docs/harness/verifier-brief.md',
+    anchor: '**Introduced defects:** ',
+    twins: [{ file: '.claude/agents/hacer-verifier.md', part: 'body' }],
+  },
+  {
     id: 'queue-up-risk-2-plan-slices',
     owner: 'docs/harness/README.md',
     anchor: '**Plan slices at `risk:2`:** ',

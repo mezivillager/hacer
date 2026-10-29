@@ -346,6 +346,14 @@ describe('the agent definitions keep their load-bearing rules', () => {
       'docs/harness/retro-brief.md body',
     ])
   })
+
+  it('checks the verifier\'s introduced-defect rule against its brief', () => {
+    expect(TWIN_SENTENCES.map((t) => [t.owner, t.anchor, ...t.twins.map((w) => `${w.file} ${w.part}`)])).toContainEqual([
+      'docs/harness/verifier-brief.md',
+      '**Introduced defects:** ',
+      '.claude/agents/hacer-verifier.md body',
+    ])
+  })
 })
 
 describe('the measured-facts rule (#394)', () => {
