@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { TSTOutputColumn } from '@/core'
-import { outHeader, outRow } from './outTable'
+import { parseTST, type TSTOutputColumn } from '@/core'
+import { outHeader, outRow, outTable } from './outTable'
 
 const column = (
   name: string,
@@ -28,5 +28,13 @@ describe('outRow', () => {
     ['S shows the value and aligns left', column('x', 'S', 1, 4, 1), 12, ' 12   '],
   ])('%s', (_, col, value, cell) => {
     expect(outRow([col], [value])).toBe(`|${cell}|`)
+  })
+})
+
+describe('outTable', () => {
+  it("prints nothing after a command that ends with '!'", () => {
+    const parsed = parseTST('load Not.hdl, output-list in out; set in 0, eval, output! output-list out; set in 1, eval, output;')
+    if (!parsed.success) throw new Error('the script should parse')
+    expect(outTable(parsed.script, [{ values: { in: 0, out: 1 } }])).toBe('|in |out|\n| 0 | 1 |\n')
   })
 })
