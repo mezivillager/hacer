@@ -17,6 +17,17 @@ describe('the sidecar', () => {
     expect(parseSidecar(JSON.stringify(sidecar))).toEqual({ sidecar })
   })
 
+  it('a hint coordinate that is not a finite number is refused with its node id', () => {
+    const hint = (x: string, y: string) => `{ "x": ${x}, "y": ${y}, "z": 0, "origin": "user" }`
+    const json = `{ "schemaVersion": 2, "hints": { "3d": { "p1": ${hint('1', '2')}, "p2": ${hint('1e400', '0')} }, "2d": { "in:a": ${hint('0', '-1e400')} } }, "meta": {}, "tests": [], "notes": [] }`
+    expect(parseSidecar(json)).toEqual({
+      diagnostics: [
+        { code: 'invalid-sidecar', severity: 'error', message: "The '3d' hint for p2 has x = Infinity: a hint coordinate must be a finite number" },
+        { code: 'invalid-sidecar', severity: 'error', message: "The '2d' hint for in:a has y = -Infinity: a hint coordinate must be a finite number" },
+      ],
+    })
+  })
+
   it.each([
     ['a version this build does not know', '{ "schemaVersion": 3, "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
     ['no version at all', '{ "hints": { "3d": {}, "2d": {} }, "meta": {}, "tests": [], "notes": [] }', 'unknown-schema-version'],
