@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T22:06:20.889Z",
+  "generatedAt": "2026-10-29T22:16:18.379Z",
   "head": {
     "sha": "a208bf7535ed5dd6927324f1bd2b73363170b172",
     "date": "2026-10-30T01:05:43+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T22:06:20.889Z",
+      "fetchedAt": "2026-10-29T22:16:18.379Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 30,
-        "ready": 12,
+        "open": 31,
+        "ready": 13,
         "inProgress": 2,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 15,
+        "agentReady": 16,
         "filedElsewhere": [
           151,
           1047
@@ -525,6 +525,11 @@
         "number": 1052,
         "title": "The panel, implementer and verifier briefs carry four standing rules: R865, R868, L068 and L074 (HRN-025)",
         "project": "harness"
+      },
+      {
+        "number": 1057,
+        "title": "A coordinator's ruling never waives ADR-0018 §2's fidelity review before a core merge: only the judge or the owner does (HRN-023)",
+        "project": "harness"
       }
     ],
     "dormant": {
@@ -879,6 +884,21 @@
       {
         "number": 1052,
         "title": "The panel, implementer and verifier briefs carry four standing rules: R865, R868, L068 and L074 (HRN-025)",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1057,
+        "title": "A coordinator's ruling never waives ADR-0018 §2's fidelity review before a core merge: only the judge or the owner does (HRN-023)",
         "labels": [
           "project:harness",
           "agent-ready",
@@ -2428,6 +2448,7 @@
         1050,
         1051,
         1052,
+        1057,
         154,
         156,
         270,
@@ -2731,6 +2752,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1048",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:spine",
           "risk:1"
         ],
@@ -4289,34 +4311,6 @@
   "claims": {
     "items": [
       {
-        "number": 1018,
-        "ref": "refs/heads/claim/1018",
-        "sha": "2146e43a4c51d8a5181b40921a317040cb020ffd",
-        "state": "CLOSED",
-        "title": "Test engine: a .cmp header is never graded, and a .cmp with the wrong column count passes (PR #1016 follow-up)",
-        "url": "https://github.com/mezivillager/hacer/issues/1018",
-        "labels": [
-          "bug",
-          "project:spine",
-          "agent-ready",
-          "in-progress",
-          "risk:1",
-          "bot-filed",
-          "fidelity"
-        ],
-        "onClosedIssue": true,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "fix/1018-cmp-header-and-columns",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T21:18:20Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1018#issuecomment-6508558555"
-        }
-      },
-      {
         "number": 1034,
         "ref": "refs/heads/claim/1034",
         "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
@@ -4471,7 +4465,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -5727,9 +5721,14 @@
     },
     "releases": [
       {
+        "tag": "v2.71.5",
+        "publishedAt": "2026-10-29T22:09:37Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.71.4",
         "publishedAt": "2026-10-29T22:02:28Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.71.3",
@@ -6532,7 +6531,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T22:06:20.889Z",
+      "since": "2026-10-15T22:16:18.379Z",
       "merged": 123,
       "openToMergeHours": {
         "median": 0.3,
@@ -11777,32 +11776,8 @@
       },
       {
         "date": "2026-10-29",
-        "at": "2026-10-29T21:16:14.092Z",
+        "at": "2026-10-29T22:06:20.889Z",
         "byProject": {
-          "foundation": [
-            1026,
-            1034,
-            151,
-            184,
-            325,
-            380,
-            381,
-            382,
-            383,
-            384,
-            385,
-            386,
-            389,
-            395,
-            400,
-            462,
-            506,
-            719,
-            722,
-            728,
-            742,
-            1023
-          ],
           "harness": [
             257,
             949,
@@ -11812,6 +11787,10 @@
             965,
             992,
             1032,
+            1049,
+            1050,
+            1051,
+            1052,
             154,
             156,
             270,
@@ -11831,13 +11810,38 @@
             1039,
             1040
           ],
+          "foundation": [
+            1047,
+            1054,
+            151,
+            184,
+            325,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506,
+            719,
+            722,
+            728,
+            742,
+            1034
+          ],
           "mission-control": [
             1043,
             509,
             584
           ],
           "spine": [
-            1018,
+            1046,
+            1055,
             165,
             167,
             169,
@@ -11852,7 +11856,6 @@
             236
           ],
           "upkeep": [
-            935,
             936,
             939,
             945,
@@ -11861,7 +11864,8 @@
             1010,
             229,
             256,
-            930
+            930,
+            935
           ],
           "core": [
             179,
@@ -11886,7 +11890,8 @@
             206,
             207,
             209,
-            214
+            214,
+            1056
           ],
           "3d": [
             215,
@@ -11938,12 +11943,15 @@
         "pr": null,
         "sha": "a208bf7535ed5dd6927324f1bd2b73363170b172",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T22:08:40Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40963160553/job/123760847657",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       },
       {
