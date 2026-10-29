@@ -12,7 +12,7 @@ import { builtinDisagreements, hdlChipDefinition } from '../hdl/compiler'
 import { parseHDL } from '../hdl/parser'
 import type { HDLChip } from '../hdl/types'
 import { parseCmp } from './cmpParser'
-import { commandsRun, resolveOutputColumns, runTest } from './engine'
+import { commandsRun, HEADER_ROW, resolveOutputColumns, runTest } from './engine'
 import { formatColumnValue } from './formatColumnValue'
 import { gradingRefusal } from './gradingRefusal'
 import { parseTST } from './tstParser'
@@ -25,7 +25,7 @@ export interface TestReport {
   chip: string | null
   /** `.cmp` rows matched before the run stopped, of how many; null when it never started. */
   rows: { passed: number; expected: number } | null
-  /** The first mismatch. `row` counts the `.cmp`'s data rows from 1; values read as the `.cmp` writes them. */
+  /** The first mismatch. `row` counts the `.cmp`'s data rows from 1, so its header line is 0; values read as the `.cmp` writes them. */
   failure: { row: number; column: string; expected: string; actual: string } | null
   error: string | null
 }
@@ -157,7 +157,7 @@ export function testChip(hdlFile: TestSource, tstFile: TestSource, cmpFile: Test
   if (result.passed) return { status: 'pass', chip, rows, failure: null, error: null }
   if (result.firstFailure) {
     const { row, column, expected, actual } = result.firstFailure
-    const listed = listedColumn(loaded.script, row, column)
+    const listed = row === HEADER_ROW ? undefined : listedColumn(loaded.script, row, column)
     const failure = { row: row + 1, column, expected: asListed(listed, expected), actual: asListed(listed, actual) }
     return { status: 'fail', chip, rows, failure, error: null }
   }

@@ -38,7 +38,8 @@ in `src/core/testing/engine.ts`, with these binding design choices:
 - **Never-vacuous verification contract** (the load-bearing decision):
   - `runTest` **never throws** across its boundary. Structural problems become `TestResult.error`
     (a string): unknown chip on `load`, `eval` before a chip is loaded, a throw inside `evaluateChip`,
-    a row-count mismatch (in **both** directions — too few *and* too many output rows), and a
+    a row-count mismatch (in **both** directions — too few *and* too many output rows), a
+    `.cmp` whose column count differs from the output list's (in either direction, #1018), and a
     `compare-to` target that cannot be resolved. Value mismatches go to `firstFailure`, not `error`.
   - A script that declares `compare-to X.cmp` but whose target cannot be resolved (the `loadCmpFile`
     resolver returns null, or none was supplied) **fails the run** rather than skipping comparison.

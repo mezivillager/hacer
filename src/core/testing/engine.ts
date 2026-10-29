@@ -4,8 +4,9 @@ import type { ChipRegistry } from '../chips/registry'
 import { ChipCompileError, evaluateChip } from '../chips/evaluateChip'
 import { parseHDL } from '../hdl/parser'
 import type { TSTOutputColumn, TSTScript } from './types'
-import type { CmpFile, CmpMismatch } from './cmpParser'
+import type { CmpFile } from './cmpParser'
 import { compareCmpRow } from './cmpParser'
+import { headerCell } from './headerCell'
 
 export interface RunTestOptions {
   registry: ChipRegistry
@@ -20,6 +21,7 @@ export interface OutputRow {
 }
 
 export interface TestFailure {
+  /** The `.cmp`'s data row, counted from 0; its header line is `HEADER_ROW`. */
   row: number
   column: string
   expected: string
@@ -72,20 +74,38 @@ function knownNames(chip: ChipDefinition): Set<string> {
 /** The reference's clock column: any `output-list` may name it (Project 3 onward). */
 const TIME_COLUMN = 'time'
 
-/** The script with each bare output-list name at its pin's width, as the reference IDE sizes it once it holds the chip. */
-export function resolveOutputColumns(script: TSTScript, chip: ChipDefinition): TSTScript {
+/** Each bare output-list name at its pin's width, as the reference IDE sizes it once it holds the chip. */
+function resolveColumns(columns: readonly TSTOutputColumn[], chip: ChipDefinition): TSTOutputColumn[] {
   const widths = new Map([...chip.inputs, ...chip.outputs].map((pin) => [pin.name, pin.width]))
-  const resolve = (column: TSTOutputColumn): TSTOutputColumn => {
+  return columns.map((column) => {
     const width = column.widthFromChip ? widths.get(column.name) : undefined
     return width === undefined ? column : { ...column, width }
-  }
-  return { commands: script.commands.map((cmd) => (cmd.type === 'output-list' ? { ...cmd, columns: cmd.columns.map(resolve) } : cmd)) }
+  })
 }
 
-/** Column i of the `.cmp` is output-list entry i: a header is only a label, which the reference cuts to its column's width. */
-function compareWithCmp(values: Record<string, number>, outputColumns: string[], cmp: CmpFile, row: number): CmpMismatch | null {
-  const columns = cmp.columns.map((c, i) => ({ ...c, name: i < outputColumns.length ? outputColumns[i] : c.name }))
-  return compareCmpRow(columns.map((c) => values[c.name] ?? 0), cmp.rows[row], columns, row)
+/** The script with each bare output-list name at its pin's width. */
+export function resolveOutputColumns(script: TSTScript, chip: ChipDefinition): TSTScript {
+  return { commands: script.commands.map((cmd) => (cmd.type === 'output-list' ? { ...cmd, columns: resolveColumns(cmd.columns, chip) } : cmd)) }
+}
+
+/** The row of a failure in a `.cmp`'s header line, which comes before its data row 0. */
+export const HEADER_ROW = -1
+
+/** The reference compares a `.cmp`'s header line as it prints it: the column count, then each cell against its entry's name cut to its column. */
+function gradeHeader(cmp: CmpFile, columns: readonly TSTOutputColumn[]): string | TestFailure | null {
+  if (cmp.columns.length !== columns.length) return `.cmp has ${cmp.columns.length} columns, but the output list has ${columns.length}`
+  const cuts = columns.map((column) => headerCell(column).trim())
+  const index = cuts.findIndex((cut, i) => cut !== cmp.columns[i].name)
+  return index < 0 ? null : { row: HEADER_ROW, column: columns[index].name, expected: cmp.columns[index].name, actual: cuts[index] }
+}
+
+/** Column i of the `.cmp` is output-list entry i; before the `.cmp`'s first row, its header line is graded. */
+function gradeRow(cmp: CmpFile, row: number, values: Record<string, number>, columns: readonly TSTOutputColumn[], chip: ChipDefinition | null): string | TestFailure | null {
+  const header = row === 0 ? gradeHeader(cmp, chip ? resolveColumns(columns, chip) : columns) : null
+  if (header !== null) return header
+  const named = cmp.columns.map((c, i) => ({ ...c, name: i < columns.length ? columns[i].name : c.name }))
+  const mismatch = compareCmpRow(named.map((c) => values[c.name] ?? 0), cmp.rows[row], named, row)
+  return mismatch && { row, column: mismatch.column, expected: String(mismatch.expected), actual: String(mismatch.actual) }
 }
 
 export function runTest(script: TSTScript, options: RunTestOptions): TestResult {
@@ -93,7 +113,7 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
   const inputs: Record<string, number> = {}
   let lastOutputs: Record<string, number> = {}
   let activeChip: ChipDefinition | null = options.chip ?? null
-  let outputColumns: string[] = []
+  let outputList: TSTOutputColumn[] = []
   const cmpExplicit = options.cmpData !== undefined
   let cmpData: CmpFile | undefined = options.cmpData
   let cmpRowIndex = 0
@@ -149,7 +169,7 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         const chip = activeChip
         const unknown = chip ? cmd.columns.find((c) => c.name !== TIME_COLUMN && !hasPin(chip, c.name)) : undefined
         if (chip && unknown) return unknownPin(chip, 'output-list', unknown.name, cmd.line)
-        outputColumns = cmd.columns.map((c) => c.name)
+        outputList = cmd.columns
         break
       }
       case 'set':
@@ -166,30 +186,17 @@ export function runTest(script: TSTScript, options: RunTestOptions): TestResult 
         break
       case 'output': {
         const values: Record<string, number> = {}
-        for (const col of outputColumns) {
-          values[col] = lastOutputs[col] ?? inputs[col] ?? 0
+        for (const { name } of outputList) {
+          values[name] = lastOutputs[name] ?? inputs[name] ?? 0
         }
         outputRows.push({ values })
         if (cmpData) {
           if (cmpRowIndex >= cmpData.rows.length) {
             return fail(`Output row count ${outputRows.length} exceeds .cmp row count ${cmpData.rows.length}`)
           }
-          const mismatch = compareWithCmp(values, outputColumns, cmpData, cmpRowIndex)
-          if (mismatch) {
-            return {
-              passed: false,
-              totalSteps: outputRows.length,
-              passedSteps: cmpRowIndex,
-              outputRows,
-              firstFailure: {
-                row: mismatch.row,
-                column: mismatch.column,
-                expected: String(mismatch.expected),
-                actual: String(mismatch.actual),
-              },
-              error: null,
-            }
-          }
+          const graded = gradeRow(cmpData, cmpRowIndex, values, outputList, activeChip)
+          if (typeof graded === 'string') return fail(graded)
+          if (graded) return { passed: false, totalSteps: outputRows.length, passedSteps: cmpRowIndex, outputRows, firstFailure: graded, error: null }
           cmpRowIndex++
         }
         break
