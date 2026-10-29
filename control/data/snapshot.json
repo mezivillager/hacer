@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T21:15:29.420Z",
+  "generatedAt": "2026-10-29T21:16:14.092Z",
   "head": {
     "sha": "2146e43a4c51d8a5181b40921a317040cb020ffd",
     "date": "2026-10-30T00:14:23+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T21:15:29.420Z",
+      "fetchedAt": "2026-10-29T21:16:14.092Z",
       "status": "ok"
     }
   },
@@ -2478,7 +2478,15 @@
         "closes": [
           1023
         ],
-        "verdicts": []
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-29T21:15:30Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1044#issuecomment-6508504540"
+          }
+        ]
       },
       {
         "number": 1002,
@@ -6370,7 +6378,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T21:15:29.420Z",
+      "since": "2026-10-15T21:16:14.092Z",
       "merged": 120,
       "openToMergeHours": {
         "median": 0.3,
