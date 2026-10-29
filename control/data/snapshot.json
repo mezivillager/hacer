@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T18:20:47.690Z",
+  "generatedAt": "2026-10-29T18:39:04.518Z",
   "head": {
-    "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
-    "date": "2026-10-24T03:55:33+03:00",
-    "subject": "docs(harness): the loop to 12% records, #979 and the final meter"
+    "sha": "6bdd22044ab4f7f3c4a94a4fad43eb0f4675fd2c",
+    "date": "2026-10-29T21:37:37+03:00",
+    "subject": "docs(harness): judge entries JDG-013 and JDG-014 for the bot-filed fidelity bugs"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T18:20:47.690Z",
+      "fetchedAt": "2026-10-29T18:39:04.518Z",
       "status": "ok"
     }
   },
@@ -219,16 +219,13 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 15,
-        "ready": 1,
-        "inProgress": 0,
+        "ready": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
         "filedElsewhere": [],
-        "next": {
-          "number": 1029,
-          "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)"
-        },
+        "next": null,
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 10,
@@ -373,18 +370,15 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 3,
-        "ready": 1,
-        "inProgress": 0,
+        "ready": 0,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
         "filedElsewhere": [
           156
         ],
-        "next": {
-          "number": 1024,
-          "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)"
-        },
+        "next": null,
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
           "completed": 13,
@@ -411,16 +405,6 @@
       "bugs"
     ],
     "next": [
-      {
-        "number": 1024,
-        "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
-        "project": "mission-control"
-      },
-      {
-        "number": 1029,
-        "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)",
-        "project": "spine"
-      },
       {
         "number": 1023,
         "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
@@ -526,36 +510,6 @@
   },
   "tasks": {
     "items": [
-      {
-        "number": 1024,
-        "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:mission-control"
-        ],
-        "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1029,
-        "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)",
-        "labels": [
-          "project:spine",
-          "agent-ready",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 1023,
         "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
@@ -2295,31 +2249,41 @@
         "lane": "feature",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 1024,
+        "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 1029,
+        "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
-      "mission-control": [
-        1024,
-        509,
-        584
-      ],
-      "spine": [
-        1029,
-        165,
-        167,
-        169,
-        170,
-        171,
-        172,
-        173,
-        174,
-        176,
-        177,
-        235,
-        236,
-        1017,
-        1018
-      ],
       "foundation": [
         1023,
         1026,
@@ -2381,6 +2345,23 @@
         993,
         994
       ],
+      "spine": [
+        165,
+        167,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        176,
+        177,
+        235,
+        236,
+        1017,
+        1018,
+        1029
+      ],
       "core": [
         179,
         361,
@@ -2435,6 +2416,11 @@
         470,
         502,
         569
+      ],
+      "mission-control": [
+        509,
+        584,
+        1024
       ],
       "unfiled": [
         572
@@ -2574,6 +2560,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 1036,
+        "title": "docs(harness): judge entries JDG-013 and JDG-014 for the bot-filed fidelity bugs",
+        "url": "https://github.com/mezivillager/hacer/pull/1036",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/jdg-013-014",
+        "isDraft": false,
+        "createdAt": "2026-10-29T18:33:30Z",
+        "mergedAt": "2026-10-29T18:37:37Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-29T18:34:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1036#issuecomment-6505178074"
+          }
+        ]
+      },
       {
         "number": 1035,
         "title": "docs(harness): close records for the loop to 12%",
@@ -4128,33 +4138,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/894#issuecomment-6330310593"
           }
         ]
-      },
-      {
-        "number": 891,
-        "title": "chore(harness): merge-on-green names a missing workflow scope at the first refused update or merge",
-        "url": "https://github.com/mezivillager/hacer/pull/891",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:1"
-        ],
-        "headRefName": "chore/883-workflow-scope",
-        "isDraft": false,
-        "createdAt": "2026-10-22T00:28:43Z",
-        "mergedAt": "2026-10-22T00:48:24Z",
-        "closes": [
-          883
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-22T00:43:56Z",
-            "url": "https://github.com/mezivillager/hacer/pull/891#issuecomment-6329873498"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4168,6 +4151,56 @@
   },
   "claims": {
     "items": [
+      {
+        "number": 1024,
+        "ref": "refs/heads/claim/1024",
+        "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
+        "state": "OPEN",
+        "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1024",
+        "labels": [
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-29-hacer-loop-to-90",
+          "branch": "fix/1024-suite-error",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-29T18:24:53Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1024#issuecomment-6504963639"
+        }
+      },
+      {
+        "number": 1029,
+        "ref": "refs/heads/claim/1029",
+        "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
+        "state": "OPEN",
+        "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1029",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "in-progress",
+          "risk:0"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-29-hacer-loop-to-90",
+          "branch": "docs/1029-differential-title-alu-oracle",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-29T18:34:58Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1029#issuecomment-6505180750"
+        }
+      },
       {
         "number": 470,
         "ref": "refs/heads/claim/470",
@@ -6228,7 +6261,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 42
+        "merges": 41
       },
       {
         "date": "2026-10-23",
@@ -6237,19 +6270,23 @@
       {
         "date": "2026-10-24",
         "merges": 4
+      },
+      {
+        "date": "2026-10-29",
+        "merges": 1
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T18:20:47.690Z",
-      "merged": 115,
+      "since": "2026-10-15T18:39:04.518Z",
+      "merged": 116,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 101,
+        "of": 102,
         "prs": [
           753,
           774,
@@ -6263,8 +6300,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 47,
-          "withVerdict": 33,
+          "merged": 48,
+          "withVerdict": 34,
           "without": [
             755,
             756,
@@ -11486,7 +11523,7 @@
       },
       {
         "date": "2026-10-29",
-        "at": "2026-10-29T17:16:08.078Z",
+        "at": "2026-10-29T18:20:47.690Z",
         "byProject": {
           "mission-control": [
             1024,
@@ -11644,17 +11681,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
+        "sha": "6bdd22044ab4f7f3c4a94a4fad43eb0f4675fd2c",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-24T00:59:13Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40047370828/job/120732067039",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40932589510/job/123654627585",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
