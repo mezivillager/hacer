@@ -56,6 +56,7 @@ One row per retro run. The next run's window starts at the last row's `to` time.
 | 2026-10-21 | 2026-10-04T23:59Z → 2026-10-21T15:00Z, from the last row's `to`: 16.6 days, far past the cadence (below) | `204aa0b2` | 63 (49 + 14 dependabot) | median reviewable 66 · 9 BLOCK on 7 PRs · 0 overturned · 0 reruns | mechanise HRN-010–014 · policy HRN-015–017 | eight, listed below |
 | 2026-10-22 | 2026-10-21T15:00Z → 2026-10-22T08:37Z, from the last row's `to` to this run's start | `d2f58ea0` | 51 (48 + 3 records PRs; 0 dependabot) | median reviewable 69 · 0 BLOCK · 0 overturned (candidates: #826, #886, #910, #914, #917) · 0 reruns | mechanise HRN-021–022 · policy HRN-023–027 | six, listed below |
 | 2026-10-22, second | 2026-10-22T08:37Z → 2026-10-22T21:16Z, from the last row's `to` to this run's start | `c62a4e71` | 18 (7 code + 11 docs PRs; 0 dependabot) | median reviewable 217.5 (code 47, docs 295) · 1 BLOCK · 0 overturned (candidates: #959, #964) · 0 reruns | mechanise HRN-028 · policy HRN-029–030 | seven, listed below |
+| 2026-10-29 | 2026-10-22T21:16Z → 2026-10-29T18:19Z, from the last row's `to` to this run's start | `e76c7da6` | 21 (14 code + 7 docs PRs; 0 dependabot) | median reviewable 95 (code 87.5, docs 197) · 0 BLOCK · 0 overturned (candidates: #995, #1013) · 0 reruns (2026-10-22 split: 157 in its last slice, the window's) | mechanise HRN-032–033 · policy HRN-031 | seven, listed below |
 
 ### First run: 2026-10-15
 
@@ -314,6 +315,116 @@ The first quarterly prune, in the week of 2026-12-18, can start from it.
 **Not measured:** owner minutes; the 12 `run-reviews` sessions' tokens and the coordinator's own;
 whether `ready` printed `retro due:` at the judge and 90% runs' orients, computed from `main` and not
 read from a log; local re-run counts; this retro's own tokens.
+
+### Fifth run: 2026-10-29
+
+**Window.** `node scripts/backlog.mjs ready` printed `retro due: 21 merges since 2026-10-22T21:16Z
+(run closed: docs/harness/sessions/2026-10-23.md)` at 18:22Z. The window holds two runs. The loop to
+97% ran from 21:16Z on 2026-10-22, paused at 22:29Z, and closed with #1004 on 2026-10-23 at 20:25Z,
+which appended a third part to `docs/harness/sessions/2026-10-22.md`. The loop to 12% ran from
+2026-10-23T20:06Z and closed with #1035 at 2026-10-24T00:55Z, which added
+`docs/harness/sessions/2026-10-23.md`. Nothing merged after that until `to`, because the owner starts
+every run (R903). `to` is this run's start. The line was due from #1035's merge; the 97% run's close
+never made it due (HRN-030, below).
+
+**Numbers.** Each is `measured` with its command, `inferred`, or `unmeasured`.
+
+| Number | Value | How |
+|---|---|---|
+| merged PRs | 21: 14 code PRs (#987, #995, #1013, #1015, #1016, #1019, #1020, #1022, #1025, #1027, #1028, #1030, #1031, #1033) and 7 docs PRs (#988, #996, #1004, #1005, #1008, #1021, #1035); 0 dependabot | measured: `node scripts/run-prs.mjs --from 2026-10-22T21:16Z --to 2026-10-29T18:19Z` |
+| median reviewable lines | **95**: code PRs 87.5, docs PRs 197 (the last window: 217.5, code 47, docs 295). Over 400: 0. The largest are the two records PRs, #1035 (378) and #1004 (318). Every PR's `HYGIENE:` line gives the count `measure()` gives | measured: the first run's script (`docs/research/2026-09-continual-refinement/evidence/first-retro-run.md`) over the paginated files of the 21 PRs, and the 21 `pr-hygiene` job logs |
+| verdicts | 21 of 21 open `## Verifier verdict:`. **0 BLOCK.** 10 Opus verdicts, 4 Sonnet (#1015, #1020, #1022, #1031), 7 coordinator reviews of `risk:0` docs PRs. Mission Control's `belowTier` is empty | measured: verdict headings and `Verified on:` lines in each PR's comments, same script; `node scripts/mission-control/collect.mjs --json` |
+| overturned | **0**: the label has never been applied. Candidates: #995, whose verifier's nit (a restored cycle's error dropped before the Toaster listens) #1030 fixed, and #1013, whose verifier's finding (a hint's coordinates copied unrounded, against ADR-0020 §2's fixed precision) #1025 fixed (HRN-024, below) | measured: `gh pr list --state all --label overturned --limit 200` printed `[]` |
+| escaped defects | **2, inferred:** #1006 (D1, `sev:critical`): a correct HalfAdder failed its official vectors, because `runTest` bound `.cmp` columns by header text from `babd3e36` (2026-06-20) on; the differential agreed with the reference, and #982's fidelity review found it (HRN-033). #1018: a `.cmp` shorter than the output list passes, which predates #1016. D2 (#1007) is not counted, since #207's Out section already named it. Nine more were known at merge, as verifier findings filed as follow-ups (HRN-024, below) | inferred: reading the window's 22 issues; `git log -S` for the binding |
+| tokens per merged PR | **491,677** for the 97% run (1,966,707 over 11 agents, 4 PRs) and **342,176** for the 12% run (5,816,985 over 34 agents, 17 PRs), as each record's §2 reports them. Under README § *What to measure* both are `unmeasured`: 16 `run-reviews` sessions, 8 per run for the judge reviews, report no count (HRN-027). Over the window, inferred: 7,783,692 over 21 merges, 370,652 | measured: 2026-10-22 third part §2, 2026-10-23 §2 |
+| owner minutes per merged PR | **unmeasured**. Proxy: 1 `needs-human` issue opened, #993 (add `differential` to `main-rules`' required checks, JDG-006), open for 7 days with #994 waiting on it. #870 is open from before the window | measured: `gh issue list --state all --search "created:2026-10-22..2026-10-29 label:needs-human"`, filtered to the window's times |
+| follow-up volume | 22 issues opened, 13 still open: 5 inbox reviews (#989 to #991 closed as covered by R917; #1009 and #1010 open), 2 judge reviews (#1011, #1012, closed), 1 owner action (#993, open) and 14 others (10 open) | measured: `gh issue list --state all --search "created:2026-10-22..2026-10-29" --limit 200`, filtered to the window's times |
+| flake reruns | **0** re-runs in 1,047 workflow runs. The 2026-10-22 query was cut off (1,000 runs of a `total` of 1,191), so the window's part of that day was re-run as its last slice, `T18:00:00Z..T23:59:59Z`: 157 runs, 148 of them from 21:16Z. Each later day was one query under the cap: 388 · 167 · 73 · 69 · 73 · 73, and 56 on 2026-10-29 up to `to`. The records name one local load failure: two 5 s timeouts in #1016's verification, at a load of 25 to 42 from the parallel #1007 suite, which pass alone (issuecomment-6375412078; 2026-10-23 §3). No local re-run count | measured: the brief's `actions/runs?created=<range>` query |
+| stalled reviews | **0**: the 15 `proposed` entries (HRN-020 to HRN-030, FID-033 to FID-036) are dated 2026-10-22 or 2026-10-23. None was decided in the window: R915 built #978 first, and R917 put the HRN reviews into two batches, #930 and #939. The 2026-10-22 entries pass 14 days on 2026-11-05 | measured: `node scripts/inbox.mjs list --status proposed` |
+| Mission Control `metrics.flow` | 14 days from 2026-10-15T18:38Z, 116 merges: open-to-merge median 0.3 h, p90 1.2 h; #995 took 22.2 h, across the 97% run's pause. `blockedOnce` 3 of 102 (#753, #774, #959), none new. Verdict coverage: code 68 of 68, non-code 34 of 48 | measured: `node scripts/mission-control/collect.mjs --json` |
+| premises | 5 hold, 1 expired, 1 unverifiable, 1 manual, as last run. P-003 (`main-rules` requires exactly `ci`, `pr-hygiene`, `browser-qa`) holds until the owner does #993; #994 then rewrites it | measured: `node scripts/lineage.mjs verify` |
+
+**Recurrences.**
+- No ledger row in two runs, while their records' §3 name eleven things that went wrong or slow
+  (HRN-031).
+- `inbox.mjs set` writes only the bare status form, in a third record: five judge entries since
+  2026-10-22, so it is HRN-032.
+- The differential agrees where HACER's grading fails: D1 shipped through it, and four verifiers ran
+  the reference's grader by hand to cover the grading path (HRN-033).
+- HRN-024's class on nine PRs, HRN-023's waiver five more times, HRN-022's timeout a third time and
+  HRN-030's blind spot again (below).
+
+**For the entries under review.** This is evidence only; their text is unchanged.
+- **HRN-020 (#930):** `node scripts/lineage.mjs parse --github` still exits 1 at `e76c7da6`, with 95
+  `malformed` errors, 10 of them citing a `JDG-` id. Three are on the window's issues: #992 ("and the
+  ruling that records JDG-007's decision.") and #1003 ("PR #995 (#801)" under Introduced by, "as
+  amended by the judge on #1012" under Decisions).
+- **HRN-021 (#930):** no recurrence. All 21 PRs open with the brief's heading, the 7 coordinator
+  reviews included.
+- **HRN-022 (#930):** a third time, after #908 and #959: #1016's verifier had two 5 s timeouts under
+  the parallel #1007 suite (local 5,086 passed and 2 failed; CI 5,096 and 0), both passing alone.
+- **HRN-023 (#935):** five more waivers by ruling: R899 (#987), R911 (#1016), R912 (#1019), R913
+  (#1027) and R914 (#1028). Every PR of the window that changes grading or evaluation merged on its
+  verifier's hand-run of the reference (25, 7, 9, 8 and 12 cases). The one separate fidelity review,
+  #982, on the epic and its plan rather than on a PR, found D1 and D2, both `sev:critical` and both
+  shipped. HRN-033 would turn the grading half of those hand-runs into a check.
+- **HRN-024 (#936):** 9 of the 14 code PRs passed with a verifier finding that a follow-up carries:
+  #995 → #1003, #1013 → #1014, #1016 → #1018, #1020 → #1023, #1022 → #1024, #1025 → #1026, #1028 →
+  #1029, #1031 → #1032 and #1033 → #1034. Two more left theirs unfiled: #1030's three nits (R916) and
+  #1027's, posted on #985. Two were fixed within the window, #1003 by #1030 and #1014 by #1025, so
+  #995 and #1013 are this run's candidates. #1013's chain ran one PR further: #1025's own verifier
+  filed #1026.
+- **HRN-025 (#930):** unchanged at `e76c7da6`: `inbox-panel-brief.md` still launches `--models
+  opus,grok` and files "`agent-ready` at any risk".
+- **HRN-026 (#930):** both runs read the meter from the status-line capture (R891), with no failure
+  (2026-10-22 third part §1, 2026-10-23 §1).
+- **HRN-027 (#939):** 16 more uncounted `run-reviews` sessions. The two runs' denominators also
+  overlap: the 12% run's `run-prs` window starts at 20:06Z, before the 97% run's ends at 20:20:17Z, so
+  #995 counts in both. #1004, the 97% run's records PR, counts in the 12% run, and #1035, the 12% run's
+  own, in neither.
+- **HRN-028 (#939):** `.husky/pre-commit` is unchanged at `e76c7da6`: no shebang and no `set -e`.
+- **HRN-029 (#939):** README § *Budgets* is unchanged, and both runs practised (i) to (iii) again (each
+  §1). On (iv), R906 scaled R896's margins to a 9-point run: no new chain two points below the stop and
+  the records one below, not three and two. A margin fixed in points would have been wrong for this
+  run.
+- **HRN-030 (#939):** the 97% run's close was the third on 2026-10-22's record (#1004), and its own §3
+  names this entry's case. Computed with `retroLine` (`scripts/backlog.logic.mjs`) over `main`: from
+  #1004's merge the line read `retro:`, not due, until #1035 added the 2026-10-23 record. It cost nothing
+  this time, because the 12% run's orient at 20:06Z came before #1004 landed and no orient came between
+  #1035 and this run's.
+
+**For the filed entries.**
+- **HRN-008 (#871):** this run was dispatched as a general-purpose agent handed the role file again.
+  The owner's `ln -s`, #870, is still open.
+- **HRN-009 (#873):** the line was due from #1035's merge, and this run was dispatched at the first
+  orient after it.
+- **HRN-016 (#895):** `ready` prints `process review: 7 days since 2026-10-22`.
+
+**Prune check:** the per-PR Cursor second opinion, a fourth window. Its audit log still has 14 rows,
+the last on 2026-09-21T09:52Z, and none for this window's 21 merges, 14 of them `risk:1` or `risk:2`
+(measured). The first quarterly prune, in the week of 2026-12-18, can start from it.
+
+**Held** (found, but no entry this run):
+
+- **Times written from estimates**, a third run: R903 to R905 were staged at 2026-10-22T22:40Z to
+  22:50Z, and #981 and #980 closed at 2026-10-23T09:25Z and 09:31Z; R895's time was fixed the same way
+  (2026-10-22 third part §3). Each was corrected before merge by reading GitHub, and no check found
+  here would catch an estimate earlier.
+- **L073** on all four judge reviews of the 12% run (2026-10-23 §3). The launcher is outside this
+  repo, and R889's owner-action route for it is still unused.
+- **Slots and picks decided by ruling:** R897 and R900 gave a bug build a slot beside the judge queue,
+  and R910 and R915 passed over what `next` named. Pick rule 0 orders one pick, while the runs fill
+  three slots.
+- **#978's after-merge step** named six entries for a batch of five (R917), once.
+- **#995's `Decisions:` line** left R898 off because the ruling was in a records PR not yet merged,
+  and nothing added it afterwards, once.
+- **A record's count disagrees with its source:** 2026-10-23 §2 gives #1031 178 reviewable lines,
+  where its `HYGIENE:` line gives 184, once.
+- **P-001**, expired since 2026-09-22 with #569 open, as last run.
+
+**Not measured:** owner minutes; the 16 `run-reviews` sessions' tokens and the coordinators' own;
+2026-10-22's first three slices, which fall before the window; local re-run counts beyond the one the
+records name; this retro's own tokens.
 
 ## Queue
 
@@ -1206,3 +1317,124 @@ A failing command in `.husky/pre-commit` stops the commit, whichever directory `
   the lineage parser. Left as it is, a same-date second close waits for the next date's record, and
   the order between the two due lines stays the coordinator's call.
 - **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-031 · The ledger took no row in two runs whose records name eleven things that went wrong or slow: ledger §3 at close, or make §3 the ledger's input
+- **Date:** 2026-10-29 · **Kind:** policy · **Retro run:** 2026-10-29
+- **Status:** proposed
+- **Evidence:**
+  - The rule: `ha-next` §6 (`.claude/skills/ha-next/SKILL.md`), "Retro — one line, every time",
+    appends to `docs/harness/ledger.md` "if anything in the loop was wrong or slow". README § *How this
+    process changes* path 1 rests on it: "Each failure gets one line in `ledger.md`".
+  - Measured: `git log c62a4e71..e76c7da6 -- docs/harness/ledger.md` prints nothing. The ledger last
+    changed in `289a606c` (2026-10-22T11:15Z), and its last row is L077. The window holds two runs and
+    21 merges.
+  - The two records' §3 name eleven such things. The 97% run's (2026-10-22 third part): the third
+    close on one date, `inbox.mjs set` writing the bare form, the session pausing before its records,
+    and staged ruling times that were wrong (R903 to R905). The 12% run's (2026-10-23): D1 and D2
+    shipped where the differential could not see them, two timeouts under load, L073 on all four judge
+    reviews, `inbox.mjs set` again, `next` naming a review where a build was due (R915), #978's
+    after-merge step over its own limit (R917), and #257 passed over again (R910).
+  - Three of them are second occurrences, which this retro promotes only because `retro-brief.md`
+    Inputs 2 counts a recurrence "named there but never ledgered": `inbox.mjs set` (HRN-032), the
+    timeouts (HRN-022) and L073 (held). Without a row, a recurrence has no id to cite and no Decision
+    cell for `node scripts/lineage.mjs parse` to read.
+  - The drift is older than the window: the three 2026-10-22 sections added two rows, L076 and L077
+    (measured: the ledger's rows by date), against their own §3 lists.
+- **Proposal:**
+  - **(a)** At close, the records builder writes one ledger row for each §3 bullet that names
+    something wrong or slow, with its Decision cell, in the records PR. `ha-next` §6 says so; the
+    per-PR line stays for a coordinator with time for it.
+  - **(b)** §3 is the ledger's input. `ha-next` §6 drops the per-PR line, the ledger takes a row when
+    the retro promotes a §3 bullet or a mechanism lands, and README path 1 says so.
+- **Cost if wrong:** with (a), a records PR grows by up to about ten rows, which `.gitattributes`
+  merges by union, and one-off slowness adds rows nobody promotes. With (b), a one-off failure is
+  findable only in its record's §3 and is cited by record section, as this retro already does. Left as
+  it is, the ledger stays at L077 while the second-occurrence rule runs on whatever the retro reads.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+### HRN-032 · `inbox.mjs set` writes a status with its note, as the file's grammar already reads it, so a decided status needs no hand edit
+- **Date:** 2026-10-29 · **Kind:** mechanise · **Retro run:** 2026-10-29
+- **Status:** proposed
+- **Evidence:**
+  - Three records name it, five entries in all: 2026-10-22's second part §3 (JDG-001 and JDG-003), its
+    third part §3 (JDG-005) and 2026-10-23 §3 (JDG-011 and JDG-012). Each line was set bare and its note
+    added by hand. The last retro held it at one occurrence.
+  - Read: in `scripts/inbox.logic.mjs`, `fitsGrammar` accepts a `filed`, `declined` or `deferred`
+    status followed by `, <note>` (`TAKES_A_NOTE`), so `list` and the grammar check read JDG-011's
+    `filed (#1006), with #1007; A by the judge on #1011`. `setStatus` tests a new value against the
+    bare forms only, and the code says "`set` writes the bare form".
+  - Measured at `e76c7da6`: `setStatus` over `docs/harness/judge-inbox.md` accepts `filed (#1006)` for
+    JDG-011 and refuses `filed (#1006), with #1007; A by the judge on #1011` as "outside
+    docs/harness/judge-inbox.md's status grammar".
+  - No open issue covers it (searched `inbox.mjs set` and `bare status`; the hits are inbox reviews
+    whose steps run the command).
+- **Cost if wrong:** the command checks a note's form and not its words, as the hand edit already
+  does not; a status line could carry a wrong note through `set`.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`)
+## Goal
+`node scripts/inbox.mjs set <id> <status>` writes any status its file's grammar reads, including a
+note after a `filed`, `declined` or `deferred` form, so no decided status needs a hand edit.
+## Acceptance criteria
+- `setStatus` in `scripts/inbox.logic.mjs` accepts exactly the values `fitsGrammar` accepts: `filed
+  (#n), <note>`, `declined (<reason>), <note>` and `deferred (<until>), <note>`, and still refuses a
+  note after any other form.
+- In `scripts/inbox.logic.test.mjs`, `set writes a filed, declined or deferred status with its note`:
+  JDG-011's line set to `filed (#1006), with #1007; A by the judge on #1011` reads back verbatim
+  through `listEntries`. Red first against today's `setStatus`.
+- Every existing `setStatus` test passes unchanged, and the `set` usage line in `scripts/inbox.mjs`
+  says a note may follow.
+## Verification command
+`pnpm exec vitest run --project node --maxWorkers=3 scripts/inbox.logic.test.mjs`
+## Blocked by
+—
+
+### HRN-033 · The differential grades too: HACER's grading of each vector must pass or fail as the reference does, so a divergence such as D1 fails `test:differential`
+- **Date:** 2026-10-29 · **Kind:** mechanise · **Retro run:** 2026-10-29
+- **Status:** proposed
+- **Evidence:**
+  - D1 (#1006, `sev:critical`): `runTest` bound each `.cmp` column by header text in
+    `src/core/testing/engine.ts` from `babd3e36` (2026-06-20) on, so a correct HalfAdder failed its
+    official vectors at row 4. On the same chip the differential agreed with the reference:
+    `differential()` in `conformance/differential/harness.ts` compares the output `hacer run-tst`
+    prints with the reference's, then the reference's output with the `.cmp`, and never runs HACER's
+    grading. The fidelity review that found D1 applied the differential's rule by hand beside
+    `testChip`: HalfAdder fails under `testChip` where the rule gives AGREE
+    (`docs/research/2026-10-fidelity-review-spine-0.6.md`, Measured results). #1016 fixed it.
+  - The grading half was run by hand four times in the window. Each time the verifier built the web
+    IDE and scored as the web IDE's runner scores, and the run stood in for ADR-0018's review: R911
+    (#1016, 7 shapes), R912 (#1019, 9 scripts), R913 (#1027, 8 cases) and R914 (#1028, 12 cases).
+    R899's 25 loop shapes for #987 compared grading refusals the same way.
+  - Read at `e76c7da6`, and unchanged in `conformance/differential/harness.ts` at `cc797c92`:
+    `Verdict` has no grading status, while the reference's own pass, `expected.out.trim() ===
+    vector.cmp.trim()`, is already computed as `agree` or `rejected`.
+  - A decided divergence exists: R913 records a bare `BUILTIN;` body that HACER's grading refuses as a
+    stand-in while the reference grades it.
+  - No open issue covers it (searched `differential runTest`, `differential testChip` and
+    `differential grading`; the one hit, #1017, is about `run-tst`'s print). FID-035 concerns which
+    builtins each path holds, not the comparison.
+- **Cost if wrong:** one more HACER call per vector in `test:differential`, which takes 32 to 35 s
+  per CI run (JDG-006). A decided divergence needs a named exception, or the check fails on it.
+- **Decides:** the inbox panel (`inbox-panel-brief.md`); the owner may override
+
+**Draft issue body** (`risk:1`; `conformance/differential/**` is a protected path)
+## Goal
+`pnpm run test:differential` fails when HACER's grading of a vector (`testChip`, the path `hacer
+test` and the MCP `hacer_hdl` tool take) passes where the reference fails, or fails where it passes.
+## Acceptance criteria
+- `differential()` in `conformance/differential/harness.ts` also grades each vector, with `testChip`
+  from `src/core/testing/testChip.ts` by default, and compares pass or fail with the reference's
+  (`agree` is a pass, `rejected` a fail). A mismatch is a new `Verdict` status naming the script, both
+  results and HACER's first failing row, and `describeVerdict` prints it.
+- In `conformance/differential/harness.test.ts`, a stand-in grader that fails where a stand-in
+  reference passes gives that status, and one that passes where it fails gives it too. Red first
+  against today's harness.
+- A divergence a decision records, as R913's bare `BUILTIN;` body, is listed by script with its
+  decision id in one exceptions list that the test pins; every other vector grades the same on both
+  sides.
+- `pnpm run test:differential` passes on today's corpus.
+## Verification command
+`pnpm run test:differential`
+## Blocked by
+—
