@@ -44,6 +44,7 @@ const CORE_EXPORTS = [
   'SPEC_SCHEMA_VERSION',
   'chipTestError',
   'combineRegistries',
+  'commandsRun',
   'compareCmpRow',
   'compileHDL',
   'compileSpec',
