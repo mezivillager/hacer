@@ -124,6 +124,52 @@ describe('runTest — comparison', () => {
   })
 })
 
+describe('runTest — a .cmp header and its column count are graded as the reference grades them (#1018)', () => {
+  const VECTORS = import.meta.glob<string>('../../../conformance/vectors/02/HalfAdder.{tst,cmp}', { query: '?raw', import: 'default', eager: true })
+  const OFFICIAL_CMP = VECTORS['../../../conformance/vectors/02/HalfAdder.cmp']
+  const HALF_ADDER = 'CHIP HalfAdder { IN a, b; OUT sum, carry; PARTS: Xor(a=a, b=b, out=sum); And(a=a, b=b, out=carry); }'
+  const halfAdderAgainst = (cmpSource: string) => {
+    const ast = parseHDL(HALF_ADDER)
+    if (!ast.success) throw new Error('HalfAdder did not parse')
+    const user = createChipRegistry()
+    user.register(hdlChipDefinition(ast.chip, HALF_ADDER))
+    return runTest(script(VECTORS['../../../conformance/vectors/02/HalfAdder.tst']), { registry: combineRegistries(user, getBuiltinChipRegistry()), cmpData: cmp(cmpSource) })
+  }
+  const eachLine = (source: string, header: (line: string) => string, row: (line: string) => string): string =>
+    source
+      .trimEnd()
+      .split('\n')
+      .map((line, i) => (i === 0 ? header(line) : row(line)))
+      .join('\n')
+
+  it('a .cmp header cell that differs from its output-list entry, cut as headerCell cuts it, fails at the header', () => {
+    const result = halfAdderAgainst(OFFICIAL_CMP.replace('|car|', '|cry|'))
+    expect(result).toMatchObject({ passed: false, error: null, passedSteps: 0 })
+    expect(result.firstFailure).toEqual({ row: -1, column: 'carry', expected: 'cry', actual: 'car' })
+  })
+
+  it('a .cmp with fewer columns than the output list is an error', () => {
+    const cut = (line: string) => line.replace(/[^|]*\|$/, '')
+    const result = halfAdderAgainst(eachLine(OFFICIAL_CMP, cut, cut))
+    expect(result).toMatchObject({ passed: false, firstFailure: null, error: '.cmp has 3 columns, but the output list has 4' })
+  })
+
+  it('a .cmp with more columns than the output list is an error', () => {
+    const result = halfAdderAgainst(eachLine(OFFICIAL_CMP, (line) => `${line}xtra|`, (line) => `${line} 0  |`))
+    expect(result).toMatchObject({ passed: false, firstFailure: null, error: '.cmp has 5 columns, but the output list has 4' })
+  })
+
+  it("a bare output-list name is cut at its pin's width when the caller did not resolve the script", () => {
+    const reg = createChipRegistry()
+    registerBuiltin(reg, 'Wide', [{ name: 'in', width: 4 }], [{ name: 'output', width: 4 }], (i) => ({ output: ~i.in & 0xf }))
+    const unresolved = script('load Wide.hdl, output-list in output; set in 5, eval, output;')
+    expect(runTest(unresolved, { registry: reg, cmpData: cmp('|  in  |output|\n| 0101 | 1010 |\n') })).toMatchObject({ passed: true, error: null, passedSteps: 1 })
+    const atWidthOne = runTest(unresolved, { registry: reg, cmpData: cmp('| in |out|\n| 0101 | 1010 |\n') })
+    expect(atWidthOne).toMatchObject({ passed: false, error: null, passedSteps: 0 })
+    expect(atWidthOne.firstFailure).toEqual({ row: -1, column: 'output', expected: 'out', actual: 'output' })
+  })
+})
+
 describe('runTest — error paths', () => {
   it('errors when load names a chip not in the registry', () => {
     const s = script('load Missing.hdl, output-list a out; set a 0, eval, output;')
