@@ -843,6 +843,7 @@ const STAR_LINE = /^\s*\*/
 const isWitnessFile = (p) => /\.(test|spec)\.[^/.]+$/.test(p) && classifyFile(p).kind === 'test'
 
 const occurrences = (lines, token) => lines.reduce((count, line) => count + line.split(token).length - 1, 0)
+const sum = (counts) => counts.reduce((total, count) => total + count, 0)
 
 /** The API's patch is hunks without file headers, so every `+` or `-` line is an added or removed one. */
 function patchSides(patch) {
@@ -851,7 +852,7 @@ function patchSides(patch) {
   return { added: side('+'), removed: side('-') }
 }
 
-/** A line's text outside comments, given whether a block comment is open at its start. */
+/** A line's text outside comments, with each string that closes on the line emptied, given whether a block comment is open at its start. */
 function stripComments(line, open) {
   let comment = open
   let carries = true
@@ -873,7 +874,8 @@ function stripComments(line, open) {
     } else if (`'"\``.includes(line[i])) {
       let j = i + 1
       while (j < line.length && line[j] !== line[i]) j += line[j] === '\\' ? 2 : 1
-      code += line.slice(i, j + 1)
+      // A string still open at the line's end may be a regex's quote or a multi-line template: keep its text.
+      code += j < line.length ? line[i] + line[i] : line.slice(i)
       i = j + 1
     } else {
       code += line[i]
@@ -883,20 +885,34 @@ function stripComments(line, open) {
   return { code, open: comment && carries }
 }
 
-/** One side's (`+` or `-`) trimmed lines with an `expect(` outside comments; context lines carry a block comment across. */
-function assertionLines(patch, mark) {
-  const lines = []
-  let open = false
+const SIDES = ['-', '+']
+
+/**
+ * A patch's removed and added lines with an `expect(` outside comments and strings, trimmed, with that count per line.
+ * Each side reads its context lines too, and a context line counts on the side where it carries more.
+ */
+function assertionLines(patch) {
+  const found = { '-': { lines: [], counts: [] }, '+': { lines: [], counts: [] } }
+  const open = { '-': false, '+': false }
   for (const line of patch.split('\n')) {
-    if (line.startsWith('@@')) open = false
-    if (!line.startsWith(mark) && !line.startsWith(' ')) continue
+    if (line.startsWith('@@')) open['-'] = open['+'] = false
+    const marks = line.startsWith(' ') ? SIDES : SIDES.filter((mark) => line.startsWith(mark))
     const text = line.slice(1)
-    const continued = !open && STAR_LINE.test(text)
-    const read = stripComments(text, open || continued)
-    open = read.open && !continued
-    if (line.startsWith(mark) && read.code.includes(WITNESS)) lines.push(text.trim())
+    const counts = marks.map((mark) => {
+      const continued = !open[mark] && STAR_LINE.test(text)
+      const read = stripComments(text, open[mark] || continued)
+      open[mark] = read.open && !continued
+      return occurrences([read.code], WITNESS)
+    })
+    marks.forEach((mark, i) => {
+      const count = counts[i] - (counts[1 - i] ?? 0)
+      if (count > 0) {
+        found[mark].lines.push(text.trim())
+        found[mark].counts.push(count)
+      }
+    })
   }
-  return lines
+  return { removed: found['-'].lines, added: found['+'].lines, counts: { removed: found['-'].counts, added: found['+'].counts } }
 }
 
 /** `src/nodes/Foo.scene.test.tsx` → `src/nodes/Foo`: the directory and the name before the first dot. */
@@ -909,22 +925,18 @@ function wentWithSubject(test, files) {
 
 /**
  * The witnesses a PR's file list takes out of its tests, counted once for every rule that reads them.
- * `witnesses` holds each shown test file's `expect(` lines, trimmed, so a line re-added elsewhere reads as moved.
- * @returns {{witnesses:{filename:string,status:string,removed:string[],added:string[]}[], weakened:{filename:string,removed:number,added:number}[], removedTests:string[], unshown:string[], disabled:{filename:string,marker:string,removed:number,added:number}[]}}
+ * `witnesses` holds each shown test file's `expect(` lines, trimmed, so a line re-added elsewhere reads as moved,
+ * and each line's count of them.
+ * @returns {{witnesses:{filename:string,status:string,removed:string[],added:string[],counts:{removed:number[],added:number[]}}[], weakened:{filename:string,removed:number,added:number}[], removedTests:string[], unshown:string[], disabled:{filename:string,marker:string,removed:number,added:number}[]}}
  */
 export function testWitnessLoss(files) {
   const shown = files.flatMap((file) => (typeof file.patch === 'string' ? [{ file, ...patchSides(file.patch) }] : []))
   const witnesses = shown
     .filter(({ file }) => isWitnessFile(file.filename))
-    .map(({ file }) => ({
-      filename: file.filename,
-      status: file.status,
-      removed: assertionLines(file.patch, '-'),
-      added: assertionLines(file.patch, '+'),
-    }))
+    .map(({ file }) => ({ filename: file.filename, status: file.status, ...assertionLines(file.patch) }))
   const weakened = witnesses
     .filter((w) => w.status !== 'removed')
-    .map((w) => ({ filename: w.filename, removed: occurrences(w.removed, WITNESS), added: occurrences(w.added, WITNESS) }))
+    .map((w) => ({ filename: w.filename, removed: sum(w.counts.removed), added: sum(w.counts.added) }))
     .filter((w) => w.removed > w.added)
   const tests = files.filter((f) => isWitnessFile(f.filename))
   // A rename out of test naming takes a file out of the suite as surely as a deletion.
@@ -971,40 +983,37 @@ function weakenedTests({ files }) {
 const REFACTOR_TITLE = /^\s*refactor(?:\([^)]*\))?!?:/i
 const PROCEED = 'Land the test change first, in its own PR, or retitle the PR if it is not a refactor'
 
-const tally = (lines) => lines.reduce((counts, line) => counts.set(line, (counts.get(line) ?? 0) + 1), new Map())
-const take = (counts, line) => {
-  const left = counts.get(line) ?? 0
-  if (left > 0) counts.set(line, left - 1)
-  return left > 0
-}
+/** Each line's copies on one side, as the `expect(` count of each copy. */
+const pool = (lines, counts) => lines.reduce((copies, line, i) => copies.set(line, [...(copies.get(line) ?? []), counts[i]]), new Map())
+const take = (copies, line) => copies.get(line)?.shift()
 
 /**
  * Each kept test file's removed assertion lines that come back verbatim in another test file (`moved`) or nowhere
  * (`lost`); one re-added in its own file is neither, and each added line answers one removed line at most.
  */
 function assertionMoves(witnesses) {
-  const spare = new Map(witnesses.map((w) => [w, tally(w.added)]))
-  const answered = new Map(witnesses.map((w) => [w, []]))
+  const spare = new Map(witnesses.map((w) => [w, pool(w.added, w.counts.added)]))
+  const received = new Map(witnesses.map((w) => [w, 0]))
   const kept = witnesses
     .filter((w) => w.status !== 'removed')
-    .map((w) => ({ w, lines: w.removed.filter((line) => !take(spare.get(w), line)) }))
+    .map((w) => ({ w, lines: w.removed.flatMap((line, i) => (take(spare.get(w), line) === undefined ? [[line, w.counts.removed[i]]] : [])) }))
   const split = kept.map(({ w, lines }) => {
-    const moved = []
+    let out = 0
     const lost = []
-    for (const line of lines) {
-      const to = witnesses.find((other) => other !== w && take(spare.get(other), line))
+    for (const [line, count] of lines) {
+      const to = witnesses.find((other) => other !== w && spare.get(other).get(line)?.length > 0)
       if (to) {
-        moved.push(line)
-        answered.get(to).push(line)
+        out += count
+        received.set(to, received.get(to) + take(spare.get(to), line))
       } else {
         lost.push(line)
       }
     }
-    return { w, moved, lost }
+    return { w, out, lost }
   })
-  return split.map(({ w, moved, lost }) => {
-    const [removed, added, out, received] = [w.removed, w.added, moved, answered.get(w)].map((side) => occurrences(side, WITNESS))
-    return { filename: w.filename, removed, added, moved: out, received, net: removed - (added - received) - out, lost }
+  return split.map(({ w, out, lost }) => {
+    const [removed, added, got] = [sum(w.counts.removed), sum(w.counts.added), received.get(w)]
+    return { filename: w.filename, removed, added, moved: out, received: got, net: removed - (added - got) - out, lost }
   })
 }
 
