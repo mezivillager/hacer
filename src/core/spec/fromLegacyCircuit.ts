@@ -180,8 +180,14 @@ function driverCheck(legacy: DeserializedCircuit, partOf: Parts, { buses, juncti
   }
 }
 
-/** Bits `from…from+bits-1` of what an endpoint carries, in each value it can take. A loop is caught per bit, not per entity. */
-function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: Endpoint, from: number, bits: number) => Value[] {
+interface TraceOptions { placeOf?: (end: Endpoint) => string; reuse?: boolean }
+const placeOfEnd = (end: Endpoint): string => `${end.type} "${end.entityId}"`
+
+/**
+ * Bits `from…from+bits-1` of what an endpoint carries, in each value it can take. A loop is caught per bit, not per entity.
+ * Exported for tests: `placeOf` names where a wire's 0 is read, and `reuse: false` reads each wide window on the walk alone.
+ */
+export function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts, { placeOf = placeOfEnd, reuse = true }: TraceOptions = {}): (end: Endpoint, from: number, bits: number) => Value[] {
   const lines = wiring(legacy)
   const { buses, junctions, into, feeds } = lines
   const isDriven = driverCheck(legacy, partOf, lines)
@@ -214,6 +220,7 @@ function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: 
    * each value's first path, reads exactly the kept readings; otherwise the walk runs.
    */
   const fresh = (read: (trace: Walk) => Value[]): Value[] => {
+    if (!reuse) return read(walk())
     loopFree.met = false
     const values = read(loopFree.trace)
     return loopFree.met ? read(walk()) : values
@@ -231,7 +238,7 @@ function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts): (end: 
       const wires = into(bus, pinId)
       if (wires.length === 0) return [floating(1, pin)]
       const readings = wires.flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, trace, bit, 1) : [[]]).map((v) =>
-        v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: `${w.from.type} "${w.from.entityId}"` }))))
+        v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: placeOf(w.from) }))))
       const selfLoop = (v: Value): boolean => v.some((p) => p.lost === self)
       return readings.some(selfLoop) && isDriven(bus, pinId, width, bit) ? readings.map((v) => (selfLoop(v) ? floating(1, pin) : v)) : readings
     })

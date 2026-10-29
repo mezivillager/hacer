@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { printPinRef } from '../hdl/printer'
 import { deserializeCircuit } from '../serialization/deserialize'
 import { CIRCUIT_FORMAT_VERSION, type SerializedCircuit, type SerializedWire } from '../serialization/types'
-import { fromLegacyCircuit } from './fromLegacyCircuit'
+import { fromLegacyCircuit, tracer } from './fromLegacyCircuit'
 import { splitNetId } from './netId'
 import { parseSpec } from './parseSpec'
 import { printSpec } from './printSpec'
@@ -294,6 +294,19 @@ function lattice(stages: number, width: number): SerializedCircuit {
     id: `j${s}`, position: ZERO, signalId: `signal-j${s}`, wireIds: wires.filter((w) => [w.from, w.to].some((e) => e.entityId === `j${s}`)).map((w) => w.id),
   }))
   return circuit(`Lattice${stages}`, { inputNodes: [node('ia', 'a', width)], outputNodes: [node('oo', 'out', width)], busComponents, wires, junctions })
+}
+
+/** IN a and junction J's bit into a 2-bit joiner: J reaches it through splitter s2, and again through junction J2 and splitter s3. */
+function twoPathsToJ(feed: 'input' | 'splitter'): SerializedCircuit {
+  const wires = [
+    wire('w1', fromIn('ghost'), busEnd('s0', 'in'), 1), wire('w2', feed === 'input' ? fromIn('ghost') : busEnd('s0', 'out0'), junctionEnd('J'), 1),
+    wire('w3', junctionEnd('J'), busEnd('s2', 'in'), 1), wire('w4', junctionEnd('J'), junctionEnd('J2'), 1), wire('w5', junctionEnd('J2'), busEnd('s3', 'in'), 1),
+    wire('w6', busEnd('s2', 'out0'), junctionEnd('A'), 1), wire('w7', busEnd('s3', 'out0'), junctionEnd('A'), 1),
+    wire('w8', fromIn('ia'), busEnd('join', 'in0'), 1), wire('w9', junctionEnd('A'), busEnd('join', 'in1'), 1), wire('w10', busEnd('join', 'out'), toOut('oo'), 2),
+  ]
+  const junctions = ['J', 'J2', 'A'].map((id) => ({ id, position: ZERO, signalId: `signal-${id}`, wireIds: wires.filter((w) => [w.from, w.to].some((e) => e.entityId === id)).map((w) => w.id) }))
+  const busComponents = [bus('s0', 'splitter', 2), bus('s2', 'splitter', 2), bus('s3', 'splitter', 2), bus('join', 'joiner', 2)]
+  return circuit('TwoPathsToJ', { inputNodes: [node('ia', 'a')], outputNodes: [node('oo', 'out', 2)], busComponents, wires, junctions })
 }
 
 const LOCAL = [WITH_NOR, PARTS, PLACED, NAMES, C7, OUTPUT_AS_SOURCE, FAN_OUT, DUPLICATE, C8b]
@@ -660,6 +673,18 @@ describe('fromLegacyCircuit', () => {
       expect(sidecar.notes.filter((n) => n.kind === 'floating-source'), kind).toEqual([
         { kind: 'floating-source', pin: 'out', detail: 'Wire "w6" reads nothing at splitter "split" pin "in", so it is kept as a driverless net on out beside the other drivers' },
       ])
+    }
+  })
+
+  it('the reuse keeps no reading whose place a wire would change, whatever lost holds', () => {
+    const naming = (ghost: string) => (end: Endpoint): string => (end.entityId === 'ghost' ? ghost : end.entityId)
+    for (const [feed, ghost] of [['input', 'ghost'], ['splitter', ''], ['splitter', 'ghost']] as const) {
+      const legacy = deserializeCircuit(twoPathsToJ(feed)).document
+      if (legacy === null) throw new Error('TwoPathsToJ did not deserialize')
+      const window = (reuse: boolean) => tracer(legacy, [{ name: 'a', width: 1 }], new Map(), { placeOf: naming(ghost), reuse })(busEnd('join', 'out'), 0, 2)
+      const label = `J fed by the ${feed}, the ghost named ${JSON.stringify(ghost)}`
+      expect(window(false), label).toHaveLength(1)
+      expect(window(true), label).toEqual(window(false))
     }
   })
 })
