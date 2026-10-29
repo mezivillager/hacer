@@ -65,7 +65,7 @@ describe('layout with hints (ADR-0020 §1.4, §2)', () => {
     expect(Object.values(tidied.nodes).map((n) => `${n?.layer}:${n?.index}`)).not.toContain('1:2')
   })
 
-  it('a hint off the lattice places the node at the hint exactly and blocks the nearest cell', () => {
+  it("a hint off the lattice places the node at the hint rounded to the lattice's precision and blocks the nearest cell", () => {
     // At pitch 2 the cell nearest (2.4, 0.6) is layer 1, slot 0: the cell barycentre gives p1.
     const solid = layout(MUX, '3d', { hints: { p3: { x: 2.4, y: 0.25, z: 0.6, origin: 'user' } } })
     expect(solid.nodes.p3).toEqual({ x: 2.4, y: 0.25, z: 0.6, layer: 1, index: 0 })

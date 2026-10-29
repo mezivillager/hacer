@@ -364,6 +364,24 @@ describe('fromLegacyCircuit', () => {
     })
   })
 
+  it('a legacy position with a missing or non-finite axis imports without a hint and with a note', () => {
+    const saved = circuit('Unplaced', {
+      inputNodes: [{ ...node('ia', 'a'), position: { x: Number.POSITIVE_INFINITY, y: 0, z: 0 } }, node('ib', 'b')],
+      outputNodes: [{ ...node('oo', 'out'), position: { x: 0, y: Number.NaN, z: 0 } }],
+      gates: [{ ...gate('g1', 'And'), position: { x: 1, y: 2 } as typeof ZERO }],
+      wires: [wire('w1', fromIn('ia'), pinIn('g1', 0)), wire('w2', fromIn('ib'), pinIn('g1', 1)), wire('w3', pinOut('g1'), toOut('oo'))],
+    })
+    const { doc, sidecar } = load(saved)
+    expect(doc.parts).toEqual([{ id: 'p1', chip: 'And' }])
+    expect(sidecar.hints).toStrictEqual({ '3d': { 'in:b': { x: 0, y: 0, z: 0, rotation: 0, origin: 'user' } }, '2d': {} })
+    const why = 'a position needs three finite numbers, so it imports without a hint'
+    expect(sidecar.notes).toEqual([
+      { kind: 'position-dropped', partId: 'p1', detail: `The gate "g1" (p1) is at x 1, y 2, z missing: ${why}` },
+      { kind: 'position-dropped', pin: 'a', detail: `The input "a" (ia) is at x Infinity, y 0, z 0: ${why}` },
+      { kind: 'position-dropped', pin: 'out', detail: `The output "out" (oo) is at x 0, y NaN, z 0: ${why}` },
+    ])
+  })
+
   it('a name that is not an HDL identifier, or that repeats, is renamed deterministically, with a renamed note', () => {
     const xor = load(golden('xor-fanout-junctions'))
     expect(xor.doc.name).toBe('xorFanoutJunctions')
