@@ -1,77 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T20:07:09.095Z",
+  "generatedAt": "2026-10-29T20:16:55.213Z",
   "head": {
-    "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
-    "date": "2026-10-29T23:05:59+03:00",
-    "subject": "docs(decisions): ADR-0020 rule 5 cites the web IDE's alua() as the bitwise oracle"
+    "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
+    "date": "2026-10-29T23:16:09+03:00",
+    "subject": "docs(harness): retro 2026-10-29"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": null,
-      "status": "error",
-      "error": "prsMerged: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
+      "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
-      "status": "partial",
-      "error": "prsMerged: HTTP 502: 502 Bad Gateway (https://api.github.com/graphql)"
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
+      "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T20:07:09.095Z",
+      "fetchedAt": "2026-10-29T20:16:55.213Z",
       "status": "ok"
     }
   },
@@ -106,8 +104,8 @@
         "slug": "harness",
         "epicNumber": 138,
         "open": 26,
-        "ready": 10,
-        "inProgress": 0,
+        "ready": 8,
+        "inProgress": 2,
         "needsHuman": 3,
         "staleClaims": [],
         "agentReady": 11,
@@ -116,8 +114,8 @@
           1023
         ],
         "next": {
-          "number": 1039,
-          "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?"
+          "number": 257,
+          "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict"
         },
         "title": "Epic: harness — autonomous-run improvements & agent-readiness",
         "subIssues": {
@@ -408,16 +406,6 @@
     ],
     "next": [
       {
-        "number": 1039,
-        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
-        "project": "harness"
-      },
-      {
-        "number": 1040,
-        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
-        "project": "harness"
-      },
-      {
         "number": 1023,
         "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
         "project": "foundation"
@@ -516,44 +504,13 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
+        1042,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 1039,
-        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
-      {
-        "number": 1040,
-        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 1023,
         "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
@@ -2323,37 +2280,43 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
+      },
+      {
+        "number": 1039,
+        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
+      },
+      {
+        "number": 1040,
+        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "blocking": [],
+        "project": "harness",
+        "rank": 2,
+        "lane": "process",
+        "pickable": false,
+        "reason": "claimed"
       }
     ],
     "byProject": {
-      "harness": [
-        1039,
-        1040,
-        257,
-        949,
-        951,
-        955,
-        958,
-        965,
-        992,
-        1032,
-        154,
-        156,
-        270,
-        435,
-        436,
-        454,
-        500,
-        504,
-        505,
-        550,
-        607,
-        677,
-        870,
-        993,
-        994,
-        1037
-      ],
       "foundation": [
         1023,
         1026,
@@ -2389,6 +2352,34 @@
         1010,
         229,
         256
+      ],
+      "harness": [
+        257,
+        949,
+        951,
+        955,
+        958,
+        965,
+        992,
+        1032,
+        154,
+        156,
+        270,
+        435,
+        436,
+        454,
+        500,
+        504,
+        505,
+        550,
+        607,
+        677,
+        870,
+        993,
+        994,
+        1037,
+        1039,
+        1040
       ],
       "spine": [
         165,
@@ -2479,13 +2470,1730 @@
     }
   },
   "prs": {
-    "open": [],
-    "merged": [],
+    "open": [
+      {
+        "number": 1042,
+        "title": "chore(mission-control): a scenario suite that fails to run reads as metrics partial (#1024)",
+        "url": "https://github.com/mezivillager/hacer/pull/1042",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "fix/1024-suite-error",
+        "isDraft": false,
+        "createdAt": "2026-10-29T20:13:34Z",
+        "mergedAt": null,
+        "closes": [
+          1024
+        ],
+        "verdicts": []
+      },
+      {
+        "number": 1002,
+        "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
+        "url": "https://github.com/mezivillager/hacer/pull/1002",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/immer-11.1.21",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:15:45Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 1001,
+        "title": "chore(deps-dev): bump globals from 17.6.0 to 17.13.0",
+        "url": "https://github.com/mezivillager/hacer/pull/1001",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/globals-17.13.0",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:15:26Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 1000,
+        "title": "chore(deps): bump radix-ui from 1.6.7 to 1.8.1",
+        "url": "https://github.com/mezivillager/hacer/pull/1000",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/radix-ui-1.8.1",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:15:07Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 999,
+        "title": "chore(deps-dev): bump @commitlint/cli from 21.2.3 to 21.2.4",
+        "url": "https://github.com/mezivillager/hacer/pull/999",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/commitlint/cli-21.2.4",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:14:52Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 998,
+        "title": "chore(deps): bump the react-and-react-three group with 3 updates",
+        "url": "https://github.com/mezivillager/hacer/pull/998",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "javascript"
+        ],
+        "headRefName": "dependabot/npm_and_yarn/react-and-react-three-820b9d6968",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:14:34Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 997,
+        "title": "chore(deps): bump github/codeql-action/upload-sarif from 4.38.3 to 4.39.0",
+        "url": "https://github.com/mezivillager/hacer/pull/997",
+        "author": "app/dependabot",
+        "labels": [
+          "dependencies",
+          "github_actions"
+        ],
+        "headRefName": "dependabot/github_actions/github/codeql-action/upload-sarif-4.39.0",
+        "isDraft": false,
+        "createdAt": "2026-10-22T23:14:07Z",
+        "mergedAt": null,
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 514,
+        "title": "feat(lineage): lineage correct — the correction plan, one draft per dependent (DL-5)",
+        "url": "https://github.com/mezivillager/hacer/pull/514",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:lineage"
+        ],
+        "headRefName": "feat/470-lineage-correct",
+        "isDraft": false,
+        "createdAt": "2026-09-25T06:45:39Z",
+        "mergedAt": null,
+        "closes": [
+          470
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "claude-sonnet-5 (Sonnet 5)",
+            "at": "2026-09-25T07:17:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/514#issuecomment-5828483483"
+          }
+        ]
+      }
+    ],
+    "merged": [
+      {
+        "number": 1041,
+        "title": "docs(harness): retro 2026-10-29",
+        "url": "https://github.com/mezivillager/hacer/pull/1041",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/retro-2026-10-29",
+        "isDraft": false,
+        "createdAt": "2026-10-29T20:12:23Z",
+        "mergedAt": "2026-10-29T20:16:11Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-29T20:14:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1041#issuecomment-6507290365"
+          }
+        ]
+      },
+      {
+        "number": 1038,
+        "title": "docs(decisions): ADR-0020 rule 5 cites the web IDE's alua() as the bitwise oracle",
+        "url": "https://github.com/mezivillager/hacer/pull/1038",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:0"
+        ],
+        "headRefName": "docs/1029-differential-title-alu-oracle",
+        "isDraft": false,
+        "createdAt": "2026-10-29T18:53:59Z",
+        "mergedAt": "2026-10-29T20:06:00Z",
+        "closes": [
+          1029
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-29T18:56:06Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1038#issuecomment-6505655857"
+          }
+        ]
+      },
+      {
+        "number": 1036,
+        "title": "docs(harness): judge entries JDG-013 and JDG-014 for the bot-filed fidelity bugs",
+        "url": "https://github.com/mezivillager/hacer/pull/1036",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/jdg-013-014",
+        "isDraft": false,
+        "createdAt": "2026-10-29T18:33:30Z",
+        "mergedAt": "2026-10-29T18:37:37Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-29T18:34:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1036#issuecomment-6505178074"
+          }
+        ]
+      },
+      {
+        "number": 1035,
+        "title": "docs(harness): close records for the loop to 12%",
+        "url": "https://github.com/mezivillager/hacer/pull/1035",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-23-run-records",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:52:57Z",
+        "mergedAt": "2026-10-24T00:55:34Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-24T00:53:44Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1035#issuecomment-6377796061"
+          }
+        ]
+      },
+      {
+        "number": 1033,
+        "title": "fix(core): driverCheck keys ids by JSON value, and fresh joiner walks reuse loop-free readings (#979)",
+        "url": "https://github.com/mezivillager/hacer/pull/1033",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/979-driver-check-keys",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:27:55Z",
+        "mergedAt": "2026-10-24T00:49:50Z",
+        "closes": [
+          979
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-24T00:48:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1033#issuecomment-6377742055"
+          }
+        ]
+      },
+      {
+        "number": 1031,
+        "title": "chore(inbox): HRN entries reviewed in batches of at most five; a correctness-gate entry keeps its own review",
+        "url": "https://github.com/mezivillager/hacer/pull/1031",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/978-hrn-batches",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:10:14Z",
+        "mergedAt": "2026-10-24T00:26:23Z",
+        "closes": [
+          978
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-24T00:21:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1031#issuecomment-6377446538"
+          }
+        ]
+      },
+      {
+        "number": 1030,
+        "title": "fix(autosave): report a restored combinational cycle through the boot announcer",
+        "url": "https://github.com/mezivillager/hacer/pull/1030",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "released",
+          "project:bugs",
+          "risk:2",
+          "project:foundation"
+        ],
+        "headRefName": "fix/1003-restore-cycle-report",
+        "isDraft": false,
+        "createdAt": "2026-10-24T00:00:49Z",
+        "mergedAt": "2026-10-24T00:12:36Z",
+        "closes": [
+          1003
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-24T00:11:23Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1030#issuecomment-6377324067"
+          }
+        ]
+      },
+      {
+        "number": 1028,
+        "title": "feat(core): Project 2's Inc16 and ALU on the grading path, all six scripts agree",
+        "url": "https://github.com/mezivillager/hacer/pull/1028",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "feat/985-project2-inc16-alu",
+        "isDraft": false,
+        "createdAt": "2026-10-23T23:31:37Z",
+        "mergedAt": "2026-10-23T23:46:50Z",
+        "closes": [
+          985
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T23:45:38Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1028#issuecomment-6376997818"
+          }
+        ]
+      },
+      {
+        "number": 1027,
+        "title": "feat(core): Project 2 slice 1, HalfAdder, FullAdder and Add16 on the grading path",
+        "url": "https://github.com/mezivillager/hacer/pull/1027",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "feat/984-project2-adders",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:49:04Z",
+        "mergedAt": "2026-10-23T23:03:50Z",
+        "closes": [
+          984
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T23:02:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1027#issuecomment-6376457816"
+          }
+        ]
+      },
+      {
+        "number": 1025,
+        "title": "fix(layout): round hinted coordinates to 3 decimals, and pin the hint edge cases (#1014)",
+        "url": "https://github.com/mezivillager/hacer/pull/1025",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/1014-hint-rounding",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:27:58Z",
+        "mergedAt": "2026-10-23T22:43:25Z",
+        "closes": [
+          1014
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T22:39:20Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1025#issuecomment-6376145676"
+          }
+        ]
+      },
+      {
+        "number": 1022,
+        "title": "feat(mission-control): report the conformance pass count from the Project 1 scenarios",
+        "url": "https://github.com/mezivillager/hacer/pull/1022",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "feat/950-conformance-count",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:13:23Z",
+        "mergedAt": "2026-10-23T22:29:16Z",
+        "closes": [
+          950
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-23T22:25:41Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1022#issuecomment-6375955827"
+          }
+        ]
+      },
+      {
+        "number": 1021,
+        "title": "docs(roadmap): name JDG-004's bounded exception in phase tracking",
+        "url": "https://github.com/mezivillager/hacer/pull/1021",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:spine",
+          "risk:0"
+        ],
+        "headRefName": "docs/983-phase-tracking",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:13:07Z",
+        "mergedAt": "2026-10-23T22:17:05Z",
+        "closes": [
+          983
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T22:13:31Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1021#issuecomment-6375787079"
+          }
+        ]
+      },
+      {
+        "number": 1020,
+        "title": "chore(pr-hygiene): a refactor PR may not take an assertion out of an existing test",
+        "url": "https://github.com/mezivillager/hacer/pull/1020",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/942-refactor-test-rule",
+        "isDraft": false,
+        "createdAt": "2026-10-23T22:04:00Z",
+        "mergedAt": "2026-10-23T22:22:00Z",
+        "closes": [
+          942
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5), the tier backlog.mjs tier 1020 gives (scripts and docs only, risk:1, nothing under src/core/ or src/simulation/)",
+            "at": "2026-10-23T22:15:03Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1020#issuecomment-6375808160"
+          }
+        ]
+      },
+      {
+        "number": 1019,
+        "title": "fix(testing): any .tst command may end with ',', ';' or '!', and a run ends at '!' (#1007)",
+        "url": "https://github.com/mezivillager/hacer/pull/1019",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "released",
+          "project:spine",
+          "risk:1",
+          "sev:critical",
+          "fidelity"
+        ],
+        "headRefName": "fix/1007-tst-terminators",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:49:31Z",
+        "mergedAt": "2026-10-23T22:10:19Z",
+        "closes": [
+          1007
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-23T22:08:38Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1019#issuecomment-6375716270"
+          }
+        ]
+      },
+      {
+        "number": 1016,
+        "title": "fix(testing): bind each .cmp column to the output list by position",
+        "url": "https://github.com/mezivillager/hacer/pull/1016",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "released",
+          "project:spine",
+          "risk:1",
+          "sev:critical",
+          "fidelity"
+        ],
+        "headRefName": "fix/1006-cmp-columns-by-position",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:31:46Z",
+        "mergedAt": "2026-10-23T21:49:15Z",
+        "closes": [
+          1006
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5), the tier the rule gives (VERIFIER-TIER: opus, engine change)",
+            "at": "2026-10-23T21:47:53Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1016#issuecomment-6375412078"
+          }
+        ]
+      },
+      {
+        "number": 1015,
+        "title": "chore(pr-hygiene): protect the differential harness, see renames out of a protected path, flag weakened tests (#941)",
+        "url": "https://github.com/mezivillager/hacer/pull/1015",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/941-tamper-flag",
+        "isDraft": false,
+        "createdAt": "2026-10-23T21:07:09Z",
+        "mergedAt": "2026-10-23T21:23:35Z",
+        "closes": [
+          941
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-23T21:22:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1015#issuecomment-6375000117"
+          }
+        ]
+      },
+      {
+        "number": 1013,
+        "title": "feat(layout): hold a previous drawing and never move a hinted node (N.4b)",
+        "url": "https://github.com/mezivillager/hacer/pull/1013",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/940-layout-previous",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:51:22Z",
+        "mergedAt": "2026-10-23T21:05:33Z",
+        "closes": [
+          940
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-23T21:04:33Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1013#issuecomment-6374707963"
+          }
+        ]
+      },
+      {
+        "number": 1008,
+        "title": "docs(harness): JDG-011 and JDG-012, the Project 2 oracle bugs and the autosave follow-up",
+        "url": "https://github.com/mezivillager/hacer/pull/1008",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/judge-queue-2",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:42:34Z",
+        "mergedAt": "2026-10-23T20:46:30Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T20:43:20Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1008#issuecomment-6374353816"
+          }
+        ]
+      },
+      {
+        "number": 1005,
+        "title": "docs(fidelity): the spine and Phase 0.6 verdict, ruling on Project 2's slices (#982)",
+        "url": "https://github.com/mezivillager/hacer/pull/1005",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:spine",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/982-spine-fidelity",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:30:56Z",
+        "mergedAt": "2026-10-23T20:33:46Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T20:33:11Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1005#issuecomment-6374175631"
+          }
+        ]
+      },
+      {
+        "number": 1004,
+        "title": "docs(harness): close records for the loop to 97%",
+        "url": "https://github.com/mezivillager/hacer/pull/1004",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-close-3",
+        "isDraft": false,
+        "createdAt": "2026-10-23T20:21:57Z",
+        "mergedAt": "2026-10-23T20:25:49Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-23T20:23:28Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1004#issuecomment-6373996234"
+          }
+        ]
+      },
+      {
+        "number": 996,
+        "title": "docs(harness): let the judge make a bot-filed issue agent-ready in the fidelity brief (R889)",
+        "url": "https://github.com/mezivillager/hacer/pull/996",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/977-bot-filed-judge",
+        "isDraft": false,
+        "createdAt": "2026-10-22T22:22:03Z",
+        "mergedAt": "2026-10-22T22:25:19Z",
+        "closes": [
+          977
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T22:22:37Z",
+            "url": "https://github.com/mezivillager/hacer/pull/996#issuecomment-6352609431"
+          }
+        ]
+      },
+      {
+        "number": 995,
+        "title": "fix(store): restore the autosaved circuit on reload (#801)",
+        "url": "https://github.com/mezivillager/hacer/pull/995",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "released",
+          "project:bugs",
+          "risk:2",
+          "sev:high",
+          "project:foundation"
+        ],
+        "headRefName": "fix/801-autosave-restore",
+        "isDraft": false,
+        "createdAt": "2026-10-22T22:11:03Z",
+        "mergedAt": "2026-10-23T20:20:01Z",
+        "closes": [
+          801
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T22:23:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/995#issuecomment-6352629264"
+          }
+        ]
+      },
+      {
+        "number": 988,
+        "title": "docs(harness): retro run 2026-10-22 (second), HRN-028–030 proposed over 18 merges",
+        "url": "https://github.com/mezivillager/hacer/pull/988",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/retro-2026-10-22-b",
+        "isDraft": false,
+        "createdAt": "2026-10-22T21:36:02Z",
+        "mergedAt": "2026-10-22T21:39:06Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T21:36:48Z",
+            "url": "https://github.com/mezivillager/hacer/pull/988#issuecomment-6351860138"
+          }
+        ]
+      },
+      {
+        "number": 987,
+        "title": "fix(testing): grading refuses a part looping on disjoint bits with Looping wire (#907)",
+        "url": "https://github.com/mezivillager/hacer/pull/987",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/907-looping-wire",
+        "isDraft": false,
+        "createdAt": "2026-10-22T21:32:33Z",
+        "mergedAt": "2026-10-22T21:59:28Z",
+        "closes": [
+          907
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T21:45:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/987#issuecomment-6352009446"
+          }
+        ]
+      },
+      {
+        "number": 986,
+        "title": "docs(harness): close records for the judge run and the loop to 90%",
+        "url": "https://github.com/mezivillager/hacer/pull/986",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-close-2",
+        "isDraft": false,
+        "createdAt": "2026-10-22T14:53:07Z",
+        "mergedAt": "2026-10-22T15:03:51Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T14:54:23Z",
+            "url": "https://github.com/mezivillager/hacer/pull/986#issuecomment-6343791760"
+          }
+        ]
+      },
+      {
+        "number": 966,
+        "title": "docs(harness): file the first ten judge inbox entries, JDG-001 to JDG-010",
+        "url": "https://github.com/mezivillager/hacer/pull/966",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/judge-queue-1",
+        "isDraft": false,
+        "createdAt": "2026-10-22T13:35:07Z",
+        "mergedAt": "2026-10-22T13:41:09Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T13:36:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/966#issuecomment-6342124387"
+          }
+        ]
+      },
+      {
+        "number": 964,
+        "title": "chore(harness): judge inbox — decisions go to a Fable + Grok review and an Opus judge, not the owner (R889)",
+        "url": "https://github.com/mezivillager/hacer/pull/964",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "feat/963-judge",
+        "isDraft": false,
+        "createdAt": "2026-10-22T12:48:43Z",
+        "mergedAt": "2026-10-22T13:07:21Z",
+        "closes": [
+          963
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T13:06:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/964#issuecomment-6341494864"
+          }
+        ]
+      },
+      {
+        "number": 962,
+        "title": "docs(skills): ha-prompt-it — whole-branch review as nine named passes; /simplify on request",
+        "url": "https://github.com/mezivillager/hacer/pull/962",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/whole-branch-review-passes",
+        "isDraft": false,
+        "createdAt": "2026-10-22T11:56:33Z",
+        "mergedAt": "2026-10-22T12:00:29Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (docs-only, risk:0 exception in docs/harness/verifier-brief.md)",
+            "at": "2026-10-22T11:56:40Z",
+            "url": "https://github.com/mezivillager/hacer/pull/962#issuecomment-6340141947"
+          }
+        ]
+      },
+      {
+        "number": 961,
+        "title": "docs(harness): session record of the 2026-10-22 run, and R888",
+        "url": "https://github.com/mezivillager/hacer/pull/961",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-run-records",
+        "isDraft": false,
+        "createdAt": "2026-10-22T11:24:28Z",
+        "mergedAt": "2026-10-22T11:28:15Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T11:25:33Z",
+            "url": "https://github.com/mezivillager/hacer/pull/961#issuecomment-6339575802"
+          }
+        ]
+      },
+      {
+        "number": 960,
+        "title": "docs(decisions): rulings R880-R887 of the 2026-10-22 run, with ledger rows and inbox statuses",
+        "url": "https://github.com/mezivillager/hacer/pull/960",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-22-rulings-ledger",
+        "isDraft": false,
+        "createdAt": "2026-10-22T11:11:53Z",
+        "mergedAt": "2026-10-22T11:15:51Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T11:14:50Z",
+            "url": "https://github.com/mezivillager/hacer/pull/960#issuecomment-6339382518"
+          }
+        ]
+      },
+      {
+        "number": 959,
+        "title": "fix(core): fromLegacyCircuit reads each key once per trace (#773)",
+        "url": "https://github.com/mezivillager/hacer/pull/959",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/773-importer-paths",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:57:16Z",
+        "mergedAt": "2026-10-22T14:33:07Z",
+        "closes": [
+          773
+        ],
+        "verdicts": [
+          {
+            "verdict": "BLOCK",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T11:19:17Z",
+            "url": "https://github.com/mezivillager/hacer/pull/959#issuecomment-6339464842"
+          },
+          {
+            "verdict": "PASS",
+            "round": 2,
+            "model": "Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T14:31:52Z",
+            "url": "https://github.com/mezivillager/hacer/pull/959#issuecomment-6343306427"
+          }
+        ]
+      },
+      {
+        "number": 957,
+        "title": "fix(hdl): refuse a pin wider than MAX_PIN_WIDTH in the parser and the registry (#878)",
+        "url": "https://github.com/mezivillager/hacer/pull/957",
+        "author": "mezivillager",
+        "labels": [
+          "bug",
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/878-pin-width-limit",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:46:36Z",
+        "mergedAt": "2026-10-22T10:59:54Z",
+        "closes": [
+          453,
+          878
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-opus-5-5 (Opus 5.5); backlog.mjs tier 957 gives opus, so the tier is correct",
+            "at": "2026-10-22T10:58:46Z",
+            "url": "https://github.com/mezivillager/hacer/pull/957#issuecomment-6339088604"
+          }
+        ]
+      },
+      {
+        "number": 956,
+        "title": "fix(testing): size a bare output-list name at its pin's width",
+        "url": "https://github.com/mezivillager/hacer/pull/956",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:surfaces",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/599-bare-output-width",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:18:49Z",
+        "mergedAt": "2026-10-22T10:34:53Z",
+        "closes": [
+          599
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "claude-opus-5-5 (Opus 5.5)",
+            "at": "2026-10-22T10:30:32Z",
+            "url": "https://github.com/mezivillager/hacer/pull/956#issuecomment-6338585284"
+          }
+        ]
+      },
+      {
+        "number": 954,
+        "title": "refactor(ui): import formatColumnValue through @/core in TestResultsPanel",
+        "url": "https://github.com/mezivillager/hacer/pull/954",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:0",
+          "project:foundation"
+        ],
+        "headRefName": "refactor/613-format-through-core",
+        "isDraft": false,
+        "createdAt": "2026-10-22T10:13:06Z",
+        "mergedAt": "2026-10-22T10:21:17Z",
+        "closes": [
+          613
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-22T10:20:29Z",
+            "url": "https://github.com/mezivillager/hacer/pull/954#issuecomment-6338403140"
+          }
+        ]
+      },
+      {
+        "number": 953,
+        "title": "docs(harness): synthesis of process review cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/953",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-synthesis",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:50:49Z",
+        "mergedAt": "2026-10-22T09:54:28Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:53:01Z",
+            "url": "https://github.com/mezivillager/hacer/pull/953#issuecomment-6337894228"
+          }
+        ]
+      },
+      {
+        "number": 952,
+        "title": "feat(layout): layout(doc, surface, options), the first layered placement (N.4a)",
+        "url": "https://github.com/mezivillager/hacer/pull/952",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/379-layout",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:48:48Z",
+        "mergedAt": "2026-10-22T10:08:44Z",
+        "closes": [
+          379
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Opus 5.5 (claude-opus-5-5)",
+            "at": "2026-10-22T10:04:00Z",
+            "url": "https://github.com/mezivillager/hacer/pull/952#issuecomment-6338098445"
+          }
+        ]
+      },
+      {
+        "number": 948,
+        "title": "chore(lint): function length only shrinks — max-lines-per-function at 80 on src/",
+        "url": "https://github.com/mezivillager/hacer/pull/948",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "feat/339-function-length",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:38:49Z",
+        "mergedAt": "2026-10-22T09:59:10Z",
+        "closes": [
+          339
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Claude Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-22T09:52:13Z",
+            "url": "https://github.com/mezivillager/hacer/pull/948#issuecomment-6337879651"
+          }
+        ]
+      },
+      {
+        "number": 947,
+        "title": "docs(harness): process review 1 of cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/947",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-r1",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:30:31Z",
+        "mergedAt": "2026-10-22T09:37:33Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:32:44Z",
+            "url": "https://github.com/mezivillager/hacer/pull/947#issuecomment-6337522669"
+          }
+        ]
+      },
+      {
+        "number": 944,
+        "title": "docs(harness): process review 2 of cycle 2026-10-22",
+        "url": "https://github.com/mezivillager/hacer/pull/944",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22-r2",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:27:41Z",
+        "mergedAt": "2026-10-22T09:31:17Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:29:25Z",
+            "url": "https://github.com/mezivillager/hacer/pull/944#issuecomment-6337461100"
+          }
+        ]
+      },
+      {
+        "number": 943,
+        "title": "docs(fidelity): FID-033 and FID-034 from the digest of #914, #920, #921 and #922",
+        "url": "https://github.com/mezivillager/hacer/pull/943",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-digest-2026-10-22-b",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:21:43Z",
+        "mergedAt": "2026-10-22T09:27:09Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:25:20Z",
+            "url": "https://github.com/mezivillager/hacer/pull/943#issuecomment-6337386062"
+          }
+        ]
+      },
+      {
+        "number": 932,
+        "title": "docs(harness): retro run 2026-10-22, HRN-021–027 proposed over 51 merges",
+        "url": "https://github.com/mezivillager/hacer/pull/932",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/retro-2026-10-22",
+        "isDraft": false,
+        "createdAt": "2026-10-22T09:02:42Z",
+        "mergedAt": "2026-10-22T09:05:19Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:04:43Z",
+            "url": "https://github.com/mezivillager/hacer/pull/932#issuecomment-6336981031"
+          }
+        ]
+      },
+      {
+        "number": 931,
+        "title": "docs(harness): issue the 2026-10-22 process review brief",
+        "url": "https://github.com/mezivillager/hacer/pull/931",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/process-review-2026-10-22",
+        "isDraft": false,
+        "createdAt": "2026-10-22T08:59:34Z",
+        "mergedAt": "2026-10-22T09:09:48Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (risk:0 docs-only exception, ha-next §4)",
+            "at": "2026-10-22T09:04:41Z",
+            "url": "https://github.com/mezivillager/hacer/pull/931#issuecomment-6336980399"
+          }
+        ]
+      },
+      {
+        "number": 927,
+        "title": "docs(harness): inbox statuses and HRN-018 to HRN-020 from the 2026-10-21 run",
+        "url": "https://github.com/mezivillager/hacer/pull/927",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-21-records-inboxes",
+        "isDraft": false,
+        "createdAt": "2026-10-22T06:37:13Z",
+        "mergedAt": "2026-10-22T06:49:17Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 926,
+        "title": "docs(harness): session record of the 2026-10-21 run, and ADR-0020 wording",
+        "url": "https://github.com/mezivillager/hacer/pull/926",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-21-records-session",
+        "isDraft": false,
+        "createdAt": "2026-10-22T06:37:02Z",
+        "mergedAt": "2026-10-22T06:44:51Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 925,
+        "title": "docs(decisions): rulings R852-R879 of the 2026-10-21 run",
+        "url": "https://github.com/mezivillager/hacer/pull/925",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-21-records-rulings",
+        "isDraft": false,
+        "createdAt": "2026-10-22T06:36:51Z",
+        "mergedAt": "2026-10-22T06:40:52Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 923,
+        "title": "test(conformance): differential harness calls runCli and installs web-ide from its lockfile",
+        "url": "https://github.com/mezivillager/hacer/pull/923",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/918-harness-runtst",
+        "isDraft": false,
+        "createdAt": "2026-10-22T05:55:31Z",
+        "mergedAt": "2026-10-22T06:07:52Z",
+        "closes": [
+          918
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T06:06:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/923#issuecomment-6334008170"
+          }
+        ]
+      },
+      {
+        "number": 922,
+        "title": "fix(spec): window a sliced wide true on export when the registry lacks its chip (#916)",
+        "url": "https://github.com/mezivillager/hacer/pull/922",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/916-slice-window",
+        "isDraft": false,
+        "createdAt": "2026-10-22T05:49:34Z",
+        "mergedAt": "2026-10-22T06:18:57Z",
+        "closes": [
+          916
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T06:10:06Z",
+            "url": "https://github.com/mezivillager/hacer/pull/922#issuecomment-6334057561"
+          }
+        ]
+      },
+      {
+        "number": 921,
+        "title": "fix(core): refuse a definition that repeats a pin name (#912)",
+        "url": "https://github.com/mezivillager/hacer/pull/921",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "fix/912-repeated-pin",
+        "isDraft": false,
+        "createdAt": "2026-10-22T05:49:15Z",
+        "mergedAt": "2026-10-22T06:14:01Z",
+        "closes": [
+          912
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T06:02:07Z",
+            "url": "https://github.com/mezivillager/hacer/pull/921#issuecomment-6333940290"
+          }
+        ]
+      },
+      {
+        "number": 920,
+        "title": "fix(core): refuse a BUILTIN body whose pins differ from the builtin it names (#919)",
+        "url": "https://github.com/mezivillager/hacer/pull/920",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/919-builtin-pins",
+        "isDraft": false,
+        "createdAt": "2026-10-22T05:21:20Z",
+        "mergedAt": "2026-10-22T05:32:30Z",
+        "closes": [
+          919
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T05:31:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/920#issuecomment-6333529993"
+          }
+        ]
+      },
+      {
+        "number": 917,
+        "title": "test(differential): HACER beside the reference simulator on Project 1's official .tst (#338)",
+        "url": "https://github.com/mezivillager/hacer/pull/917",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "project:foundation"
+        ],
+        "headRefName": "test/338-differential-harness",
+        "isDraft": false,
+        "createdAt": "2026-10-22T04:50:33Z",
+        "mergedAt": "2026-10-22T05:01:57Z",
+        "closes": [
+          338
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T05:00:55Z",
+            "url": "https://github.com/mezivillager/hacer/pull/917#issuecomment-6333125742"
+          }
+        ]
+      },
+      {
+        "number": 914,
+        "title": "fix(spec): a true wider than 16 bits is every bit, windowed on the nand2tetris export (#905)",
+        "url": "https://github.com/mezivillager/hacer/pull/914",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/905-wide-true",
+        "isDraft": false,
+        "createdAt": "2026-10-22T04:28:32Z",
+        "mergedAt": "2026-10-22T04:44:27Z",
+        "closes": [
+          905
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T04:39:48Z",
+            "url": "https://github.com/mezivillager/hacer/pull/914#issuecomment-6332855329"
+          }
+        ]
+      },
+      {
+        "number": 913,
+        "title": "docs(fidelity): FID-032, a BUILTIN body declares the builtin's own pins",
+        "url": "https://github.com/mezivillager/hacer/pull/913",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0",
+          "fidelity"
+        ],
+        "headRefName": "docs/fidelity-digest-2026-10-22",
+        "isDraft": false,
+        "createdAt": "2026-10-22T04:28:29Z",
+        "mergedAt": "2026-10-22T04:33:04Z",
+        "closes": [],
+        "verdicts": []
+      },
+      {
+        "number": 911,
+        "title": "fix(core): grading stops where the reference stops on a per-part cause left to compileHDL (#909)",
+        "url": "https://github.com/mezivillager/hacer/pull/911",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/909-grading-first-cause",
+        "isDraft": false,
+        "createdAt": "2026-10-22T04:03:13Z",
+        "mergedAt": "2026-10-22T04:18:56Z",
+        "closes": [
+          909
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T04:14:57Z",
+            "url": "https://github.com/mezivillager/hacer/pull/911#issuecomment-6332537383"
+          }
+        ]
+      },
+      {
+        "number": 910,
+        "title": "fix(core): refuse a definition whose name or pins differ from its source (#903)",
+        "url": "https://github.com/mezivillager/hacer/pull/910",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/903-definition-agrees",
+        "isDraft": false,
+        "createdAt": "2026-10-22T03:50:54Z",
+        "mergedAt": "2026-10-22T04:09:51Z",
+        "closes": [
+          903
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T04:08:51Z",
+            "url": "https://github.com/mezivillager/hacer/pull/910#issuecomment-6332457384"
+          }
+        ]
+      },
+      {
+        "number": 908,
+        "title": "fix(hdl): give the cycle refusal the line of the part that closes the cycle (#906)",
+        "url": "https://github.com/mezivillager/hacer/pull/908",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "fix/906-cycle-line",
+        "isDraft": false,
+        "createdAt": "2026-10-22T03:39:46Z",
+        "mergedAt": "2026-10-22T03:55:53Z",
+        "closes": [
+          906
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T03:54:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/908#issuecomment-6332280369"
+          }
+        ]
+      },
+      {
+        "number": 904,
+        "title": "test(core): pin the part lookup order and the 27 names only the web IDE has, ADR-0020 §1.11 rules 2, 4, 5 (#901)",
+        "url": "https://github.com/mezivillager/hacer/pull/904",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "risk:1",
+          "fidelity",
+          "project:foundation"
+        ],
+        "headRefName": "test/901-lookup-order",
+        "isDraft": false,
+        "createdAt": "2026-10-22T03:02:00Z",
+        "mergedAt": "2026-10-22T03:13:34Z",
+        "closes": [
+          901
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T03:11:34Z",
+            "url": "https://github.com/mezivillager/hacer/pull/904#issuecomment-6331748076"
+          }
+        ]
+      },
+      {
+        "number": 902,
+        "title": "chore(harness): ready and next say a process review is due; the coordinator starts it",
+        "url": "https://github.com/mezivillager/hacer/pull/902",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/895-process-review-due",
+        "isDraft": false,
+        "createdAt": "2026-10-22T02:29:28Z",
+        "mergedAt": "2026-10-22T02:45:35Z",
+        "closes": [
+          895
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T02:44:50Z",
+            "url": "https://github.com/mezivillager/hacer/pull/902#issuecomment-6331419934"
+          }
+        ]
+      },
+      {
+        "number": 900,
+        "title": "docs(harness): the retro splits a run query cut off at the API's 1,000-run cap",
+        "url": "https://github.com/mezivillager/hacer/pull/900",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/898-rerun-query-split",
+        "isDraft": false,
+        "createdAt": "2026-10-22T02:02:59Z",
+        "mergedAt": "2026-10-22T02:12:26Z",
+        "closes": [
+          898
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T02:11:37Z",
+            "url": "https://github.com/mezivillager/hacer/pull/900#issuecomment-6331011643"
+          }
+        ]
+      },
+      {
+        "number": 899,
+        "title": "chore(harness): ready and next print each active workflow failing on main",
+        "url": "https://github.com/mezivillager/hacer/pull/899",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:1"
+        ],
+        "headRefName": "chore/888-main-workflows",
+        "isDraft": false,
+        "createdAt": "2026-10-22T01:43:02Z",
+        "mergedAt": "2026-10-22T02:01:59Z",
+        "closes": [
+          888
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet (claude-sonnet-5-5)",
+            "at": "2026-10-22T01:56:59Z",
+            "url": "https://github.com/mezivillager/hacer/pull/899#issuecomment-6330823627"
+          }
+        ]
+      },
+      {
+        "number": 897,
+        "title": "docs(harness): the queue-up rule names its three risk:2 exceptions",
+        "url": "https://github.com/mezivillager/hacer/pull/897",
+        "author": "mezivillager",
+        "labels": [
+          "released",
+          "project:harness",
+          "risk:2"
+        ],
+        "headRefName": "docs/893-risk2-queue-up",
+        "isDraft": false,
+        "createdAt": "2026-10-22T01:39:59Z",
+        "mergedAt": "2026-10-22T01:53:59Z",
+        "closes": [
+          893
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus (claude-opus-5-5)",
+            "at": "2026-10-22T01:53:02Z",
+            "url": "https://github.com/mezivillager/hacer/pull/897#issuecomment-6330774679"
+          }
+        ]
+      }
+    ],
     "coverage": {
-      "merged": 0,
-      "withVerdict": 0,
-      "withoutVerdict": 0,
-      "pass": 0,
+      "merged": 60,
+      "withVerdict": 56,
+      "withoutVerdict": 4,
+      "pass": 56,
       "block": 0,
       "belowTier": []
     }
@@ -2518,28 +4226,55 @@
         }
       },
       {
-        "number": 1029,
-        "ref": "refs/heads/claim/1029",
-        "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
-        "state": "CLOSED",
-        "title": "Differential test title says script; ADR-0020 rule 5 cites the web IDE's bitwise alua() (PR #1028 follow-up)",
-        "url": "https://github.com/mezivillager/hacer/issues/1029",
+        "number": 1039,
+        "ref": "refs/heads/claim/1039",
+        "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
+        "state": "OPEN",
+        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
+        "url": "https://github.com/mezivillager/hacer/issues/1039",
         "labels": [
-          "project:spine",
+          "project:harness",
           "agent-ready",
           "in-progress",
-          "risk:0"
+          "risk:0",
+          "judge-review"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "docs/1029-differential-title-alu-oracle",
+          "branch": "chore/judge-jdg-013",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-29T18:34:58Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1029#issuecomment-6505180750"
+          "at": "2026-10-29T20:07:18Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1039#issuecomment-6507129825"
+        }
+      },
+      {
+        "number": 1040,
+        "ref": "refs/heads/claim/1040",
+        "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
+        "state": "OPEN",
+        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
+        "url": "https://github.com/mezivillager/hacer/issues/1040",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:0",
+          "judge-review"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-29-hacer-loop-to-90",
+          "branch": "chore/judge-jdg-014",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-29T20:14:47Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1040#issuecomment-6507293419"
         }
       },
       {
@@ -2568,7 +4303,7 @@
         }
       }
     ],
-    "onClosedIssues": 1
+    "onClosedIssues": 0
   },
   "cloudLane": {
     "items": [
@@ -4599,18 +6334,35 @@
         "isLatest": false
       }
     ],
-    "mergesPerDay": [],
+    "mergesPerDay": [
+      {
+        "date": "2026-10-22",
+        "merges": 39
+      },
+      {
+        "date": "2026-10-23",
+        "merges": 14
+      },
+      {
+        "date": "2026-10-24",
+        "merges": 4
+      },
+      {
+        "date": "2026-10-29",
+        "merges": 3
+      }
+    ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T20:07:09.095Z",
-      "merged": 117,
+      "since": "2026-10-15T20:16:55.213Z",
+      "merged": 118,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 103,
+        "of": 104,
         "prs": [
           753,
           774,
@@ -4624,8 +6376,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 49,
-          "withVerdict": 35,
+          "merged": 50,
+          "withVerdict": 36,
           "without": [
             755,
             756,
@@ -10006,11 +11758,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
+        "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40945985240/job/123701332177",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40947511235/job/123706641509",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -10330,6 +12082,49 @@
           "known": 68,
           "new": 0
         },
+        "disagrees": false
+      },
+      {
+        "pr": 1042,
+        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
+        "check": "pr-hygiene",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T20:13:47Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40947108762/job/123705265419",
+        "line": "HYGIENE: PASS reviewable=21 test=37 excluded=0 files=2 issue=#1024 linked=fixes",
+        "verdict": "PASS",
+        "fields": {
+          "reviewable": 21,
+          "test": 37,
+          "excluded": 0,
+          "files": 2,
+          "issue": "#1024",
+          "linked": "fixes"
+        },
+        "disagrees": false
+      },
+      {
+        "pr": 1042,
+        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
+        "check": "browser-qa",
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T20:13:49Z",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40947109086/job/123705265336",
+        "line": "BROWSER-QA: skipped (no critical paths)",
+        "verdict": "SKIPPED",
+        "fields": {},
+        "disagrees": false
+      },
+      {
+        "pr": 1042,
+        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
+        "check": "ci",
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40947107849/job/123705263028",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       }
     ]
