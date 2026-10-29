@@ -853,6 +853,49 @@ describe('the refactor rule (#942)', () => {
     const withSubject = [...files, { ...file('src/b.ts', 0, 0, 'renamed'), previous_filename: 'src/a.ts' }]
     expect(testWitnessLoss(withSubject).removedTests).toEqual([])
   })
+
+  it('an expect( line inside an added block comment does not offset a removed assertion', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(a).toBe(1)', '+  /*', '+  expect(a).toBe(1)', '+  */']),
+      patched('src/b.test.ts', ['-  /* c */ expect(b).toBe(2)']),
+      patched('src/c.test.ts', ['-  expect(c).toBe(3)', '   /*', '+  expect(c).toBe(3)', '   */']),
+      patched('src/dead.test.ts', ['-  /*', '-  expect(z).toBe(1)', '-  */']),
+      patched('src/glob.test.ts', [
+        "-  expect(match('src/**/*.ts')).toBe(true)",
+        '-  expect(g).toBe(1)',
+        "+  expect(match('src/**/*.ts')).toBe(true)",
+        '+  expect(g).toBe(1)',
+      ]),
+    ]
+    expect(testWitnessLoss(files).weakened).toEqual([
+      { filename: 'src/a.test.ts', removed: 1, added: 0 },
+      { filename: 'src/b.test.ts', removed: 1, added: 0 },
+      { filename: 'src/c.test.ts', removed: 1, added: 0 },
+    ])
+    const result = refactor(files)
+    const failed = failures(result).join('\n')
+    for (const name of ['a', 'b', 'c']) expect(failed).toContain(`\`src/${name}.test.ts\` loses 1 \`expect(\` call`)
+    expect(found(result).map((f) => f.message).join('\n')).not.toMatch(/dead\.test\.ts|glob\.test\.ts/)
+  })
+
+  it('an added assertion that answers a move in another file does not also offset a removal in its own file', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(w).toBe(1)', '+  expect(x).toBe(1)']),
+      patched('src/b.test.ts', ['-  expect(x).toBe(1)']),
+    ]
+    const result = refactor(files)
+    expect(result.verdict).toBe('FAIL')
+    const failed = failures(result).join('\n')
+    expect(failed).toContain('`src/a.test.ts` loses 1 `expect(` call')
+    expect(failed).not.toContain('b.test.ts')
+    expect(warnings(result).join('\n')).toContain('`expect(w).toBe(1)`')
+
+    const both = [
+      patched('src/a.test.ts', ['-  expect(w).toBe(1)', '+  expect(x).toBe(1)', '+  expect(w, v).toBe(1)']),
+      patched('src/b.test.ts', ['-  expect(x).toBe(1)']),
+    ]
+    expect(levels(refactor(both))).toEqual(['warn'])
+  })
 })
 
 describe('nextPageUrl', () => {
