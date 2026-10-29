@@ -3,15 +3,9 @@
  * `padLeft + width + padRight` characters, names centred, B/X/S values left and D values right.
  * For a correct chip it is the chip's `.cmp`, byte for byte.
  */
-import { commandsRun, formatColumnValue, type OutputRow, type TSTOutputColumn, type TSTScript } from '@/core'
+import { commandsRun, formatColumnValue, headerCell, type OutputRow, type TSTOutputColumn, type TSTScript } from '@/core'
 
 const line = (cells: readonly string[]): string => `|${cells.join('|')}|`
-
-function headerCell({ name, padLeft, width, padRight }: TSTOutputColumn): string {
-  const space = padLeft + width + padRight
-  const left = Math.max(0, Math.floor((space - name.length) / 2))
-  return (' '.repeat(left) + name).padEnd(space).slice(0, space)
-}
 
 function valueCell(column: TSTOutputColumn, value: number): string {
   const { format, padLeft, width, padRight } = column
