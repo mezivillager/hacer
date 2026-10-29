@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T22:53:59.793Z",
+  "generatedAt": "2026-10-29T23:04:01.200Z",
   "head": {
-    "sha": "4dacb399787591c5c60df5e0281f23ca9d968815",
-    "date": "2026-10-30T01:53:20+03:00",
-    "subject": "docs(fidelity): FID-037 names its digest comment"
+    "sha": "7290bdf7a3e149a9262291c9cc718234c64324c1",
+    "date": "2026-10-30T02:02:52+03:00",
+    "subject": "docs(harness): no coordinator ruling waives the fidelity review; the judge or the owner does (#1057)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T22:53:59.793Z",
+      "fetchedAt": "2026-10-29T23:04:01.200Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 31,
+        "open": 30,
         "ready": 12,
-        "inProgress": 3,
+        "inProgress": 2,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 16,
+        "agentReady": 15,
         "filedElsewhere": [
           151,
           1047
@@ -306,12 +306,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 10,
-        "ready": 6,
+        "open": 12,
+        "ready": 8,
         "inProgress": 2,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 9,
+        "agentReady": 11,
         "filedElsewhere": [],
         "next": {
           "number": 936,
@@ -497,9 +497,19 @@
         "project": "harness"
       },
       {
+        "number": 1062,
+        "title": "Inbox review: FID-037 · A `.tst` `set` whose value does not fit its pin gets one decided reading, and the output row prints the value the chip evaluated",
+        "project": "upkeep"
+      },
+      {
         "number": 992,
         "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "project": "harness"
+      },
+      {
+        "number": 1063,
+        "title": "Inbox review: HRN-031, HRN-032, HRN-033 · a batch of 3 harness entries",
+        "project": "upkeep"
       },
       {
         "number": 1032,
@@ -531,7 +541,6 @@
       "dormant": false,
       "agentPrs": [
         1061,
-        1060,
         514
       ]
     }
@@ -804,6 +813,22 @@
         "reason": null
       },
       {
+        "number": 1062,
+        "title": "Inbox review: FID-037 · A `.tst` `set` whose value does not fit its pin gets one decided reading, and the output row prints the value the chip evaluated",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
+        "pickable": true,
+        "reason": null
+      },
+      {
         "number": 992,
         "title": "The queue-up rule's plan-slice exception counts a plan the inbox panel or the judge approved, linked by its decision comment (JDG-007)",
         "labels": [
@@ -815,6 +840,22 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1063,
+        "title": "Inbox review: HRN-031, HRN-032, HRN-033 · a batch of 3 harness entries",
+        "labels": [
+          "project:upkeep",
+          "agent-ready",
+          "risk:0",
+          "inbox-review"
+        ],
+        "blocking": [],
+        "project": "upkeep",
+        "rank": 11,
+        "lane": "aux",
         "pickable": true,
         "reason": null
       },
@@ -2416,22 +2457,6 @@
         "reason": "unshaped"
       },
       {
-        "number": 1057,
-        "title": "A coordinator's ruling never waives ADR-0018 §2's fidelity review before a core merge: only the judge or the owner does (HRN-023)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 1058,
         "title": "Test engine: a correct chip fails or errors on a .cmp that is the web IDE's own .out, because .cmp cells are graded as guessed numbers, not as text",
         "labels": [
@@ -2504,6 +2529,8 @@
         946,
         1009,
         1010,
+        1062,
+        1063,
         229,
         256,
         930,
@@ -2539,8 +2566,7 @@
         994,
         1037,
         1039,
-        1040,
-        1057
+        1040
       ],
       "core": [
         179,
@@ -2627,24 +2653,6 @@
         "mergedAt": null,
         "closes": [
           1034
-        ],
-        "verdicts": []
-      },
-      {
-        "number": 1060,
-        "title": "docs(harness): no coordinator ruling waives the fidelity review; the judge or the owner does",
-        "url": "https://github.com/mezivillager/hacer/pull/1060",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/1057-adr-0018-no-coordinator-waiver",
-        "isDraft": false,
-        "createdAt": "2026-10-29T22:50:11Z",
-        "mergedAt": null,
-        "closes": [
-          1057
         ],
         "verdicts": []
       },
@@ -2772,6 +2780,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 1060,
+        "title": "docs(harness): no coordinator ruling waives the fidelity review; the judge or the owner does",
+        "url": "https://github.com/mezivillager/hacer/pull/1060",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/1057-adr-0018-no-coordinator-waiver",
+        "isDraft": false,
+        "createdAt": "2026-10-29T22:50:11Z",
+        "mergedAt": "2026-10-29T23:02:53Z",
+        "closes": [
+          1057
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-29T22:56:35Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1060#issuecomment-6510453774"
+          }
+        ]
+      },
       {
         "number": 1059,
         "title": "docs(fidelity): FID-037 from the digest of the nine core PRs merged without a fidelity review",
@@ -4319,34 +4353,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/911#issuecomment-6332537383"
           }
         ]
-      },
-      {
-        "number": 910,
-        "title": "fix(core): refuse a definition whose name or pins differ from its source (#903)",
-        "url": "https://github.com/mezivillager/hacer/pull/910",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "fix/903-definition-agrees",
-        "isDraft": false,
-        "createdAt": "2026-10-22T03:50:54Z",
-        "mergedAt": "2026-10-22T04:09:51Z",
-        "closes": [
-          903
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T04:08:51Z",
-            "url": "https://github.com/mezivillager/hacer/pull/910#issuecomment-6332457384"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4441,16 +4447,15 @@
         "number": 1057,
         "ref": "refs/heads/claim/1057",
         "sha": "a208bf7535ed5dd6927324f1bd2b73363170b172",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "A coordinator's ruling never waives ADR-0018 §2's fidelity review before a core merge: only the judge or the owner does (HRN-023)",
         "url": "https://github.com/mezivillager/hacer/issues/1057",
         "labels": [
           "project:harness",
           "agent-ready",
-          "in-progress",
           "risk:0"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4540,7 +4545,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6589,7 +6594,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 33
+        "merges": 32
       },
       {
         "date": "2026-10-23",
@@ -6601,20 +6606,20 @@
       },
       {
         "date": "2026-10-29",
-        "merges": 9
+        "merges": 10
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T22:53:59.793Z",
-      "merged": 123,
+      "since": "2026-10-15T23:04:01.200Z",
+      "merged": 124,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 109,
+        "of": 110,
         "prs": [
           753,
           774,
@@ -6623,8 +6628,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 72,
-          "withVerdict": 72,
+          "merged": 73,
+          "withVerdict": 73,
           "without": []
         },
         "nonCode": {
@@ -11851,41 +11856,8 @@
       },
       {
         "date": "2026-10-29",
-        "at": "2026-10-29T22:16:18.379Z",
+        "at": "2026-10-29T22:53:59.793Z",
         "byProject": {
-          "harness": [
-            257,
-            949,
-            951,
-            955,
-            958,
-            965,
-            992,
-            1032,
-            1049,
-            1050,
-            1051,
-            1052,
-            1057,
-            154,
-            156,
-            270,
-            435,
-            436,
-            454,
-            500,
-            504,
-            505,
-            550,
-            607,
-            677,
-            870,
-            993,
-            994,
-            1037,
-            1039,
-            1040
-          ],
           "foundation": [
             1047,
             1054,
@@ -11929,7 +11901,8 @@
             176,
             177,
             235,
-            236
+            236,
+            1058
           ],
           "upkeep": [
             936,
@@ -11942,6 +11915,39 @@
             256,
             930,
             935
+          ],
+          "harness": [
+            257,
+            949,
+            951,
+            955,
+            958,
+            965,
+            992,
+            1032,
+            1049,
+            1050,
+            1051,
+            1052,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            993,
+            994,
+            1037,
+            1039,
+            1040,
+            1057
           ],
           "core": [
             179,
@@ -12017,11 +12023,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "4dacb399787591c5c60df5e0281f23ca9d968815",
+        "sha": "7290bdf7a3e149a9262291c9cc718234c64324c1",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40969226291/job/123781457308",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40970362231/job/123785292662",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12344,52 +12350,6 @@
         "disagrees": false
       },
       {
-        "pr": 1060,
-        "sha": "63b58ebb67de734787047eb87d8c95a55b50c420",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T22:50:26Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40968850806/job/123780178949",
-        "line": "HYGIENE: PASS reviewable=24 test=0 excluded=0 files=3 issue=#1057 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 24,
-          "test": 0,
-          "excluded": 0,
-          "files": 3,
-          "issue": "#1057",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1060,
-        "sha": "63b58ebb67de734787047eb87d8c95a55b50c420",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T22:50:26Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40968850640/job/123780176476",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 1060,
-        "sha": "63b58ebb67de734787047eb87d8c95a55b50c420",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T22:53:03Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40968849480/job/123780172741",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
         "pr": 1061,
         "sha": "62ac99c20306eb8a6f62384e698dab60a0fb2255",
         "check": "pr-hygiene",
@@ -12424,12 +12384,15 @@
         "pr": 1061,
         "sha": "62ac99c20306eb8a6f62384e698dab60a0fb2255",
         "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
+        "conclusion": "SUCCESS",
+        "completedAt": "2026-10-29T22:56:58Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/40969231446/job/123781475382",
-        "line": null,
-        "verdict": null,
-        "fields": {},
+        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
+        "verdict": "PASS",
+        "fields": {
+          "known": 68,
+          "new": 0
+        },
         "disagrees": false
       }
     ]
@@ -21154,6 +21117,23 @@
         ]
       },
       {
+        "id": "#1057",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0018"
+        ]
+      },
+      {
+        "id": "#935",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0018",
+          "R885",
+          "R886",
+          "R917"
+        ]
+      },
+      {
         "id": "#778",
         "kind": "github",
         "citedBy": [
@@ -24613,15 +24593,6 @@
         "citedBy": [
           "R885",
           "R915",
-          "R917"
-        ]
-      },
-      {
-        "id": "#935",
-        "kind": "github",
-        "citedBy": [
-          "R885",
-          "R886",
           "R917"
         ]
       },
