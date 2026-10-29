@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T20:17:54.904Z",
+  "generatedAt": "2026-10-29T20:35:56.470Z",
   "head": {
-    "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
-    "date": "2026-10-29T23:16:09+03:00",
-    "subject": "docs(harness): retro 2026-10-29"
+    "sha": "624b0cee82d2b45e1e03e60d9420389a726d394f",
+    "date": "2026-10-29T23:34:59+03:00",
+    "subject": "chore(mission-control): a scenario suite that fails to run reads as metrics partial (#1024)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T20:17:54.904Z",
+      "fetchedAt": "2026-10-29T20:35:56.470Z",
       "status": "ok"
     }
   },
@@ -81,15 +81,15 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 22,
-        "ready": 3,
-        "inProgress": 0,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
         "filedElsewhere": [],
         "next": {
-          "number": 1023,
-          "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)"
+          "number": 1026,
+          "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -219,13 +219,16 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 14,
-        "ready": 0,
+        "ready": 1,
         "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 0,
+        "agentReady": 1,
         "filedElsewhere": [],
-        "next": null,
+        "next": {
+          "number": 1017,
+          "title": "hacer run-tst prints an output-list header that comes after a '!'"
+        },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
           "completed": 11,
@@ -370,20 +373,23 @@
         "slug": "mission-control",
         "epicNumber": 458,
         "open": 3,
-        "ready": 0,
-        "inProgress": 1,
+        "ready": 1,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 1,
         "filedElsewhere": [
           156
         ],
-        "next": null,
+        "next": {
+          "number": 1043,
+          "title": "Mission Control: a failed scenario file with no failed test (a hook inside a describe) reads as the suite error, suiteError tolerates null assertionResults, and the Flow doc says so (PR #1042 follow-up)"
+        },
         "title": "Epic: mission-control — Mission Control: the platform's status, process and roadmap as one site",
         "subIssues": {
-          "completed": 13,
-          "percentCompleted": 92,
-          "total": 14
+          "completed": 14,
+          "percentCompleted": 93,
+          "total": 15
         }
       }
     ]
@@ -406,11 +412,6 @@
     ],
     "next": [
       {
-        "number": 1023,
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "project": "foundation"
-      },
-      {
         "number": 930,
         "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
         "project": "upkeep"
@@ -429,6 +430,16 @@
         "number": 1034,
         "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
         "project": "foundation"
+      },
+      {
+        "number": 1043,
+        "title": "Mission Control: a failed scenario file with no failed test (a hook inside a describe) reads as the suite error, suiteError tolerates null assertionResults, and the Flow doc says so (PR #1042 follow-up)",
+        "project": "mission-control"
+      },
+      {
+        "number": 1017,
+        "title": "hacer run-tst prints an output-list header that comes after a '!'",
+        "project": "spine"
       },
       {
         "number": 935,
@@ -504,29 +515,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        1042,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 1023,
-        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 930,
         "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
@@ -586,6 +580,39 @@
         "blocking": [],
         "project": "foundation",
         "rank": 1,
+        "lane": "feature",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1043,
+        "title": "Mission Control: a failed scenario file with no failed test (a hook inside a describe) reads as the suite error, suiteError tolerates null assertionResults, and the Flow doc says so (PR #1042 follow-up)",
+        "labels": [
+          "agent-ready",
+          "risk:1",
+          "project:mission-control"
+        ],
+        "blocking": [],
+        "project": "mission-control",
+        "rank": 14,
+        "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1017,
+        "title": "hacer run-tst prints an output-list header that comes after a '!'",
+        "labels": [
+          "bug",
+          "project:spine",
+          "agent-ready",
+          "risk:1",
+          "bot-filed",
+          "fidelity"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
         "lane": "feature",
         "pickable": true,
         "reason": null
@@ -2218,23 +2245,6 @@
         "reason": "blocked:#993"
       },
       {
-        "number": 1017,
-        "title": "hacer run-tst prints an output-list header that comes after a '!'",
-        "labels": [
-          "bug",
-          "project:spine",
-          "risk:1",
-          "bot-filed",
-          "fidelity"
-        ],
-        "blocking": [],
-        "project": "spine",
-        "rank": 7,
-        "lane": "feature",
-        "pickable": false,
-        "reason": "unshaped"
-      },
-      {
         "number": 1018,
         "title": "Test engine: a .cmp header is never graded, and a short .cmp passes (PR #1016 follow-up)",
         "labels": [
@@ -2252,18 +2262,19 @@
         "reason": "unshaped"
       },
       {
-        "number": 1024,
-        "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
+        "number": 1023,
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
         "labels": [
+          "project:harness",
           "agent-ready",
           "in-progress",
           "risk:1",
-          "project:mission-control"
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "mission-control",
-        "rank": 14,
-        "lane": "process",
+        "project": "foundation",
+        "rank": 1,
+        "lane": "feature",
         "pickable": false,
         "reason": "claimed"
       },
@@ -2317,8 +2328,19 @@
       }
     ],
     "byProject": {
+      "upkeep": [
+        930,
+        935,
+        936,
+        939,
+        945,
+        946,
+        1009,
+        1010,
+        229,
+        256
+      ],
       "foundation": [
-        1023,
         1026,
         1034,
         151,
@@ -2339,19 +2361,8 @@
         719,
         722,
         728,
-        742
-      ],
-      "upkeep": [
-        930,
-        935,
-        936,
-        939,
-        945,
-        946,
-        1009,
-        1010,
-        229,
-        256
+        742,
+        1023
       ],
       "harness": [
         257,
@@ -2381,7 +2392,13 @@
         1039,
         1040
       ],
+      "mission-control": [
+        1043,
+        509,
+        584
+      ],
       "spine": [
+        1017,
         165,
         167,
         169,
@@ -2394,7 +2411,6 @@
         177,
         235,
         236,
-        1017,
         1018
       ],
       "core": [
@@ -2452,11 +2468,6 @@
         502,
         569
       ],
-      "mission-control": [
-        509,
-        584,
-        1024
-      ],
       "unfiled": [
         572
       ],
@@ -2471,24 +2482,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 1042,
-        "title": "chore(mission-control): a scenario suite that fails to run reads as metrics partial (#1024)",
-        "url": "https://github.com/mezivillager/hacer/pull/1042",
-        "author": "mezivillager",
-        "labels": [
-          "risk:1",
-          "project:mission-control"
-        ],
-        "headRefName": "fix/1024-suite-error",
-        "isDraft": false,
-        "createdAt": "2026-10-29T20:13:34Z",
-        "mergedAt": null,
-        "closes": [
-          1024
-        ],
-        "verdicts": []
-      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2613,6 +2606,32 @@
       }
     ],
     "merged": [
+      {
+        "number": 1042,
+        "title": "chore(mission-control): a scenario suite that fails to run reads as metrics partial (#1024)",
+        "url": "https://github.com/mezivillager/hacer/pull/1042",
+        "author": "mezivillager",
+        "labels": [
+          "risk:1",
+          "project:mission-control"
+        ],
+        "headRefName": "fix/1024-suite-error",
+        "isDraft": false,
+        "createdAt": "2026-10-29T20:13:34Z",
+        "mergedAt": "2026-10-29T20:35:00Z",
+        "closes": [
+          1024
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Sonnet 5.5 (claude-sonnet-5-5)",
+            "at": "2026-10-29T20:29:45Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1042#issuecomment-6507606599"
+          }
+        ]
+      },
       {
         "number": 1041,
         "title": "docs(harness): retro 2026-10-29",
@@ -4160,33 +4179,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/899#issuecomment-6330823627"
           }
         ]
-      },
-      {
-        "number": 897,
-        "title": "docs(harness): the queue-up rule names its three risk:2 exceptions",
-        "url": "https://github.com/mezivillager/hacer/pull/897",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "project:harness",
-          "risk:2"
-        ],
-        "headRefName": "docs/893-risk2-queue-up",
-        "isDraft": false,
-        "createdAt": "2026-10-22T01:39:59Z",
-        "mergedAt": "2026-10-22T01:53:59Z",
-        "closes": [
-          893
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T01:53:02Z",
-            "url": "https://github.com/mezivillager/hacer/pull/897#issuecomment-6330774679"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4201,10 +4193,36 @@
   "claims": {
     "items": [
       {
+        "number": 1023,
+        "ref": "refs/heads/claim/1023",
+        "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
+        "state": "OPEN",
+        "title": "pr-hygiene refactor rule: see block comments, and count a cross-file move only once (PR #1020 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1023",
+        "labels": [
+          "project:harness",
+          "agent-ready",
+          "in-progress",
+          "risk:1",
+          "project:foundation"
+        ],
+        "onClosedIssue": false,
+        "claim": {
+          "claimedBy": "claude-local",
+          "intent": "building",
+          "session": "2026-10-29-hacer-loop-to-90",
+          "branch": "fix/1023-refactor-rule-gaps",
+          "handoff": "none",
+          "author": "mezivillager",
+          "at": "2026-10-29T20:31:33Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1023#issuecomment-6507641527"
+        }
+      },
+      {
         "number": 1024,
         "ref": "refs/heads/claim/1024",
         "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Mission Control: a scenario suite that fails to load reads as an error, not as no runner (PR #1022 follow-up)",
         "url": "https://github.com/mezivillager/hacer/issues/1024",
         "labels": [
@@ -4213,7 +4231,7 @@
           "risk:1",
           "project:mission-control"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4303,7 +4321,7 @@
         }
       }
     ],
-    "onClosedIssues": 0
+    "onClosedIssues": 1
   },
   "cloudLane": {
     "items": [
@@ -6337,7 +6355,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 39
+        "merges": 38
       },
       {
         "date": "2026-10-23",
@@ -6349,20 +6367,20 @@
       },
       {
         "date": "2026-10-29",
-        "merges": 3
+        "merges": 4
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T20:17:54.904Z",
-      "merged": 118,
+      "since": "2026-10-15T20:35:56.470Z",
+      "merged": 119,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 104,
+        "of": 105,
         "prs": [
           753,
           774,
@@ -6371,8 +6389,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 68,
-          "withVerdict": 68,
+          "merged": 69,
+          "withVerdict": 69,
           "without": []
         },
         "nonCode": {
@@ -11599,7 +11617,7 @@
       },
       {
         "date": "2026-10-29",
-        "at": "2026-10-29T20:16:55.213Z",
+        "at": "2026-10-29T20:17:54.904Z",
         "byProject": {
           "foundation": [
             1023,
@@ -11759,11 +11777,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "5356cb1bb1ddc16f1dc2bbb260b566f7a2e5f91e",
+        "sha": "624b0cee82d2b45e1e03e60d9420389a726d394f",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40947511235/job/123706641509",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40950321532/job/123716408738",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12077,52 +12095,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-22T23:18:19Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39870624860/job/120143842868",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1042,
-        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T20:13:47Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40947108762/job/123705265419",
-        "line": "HYGIENE: PASS reviewable=21 test=37 excluded=0 files=2 issue=#1024 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 21,
-          "test": 37,
-          "excluded": 0,
-          "files": 2,
-          "issue": "#1024",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1042,
-        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T20:13:49Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40947109086/job/123705265336",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 1042,
-        "sha": "852d95933831f3388e05f4f3b93f94c59b708257",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T20:16:58Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40947107849/job/123705263028",
         "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
