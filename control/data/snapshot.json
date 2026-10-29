@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T22:00:53.901Z",
+  "generatedAt": "2026-10-29T22:06:20.889Z",
   "head": {
-    "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
-    "date": "2026-10-30T00:59:54+03:00",
-    "subject": "fix(spec): refuse non-finite hint coordinates where hints enter"
+    "sha": "a208bf7535ed5dd6927324f1bd2b73363170b172",
+    "date": "2026-10-30T01:05:43+03:00",
+    "subject": "fix(testing): grade a .cmp's column count and header as the reference does (#1018)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T22:00:53.901Z",
+      "fetchedAt": "2026-10-29T22:06:20.889Z",
       "status": "ok"
     }
   },
@@ -81,15 +81,15 @@
         "slug": "foundation",
         "epicNumber": 318,
         "open": 22,
-        "ready": 3,
-        "inProgress": 0,
+        "ready": 2,
+        "inProgress": 1,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 3,
         "filedElsewhere": [],
         "next": {
-          "number": 1034,
-          "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)"
+          "number": 1047,
+          "title": "pr-hygiene refactor rule: an assertion wrapped in a new comment pair passes, a commented expect on a live line counts, and an expect( inside a string counts (PR #1044 follow-up)"
         },
         "title": "Foundation audit: is the codebase structured for the autonomous loop? Measured audit, prioritized refactorings, fitness functions",
         "subIssues": {
@@ -129,7 +129,7 @@
         "lane": "feature",
         "slug": "surfaces",
         "epicNumber": 142,
-        "open": 4,
+        "open": 5,
         "ready": 0,
         "inProgress": 0,
         "needsHuman": 0,
@@ -219,8 +219,8 @@
         "slug": "spine",
         "epicNumber": 139,
         "open": 14,
-        "ready": 1,
-        "inProgress": 1,
+        "ready": 2,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
         "agentReady": 2,
@@ -231,9 +231,9 @@
         },
         "title": "Epic: spine — nand2tetris alignment 0.5 → 0.7",
         "subIssues": {
-          "completed": 12,
-          "percentCompleted": 46,
-          "total": 26
+          "completed": 13,
+          "percentCompleted": 48,
+          "total": 27
         }
       },
       {
@@ -412,11 +412,6 @@
     ],
     "next": [
       {
-        "number": 1034,
-        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
-        "project": "foundation"
-      },
-      {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
         "project": "harness"
@@ -450,6 +445,11 @@
         "number": 949,
         "title": "`ready` and `next` print `shape due:` for a foundation or spine slot with nothing pickable, and `ha-next` dispatches a shaper",
         "project": "harness"
+      },
+      {
+        "number": 1055,
+        "title": "Test engine: a bare internal-bus name is cut at its real width, and a .cmp with only a header is graded (PR #1048 follow-up)",
+        "project": "spine"
       },
       {
         "number": 939,
@@ -530,28 +530,12 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        1048,
         514
       ]
     }
   },
   "tasks": {
     "items": [
-      {
-        "number": 1034,
-        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
-        "labels": [
-          "agent-ready",
-          "risk:1",
-          "project:foundation"
-        ],
-        "blocking": [],
-        "project": "foundation",
-        "rank": 1,
-        "lane": "feature",
-        "pickable": true,
-        "reason": null
-      },
       {
         "number": 257,
         "title": "Independent QA agent for critical PRs: qa-brief.md, runs the changed flow in a browser against the PR preview, posts a QA verdict",
@@ -658,6 +642,22 @@
         "project": "harness",
         "rank": 2,
         "lane": "process",
+        "pickable": true,
+        "reason": null
+      },
+      {
+        "number": 1055,
+        "title": "Test engine: a bare internal-bus name is cut at its real width, and a .cmp with only a header is graded (PR #1048 follow-up)",
+        "labels": [
+          "project:spine",
+          "agent-ready",
+          "risk:1",
+          "fidelity"
+        ],
+        "blocking": [],
+        "project": "spine",
+        "rank": 7,
+        "lane": "feature",
         "pickable": true,
         "reason": null
       },
@@ -2336,20 +2336,17 @@
         "reason": "blocked:#993"
       },
       {
-        "number": 1018,
-        "title": "Test engine: a .cmp header is never graded, and a .cmp with the wrong column count passes (PR #1016 follow-up)",
+        "number": 1034,
+        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
         "labels": [
-          "bug",
-          "project:spine",
           "agent-ready",
           "in-progress",
           "risk:1",
-          "bot-filed",
-          "fidelity"
+          "project:foundation"
         ],
         "blocking": [],
-        "project": "spine",
-        "rank": 7,
+        "project": "foundation",
+        "rank": 1,
         "lane": "feature",
         "pickable": false,
         "reason": "claimed"
@@ -2401,33 +2398,23 @@
         "lane": "process",
         "pickable": false,
         "reason": "claimed"
+      },
+      {
+        "number": 1056,
+        "title": "Test Lab: a .cmp header failure shows the engine's row −1 instead of the header line (PR #1048 follow-up)",
+        "labels": [
+          "project:surfaces",
+          "risk:2"
+        ],
+        "blocking": [],
+        "project": "surfaces",
+        "rank": 3,
+        "lane": "feature",
+        "pickable": false,
+        "reason": "unshaped"
       }
     ],
     "byProject": {
-      "foundation": [
-        1034,
-        1047,
-        1054,
-        151,
-        184,
-        325,
-        380,
-        381,
-        382,
-        383,
-        384,
-        385,
-        386,
-        389,
-        395,
-        400,
-        462,
-        506,
-        719,
-        722,
-        728,
-        742
-      ],
       "harness": [
         257,
         949,
@@ -2460,6 +2447,30 @@
         1039,
         1040
       ],
+      "foundation": [
+        1047,
+        1054,
+        151,
+        184,
+        325,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        389,
+        395,
+        400,
+        462,
+        506,
+        719,
+        722,
+        728,
+        742,
+        1034
+      ],
       "mission-control": [
         1043,
         509,
@@ -2467,6 +2478,7 @@
       ],
       "spine": [
         1046,
+        1055,
         165,
         167,
         169,
@@ -2478,8 +2490,7 @@
         176,
         177,
         235,
-        236,
-        1018
+        236
       ],
       "upkeep": [
         936,
@@ -2516,7 +2527,8 @@
         206,
         207,
         209,
-        214
+        214,
+        1056
       ],
       "3d": [
         215,
@@ -2562,32 +2574,6 @@
   },
   "prs": {
     "open": [
-      {
-        "number": 1048,
-        "title": "fix(testing): grade a .cmp's column count and header as the reference does",
-        "url": "https://github.com/mezivillager/hacer/pull/1048",
-        "author": "mezivillager",
-        "labels": [
-          "project:spine",
-          "risk:1"
-        ],
-        "headRefName": "fix/1018-cmp-header-and-columns",
-        "isDraft": false,
-        "createdAt": "2026-10-29T21:42:25Z",
-        "mergedAt": null,
-        "closes": [
-          1018
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus 5.5 (claude-opus-5-5), the tier the rule gives (VERIFIER-TIER: opus pr=1048, engine change)",
-            "at": "2026-10-29T21:59:45Z",
-            "url": "https://github.com/mezivillager/hacer/pull/1048#issuecomment-6509300224"
-          }
-        ]
-      },
       {
         "number": 1002,
         "title": "chore(deps): bump immer from 11.1.8 to 11.1.21",
@@ -2718,6 +2704,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1053",
         "author": "mezivillager",
         "labels": [
+          "released",
           "risk:1",
           "project:foundation"
         ],
@@ -2735,6 +2722,32 @@
             "model": "Opus 5.5 (claude-opus-5-5)",
             "at": "2026-10-29T21:58:30Z",
             "url": "https://github.com/mezivillager/hacer/pull/1053#issuecomment-6509279370"
+          }
+        ]
+      },
+      {
+        "number": 1048,
+        "title": "fix(testing): grade a .cmp's column count and header as the reference does",
+        "url": "https://github.com/mezivillager/hacer/pull/1048",
+        "author": "mezivillager",
+        "labels": [
+          "project:spine",
+          "risk:1"
+        ],
+        "headRefName": "fix/1018-cmp-header-and-columns",
+        "isDraft": false,
+        "createdAt": "2026-10-29T21:42:25Z",
+        "mergedAt": "2026-10-29T22:05:44Z",
+        "closes": [
+          1018
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "Opus 5.5 (claude-opus-5-5), the tier the rule gives (VERIFIER-TIER: opus pr=1048, engine change)",
+            "at": "2026-10-29T21:59:45Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1048#issuecomment-6509300224"
           }
         ]
       },
@@ -2771,6 +2784,7 @@
         "url": "https://github.com/mezivillager/hacer/pull/1044",
         "author": "mezivillager",
         "labels": [
+          "released",
           "project:harness",
           "risk:1",
           "project:foundation"
@@ -4261,34 +4275,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/908#issuecomment-6332280369"
           }
         ]
-      },
-      {
-        "number": 904,
-        "title": "test(core): pin the part lookup order and the 27 names only the web IDE has, ADR-0020 §1.11 rules 2, 4, 5 (#901)",
-        "url": "https://github.com/mezivillager/hacer/pull/904",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "test/901-lookup-order",
-        "isDraft": false,
-        "createdAt": "2026-10-22T03:02:00Z",
-        "mergedAt": "2026-10-22T03:13:34Z",
-        "closes": [
-          901
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T03:11:34Z",
-            "url": "https://github.com/mezivillager/hacer/pull/904#issuecomment-6331748076"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4306,7 +4292,7 @@
         "number": 1018,
         "ref": "refs/heads/claim/1018",
         "sha": "2146e43a4c51d8a5181b40921a317040cb020ffd",
-        "state": "OPEN",
+        "state": "CLOSED",
         "title": "Test engine: a .cmp header is never graded, and a .cmp with the wrong column count passes (PR #1016 follow-up)",
         "url": "https://github.com/mezivillager/hacer/issues/1018",
         "labels": [
@@ -4318,7 +4304,7 @@
           "bot-filed",
           "fidelity"
         ],
-        "onClosedIssue": false,
+        "onClosedIssue": true,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
@@ -4331,28 +4317,28 @@
         }
       },
       {
-        "number": 1026,
-        "ref": "refs/heads/claim/1026",
-        "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
-        "state": "CLOSED",
-        "title": "Hints: refuse non-finite coordinates where hints enter, and update the hint docstrings (PR #1025 follow-up)",
-        "url": "https://github.com/mezivillager/hacer/issues/1026",
+        "number": 1034,
+        "ref": "refs/heads/claim/1034",
+        "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
+        "state": "OPEN",
+        "title": "fromLegacyCircuit: the reuse's null rule and the wire rule share one has-a-place test (PR #1033 follow-up)",
+        "url": "https://github.com/mezivillager/hacer/issues/1034",
         "labels": [
           "agent-ready",
           "in-progress",
           "risk:1",
           "project:foundation"
         ],
-        "onClosedIssue": true,
+        "onClosedIssue": false,
         "claim": {
           "claimedBy": "claude-local",
           "intent": "building",
           "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "fix/1026-hint-non-finite",
+          "branch": "fix/1034-has-a-place",
           "handoff": "none",
           "author": "mezivillager",
-          "at": "2026-10-29T21:23:03Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1026#issuecomment-6508649467"
+          "at": "2026-10-29T22:02:51Z",
+          "url": "https://github.com/mezivillager/hacer/issues/1034#issuecomment-6509353909"
         }
       },
       {
@@ -5741,9 +5727,14 @@
     },
     "releases": [
       {
+        "tag": "v2.71.4",
+        "publishedAt": "2026-10-29T22:02:28Z",
+        "isLatest": true
+      },
+      {
         "tag": "v2.71.3",
         "publishedAt": "2026-10-29T21:17:56Z",
-        "isLatest": true
+        "isLatest": false
       },
       {
         "tag": "v2.71.2",
@@ -6524,7 +6515,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 35
+        "merges": 34
       },
       {
         "date": "2026-10-23",
@@ -6536,20 +6527,20 @@
       },
       {
         "date": "2026-10-29",
-        "merges": 7
+        "merges": 8
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T22:00:53.901Z",
-      "merged": 122,
+      "since": "2026-10-15T22:06:20.889Z",
+      "merged": 123,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 3,
-        "of": 108,
+        "of": 109,
         "prs": [
           753,
           774,
@@ -6558,8 +6549,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 72,
-          "withVerdict": 72,
+          "merged": 73,
+          "withVerdict": 73,
           "without": []
         },
         "nonCode": {
@@ -11945,11 +11936,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "7413059638ad6ac1fd3119f409ffa85156918f9b",
+        "sha": "a208bf7535ed5dd6927324f1bd2b73363170b172",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40962364197/job/123758187225",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40963160553/job/123760847657",
         "line": null,
         "verdict": null,
         "fields": {},
@@ -12263,52 +12254,6 @@
         "conclusion": "SUCCESS",
         "completedAt": "2026-10-22T23:18:19Z",
         "url": "https://github.com/mezivillager/hacer/actions/runs/39870624860/job/120143842868",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1048,
-        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
-        "check": "pr-hygiene",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T21:42:40Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40960040345/job/123750114408",
-        "line": "HYGIENE: PASS reviewable=95 test=58 excluded=0 files=7 issue=#1018 linked=fixes",
-        "verdict": "PASS",
-        "fields": {
-          "reviewable": 95,
-          "test": 58,
-          "excluded": 0,
-          "files": 7,
-          "issue": "#1018",
-          "linked": "fixes"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1048,
-        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T21:42:41Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40960039618/job/123750111889",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 1048,
-        "sha": "7edbf7747846c97d862a02b06275747d4e682e4b",
-        "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-29T21:45:53Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40960036300/job/123750096837",
         "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
         "verdict": "PASS",
         "fields": {
@@ -20662,6 +20607,13 @@
     "artefacts": [
       {
         "id": "#121",
+        "kind": "github",
+        "citedBy": [
+          "ADR-0005"
+        ]
+      },
+      {
+        "id": "#1018",
         "kind": "github",
         "citedBy": [
           "ADR-0005"
