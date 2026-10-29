@@ -69,12 +69,12 @@ const vectorFiles = (dir = path.join(ROOT, 'conformance', 'vectors')) => readdir
   .filter((entry) => entry.isFile()).map((entry) => path.relative(dir, path.join(entry.parentPath, entry.name)).split(path.sep).join('/'))
 
 const SCENARIOS = 'vitest run src/scenarios/drivers/core.test.ts --reporter=json'
-/** That run's report as vitest's JSON reporter prints it, one [title, status] per test of the file. */
-const scenarioReport = (tests) => ({
-  success: tests.every(([, status]) => status === 'passed'),
-  testResults: [{ name: 'src/scenarios/drivers/core.test.ts', status: tests.every(([, status]) => status === 'passed') ? 'passed' : 'failed',
-    assertionResults: tests.map(([title, status]) => ({ ancestorTitles: ['core scenario driver'], title, status })) }],
-})
+/** That run's report as vitest's JSON reporter prints it, one [title, status] per test of the file; `message` is the file's own error. */
+const scenarioReport = (tests, message = '') => {
+  const failed = message !== '' || tests.some(([, status]) => status === 'failed')
+  return { success: !failed, testResults: [{ name: 'src/scenarios/drivers/core.test.ts', status: failed ? 'failed' : 'passed', message,
+    assertionResults: tests.map(([title, status]) => ({ ancestorTitles: ['core scenario driver'], title, status })) }] }
+}
 /** A Project <n> scenario's title as vitest renders `$name: testChip passes`, its string `$name` quoted. */
 const scenario = (chip, status = 'passed', n = 1) => [`'project${n}/${chip}': testChip passes`, status]
 
@@ -778,6 +778,31 @@ describe('metrics.flow and metrics.conformance', () => {
     // A run that reports no project1/ test at all, while 01 has vectors, is no runner either: never 0 of 16.
     expect(conformanceOf([['keeps the recovered three-gate circuit', 'passed']])).toEqual(snapshot.metrics.conformance)
     expect(conformanceOf([])).toEqual(snapshot.metrics.conformance)
+  })
+
+  it('a scenario report with a failed suite and no tests marks metrics partial with the suite\'s error', () => {
+    // As vitest reports core.test.ts when the file throws while loading: exit 1, one failed file, no tests.
+    const snapshot = build({ scenarios: ok(SCENARIOS, scenarioReport([], 'boom')) })
+    expect(snapshot.metrics.conformance.runner).toBe(null)
+    expect(snapshot.freshness.metrics).toMatchObject({ fetchedAt: NOW, status: 'partial', error: 'scenarios: boom' })
+    expect(validateSnapshot(snapshot)).toEqual([])
+    // A hook that throws fails the file and skips every scenario: the same error, not "no runner yet".
+    const hook = build({ scenarios: ok(SCENARIOS, scenarioReport(PROJECT1.map((chip) => scenario(chip, 'skipped')), 'hook boom')) })
+    expect([hook.metrics.conformance.runner, hook.freshness.metrics.error]).toEqual([null, 'scenarios: hook boom'])
+    const silent = { success: false, testResults: [{ name: RUNNER, status: 'failed', message: '', assertionResults: [] }] }
+    expect(build({ scenarios: ok(SCENARIOS, silent) }).freshness.metrics).toMatchObject({ status: 'partial', error: 'scenarios: failed with no tests' })
+    // A failing scenario is a result, not a suite error.
+    const failing = build({ scenarios: ok(SCENARIOS, scenarioReport(PROJECT1.map((chip) => scenario(chip, chip === 'And' ? 'failed' : 'passed')))) })
+    expect([failing.metrics.conformance.runner, failing.freshness.metrics.status]).toEqual([{ source: RUNNER, passed: 15, of: 39 }, 'ok'])
+  })
+
+  it('a report whose scenarios are all skipped gives runner null', () => {
+    const none = conformanceOf([])
+    expect(conformanceOf(PROJECT1.map((chip) => scenario(chip, 'skipped')))).toEqual(none)
+    expect(conformanceOf([scenario('And', 'todo'), scenario('Or', 'pending')])).toEqual(none)
+    expect(none.runner).toBe(null)
+    // Beside a scenario that ran, a skipped one is not a pass.
+    expect(conformanceOf([scenario('And'), scenario('Or', 'skipped')], ['01/And.tst', '01/Or.tst']).runner).toEqual({ source: RUNNER, passed: 1, of: 2 })
   })
 
   it('metrics.conformance: only a "project<N>/<Chip>: testChip passes" title is a scenario', () => {
