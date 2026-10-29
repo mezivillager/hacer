@@ -108,6 +108,10 @@ export const VERIFIER_TIER_SENTENCE =
 const VERIFIER_TIER_AT_DISPATCH_SENTENCE =
   'Run `node scripts/backlog.mjs tier <pr>`, then dispatch the verifier on the model its `VERIFIER-TIER:` line names.'
 
+/** ADR-0018 Decision 2, as `ha-next` step 4 states it: only the judge or the owner waives the fidelity review. */
+const FIDELITY_NO_COORDINATOR_WAIVER_SENTENCE =
+  'No ruling by the coordinator waives this review; a waiver is the judge\'s (R889), as a `docs/harness/judge-inbox.md` entry, or the owner\'s.'
+
 /** Verifier rules stated verbatim in its brief and in its agent definition's body. */
 const VERIFIER_WORKTREE_SENTENCE =
   'Worktree from the PR head: `git fetch origin && git worktree add ../hacer-wt-verify-<pr> origin/<branch> && node scripts/wt-new.mjs scratch ../hacer-wt-verify-<pr>`, `rm -rf node_modules && pnpm install --frozen-lockfile`, Node 22.'
@@ -298,7 +302,13 @@ export const BRIEF_INVARIANTS = [
   },
   {
     file: '.claude/skills/ha-next/SKILL.md',
-    present: [{ id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] }],
+    present: [
+      { id: 'tier-at-dispatch', phrases: [VERIFIER_TIER_AT_DISPATCH_SENTENCE] },
+      {
+        id: 'no-coordinator-waiver-of-the-fidelity-review',
+        phrases: [FIDELITY_NO_COORDINATOR_WAIVER_SENTENCE],
+      },
+    ],
     absent: [
       {
         id: 'queue-up-agent-ready-only-at-risk-0-1',
