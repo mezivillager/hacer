@@ -43,6 +43,16 @@ describe('runCli', () => {
     expect(out.stdout).toBe('ERROR Xor: And.tst loads And.hdl, but Xor.hdl defines Xor\n')
   })
 
+  it("test passes a script whose load of another chip comes after a '!'", () => {
+    const files = {
+      'Not.hdl': project1HdlSources.Not,
+      'And.hdl': project1HdlSources.And,
+      'Not.tst': 'load Not.hdl, output-list in out; set in 0, eval, output! load And.hdl, set in 1, eval, output;',
+      'Not.cmp': '|in |out|\n| 0 | 1 |\n',
+    }
+    expect(runCli(vectorArgs('Not'), reader(files)).stdout).toBe('PASS Not 1/1 rows\n')
+  })
+
   it('reports a parse error with its file, line and column', () => {
     const out = runCli(vectorArgs('Xor'), reader({ 'Xor.hdl': 'CHIP Xor {\n  IN a b;' }))
     expect(out.exitCode).toBe(1)
