@@ -17,7 +17,7 @@ export type {
 } from './cmpParser'
 export { parseCmp, compareCmpRow } from './cmpParser'
 
-export { runTest } from './engine'
+export { commandsRun, runTest } from './engine'
 export { formatColumnValue } from './formatColumnValue'
 export type { RunTestOptions, OutputRow, TestFailure, TestResult } from './engine'
 export { chipTestError, loadChipTest, testChip } from './testChip'
