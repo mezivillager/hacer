@@ -56,6 +56,7 @@ const CORE_EXPORTS = [
   'getBuiltinChipRegistry',
   'getUserChipRegistry',
   'hdlChipDefinition',
+  'headerCell',
   'isBuiltinChip',
   'isCircuitChip',
   'isHDLChip',
