@@ -46,6 +46,17 @@ describe('a .cmp header is a label, not a key', () => {
   it('a correct HalfAdder passes the official HalfAdder.tst and .cmp', () => {
     expect(testChip(halfAdder, vector('HalfAdder.tst'), vector('HalfAdder.cmp'))).toEqual({ status: 'pass', chip: 'HalfAdder', rows: { passed: 4, expected: 4 }, failure: null, error: null })
   })
+
+  it('a relabelled .cmp header reports row 0', () => {
+    const relabelled = { path: 'HalfAdder.cmp', source: vector('HalfAdder.cmp').source.replace('|car|', '|cry|') }
+    expect(testChip(halfAdder, vector('HalfAdder.tst'), relabelled)).toEqual({
+      status: 'fail',
+      chip: 'HalfAdder',
+      rows: { passed: 0, expected: 4 },
+      failure: { row: 0, column: 'carry', expected: 'cry', actual: 'car' },
+      error: null,
+    })
+  })
 })
 
 describe('a Project 2 builtin is a part on the grading path, never the chip under test (#984)', () => {
