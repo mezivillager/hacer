@@ -60,8 +60,8 @@ async function archive() {
   return Promise.all(archiveDays(names, STARTED).map(async (name) => JSON.parse(await git('show', `origin/gh-pages:control/history/${name}`))))
 }
 
-/** The scenario file, run once under vitest's JSON reporter. Exit 1 with a report is failing scenarios, still a result;
- *  any other exit, or output that is not a report, fails this input. */
+/** The scenario file, run once under vitest's JSON reporter. Exit 1 with a report is still read: failing scenarios, or the
+ *  file's own failure, which collect.logic.mjs reports; any other exit, or output that is not a report, fails this input. */
 async function scenarioReport() {
   const run = await exec('pnpm', ['exec', 'vitest', 'run', SCENARIO_FILE, '--reporter=json'], OPTIONS)
     .catch((error) => { if (error.code === 1 && error.stdout) return error; throw error })

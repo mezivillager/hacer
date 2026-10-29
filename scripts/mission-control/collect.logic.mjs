@@ -219,14 +219,21 @@ export const SCENARIO_FILE = 'src/scenarios/drivers/core.test.ts'
 // vitest renders the string `$name` of `'$name: testChip passes'` quoted; the bare form counts too, nothing longer.
 const SCENARIO = /^('?)project(\d+)\/([^'\s:]+)\1: testChip passes$/
 
-/** Each scenario in a vitest JSON report: the vendored .tst it runs, as `<0N>/<Chip>.tst`, and whether it passed. */
+/** Each scenario that ran in a vitest JSON report: the vendored .tst it runs, as `<0N>/<Chip>.tst`, and whether it passed. */
 const scenariosOf = (report) => (report?.testResults ?? []).flatMap((file) => file.assertionResults ?? []).flatMap(({ title, status }) => {
   const [, , n, chip] = SCENARIO.exec(title ?? '') ?? []
-  return n ? [{ vector: `${n.padStart(2, '0')}/${chip}.tst`, passed: status === 'passed' }] : []
+  return n && (status === 'passed' || status === 'failed') ? [{ vector: `${n.padStart(2, '0')}/${chip}.tst`, passed: status === 'passed' }] : []
 })
 
+/** The scenario file's own failure (it did not load, or a hook threw) as `metrics`' caveat; a failing scenario is a result. */
+function suiteError({ scenarios }) {
+  const file = (scenarios?.testResults ?? []).find(({ status, message, assertionResults = [] }) =>
+    status === 'failed' && (message || assertionResults.length === 0))
+  return file ? `scenarios: ${file.message || 'failed with no tests'}` : null
+}
+
 /** The vendored nand2tetris projects (#539): each directory under conformance/vectors/, its files counted by extension,
- *  and, when the scenario report holds a scenario, how many of each project's .tst pass. Otherwise `runner` is null. */
+ *  and, when a scenario in the report ran, how many of each project's .tst pass. Otherwise `runner` is null. */
 function buildConformance(files, report) {
   const byProject = Object.groupBy(files.filter((file) => file.includes('/')), (file) => file.split('/')[0])
   const scenarios = scenariosOf(report)
@@ -312,7 +319,9 @@ const SECTIONS = {
   },
   adrs: { needs: ['adrs'], build: ({ adrs = [] }) => ({ items: adrs.flatMap(adrOf).sort((a, b) => a.number - b.number) }) },
   roadmap: { needs: ['roadmap'], build: buildRoadmap },
-  metrics: { needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'scenarios', 'archive'], build: buildMetrics },
+  metrics: {
+    needs: ['baseline'], optional: ['ratchetLog', 'releases', 'prsMerged', 'flowPrs', 'vectors', 'scenarios', 'archive'], caveat: suiteError, build: buildMetrics,
+  },
   checks: { needs: ['checkRuns'], build: buildChecks },
   lineage: {
     needs: ['lineage'],
