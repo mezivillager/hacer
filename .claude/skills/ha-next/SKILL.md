@@ -107,8 +107,9 @@ dispatching step 4, posted with the verdict heading and `Verified on: coordinato
 `src/simulation/**` (evaluator, HDL compiler, test engine, builtins, clocking), also dispatch a
 fresh-context `hacer-fidelity` agent with `docs/harness/fidelity-brief.md` and the PR number. Its
 comment is advisory unless it reports an oracle divergence (a `sev:critical` bug). Its proposals go
-to `docs/harness/fidelity-inbox.md`, which the inbox panel decides; it files no issues. After a qualifying merge,
-dispatch `docs/harness/routines/fidelity-digest.md` once.
+to `docs/harness/fidelity-inbox.md`, which the inbox panel decides; it files no issues. No ruling by the
+coordinator waives this review; a waiver is the judge's (R889), as a `docs/harness/judge-inbox.md` entry, or the
+owner's. After a qualifying merge, dispatch `docs/harness/routines/fidelity-digest.md` once.
 
 ## 5. Merge on green + PASS
 ```bash
