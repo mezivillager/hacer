@@ -34,7 +34,7 @@ const vector = (chip: string, hdl: string, project: Project = '01', script = chi
 })
 
 describe('compareOutputs', () => {
-  it('reports a disagreement as chip, line, expected, actual', () => {
+  it('reports a disagreement as script, line, expected, actual', () => {
     const reference = '|  in  | out  |\n|  0   |  1   |\n|  1   |  0   |\n'
     const hacer = '|  in  | out  |\n|  0   |  1   |\n|  1   |  1   |\n'
     const found = compareOutputs('Not', reference, hacer)
