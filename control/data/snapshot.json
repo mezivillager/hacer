@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-29T00:41:11.360Z",
+  "generatedAt": "2026-10-29T01:18:52.831Z",
   "head": {
     "sha": "e76c7da6ccaf5acdc35658b09b3c1a26dd947219",
     "date": "2026-10-24T03:55:33+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-29T00:41:11.360Z",
+      "fetchedAt": "2026-10-29T01:18:52.831Z",
       "status": "ok"
     }
   },
@@ -6241,15 +6241,15 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-15T00:41:11.360Z",
-      "merged": 140,
+      "since": "2026-10-15T01:18:52.831Z",
+      "merged": 138,
       "openToMergeHours": {
         "median": 0.3,
         "p90": 1.2
       },
       "blockedOnce": {
         "count": 7,
-        "of": 126,
+        "of": 124,
         "prs": [
           725,
           727,
@@ -6262,8 +6262,8 @@
       },
       "coverage": {
         "code": {
-          "merged": 92,
-          "withVerdict": 92,
+          "merged": 90,
+          "withVerdict": 90,
           "without": []
         },
         "nonCode": {
@@ -11337,6 +11337,160 @@
       {
         "date": "2026-10-28",
         "at": "2026-10-28T23:15:17.817Z",
+        "byProject": {
+          "mission-control": [
+            1024,
+            509,
+            584
+          ],
+          "spine": [
+            1029,
+            165,
+            167,
+            169,
+            170,
+            171,
+            172,
+            173,
+            174,
+            176,
+            177,
+            235,
+            236,
+            1017,
+            1018
+          ],
+          "foundation": [
+            1023,
+            1026,
+            1034,
+            151,
+            184,
+            325,
+            380,
+            381,
+            382,
+            383,
+            384,
+            385,
+            386,
+            389,
+            395,
+            400,
+            462,
+            506,
+            719,
+            722,
+            728,
+            742
+          ],
+          "upkeep": [
+            930,
+            935,
+            936,
+            939,
+            945,
+            946,
+            1009,
+            1010,
+            229,
+            256
+          ],
+          "harness": [
+            257,
+            949,
+            951,
+            955,
+            958,
+            965,
+            992,
+            1032,
+            154,
+            156,
+            270,
+            435,
+            436,
+            454,
+            500,
+            504,
+            505,
+            550,
+            607,
+            677,
+            870,
+            993,
+            994
+          ],
+          "core": [
+            179,
+            361,
+            390,
+            401,
+            405,
+            452,
+            620
+          ],
+          "verify": [
+            194,
+            197,
+            198,
+            200,
+            201,
+            202,
+            203,
+            289
+          ],
+          "surfaces": [
+            206,
+            207,
+            209,
+            214
+          ],
+          "3d": [
+            215,
+            216,
+            218,
+            219,
+            284
+          ],
+          "horizon": [
+            230,
+            231,
+            232,
+            233
+          ],
+          "pubdocs": [
+            261,
+            262,
+            263,
+            264,
+            265,
+            266,
+            275
+          ],
+          "bugs": [
+            311
+          ],
+          "lineage": [
+            470,
+            502,
+            569
+          ],
+          "unfiled": [
+            572
+          ],
+          "polish": [
+            802,
+            803,
+            804,
+            805,
+            879
+          ]
+        }
+      },
+      {
+        "date": "2026-10-29",
+        "at": "2026-10-29T00:41:11.360Z",
         "byProject": {
           "mission-control": [
             1024,
