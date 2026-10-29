@@ -3,7 +3,7 @@ import { deserializeCircuit, type DeserializedCircuit } from '../serialization/d
 import type { SerializedCircuit } from '../serialization/types'
 import { emptySidecar } from './sidecar'
 import { SPEC_SCHEMA_VERSION } from './types'
-import type { CircuitSpec, Hint, ImportNote, Net, Part, PartId, Port, Ref, Sidecar } from './types'
+import type { CircuitSpec, Hint, ImportNote, Net, NodeId, Part, PartId, Port, Ref, Sidecar } from './types'
 
 export interface LegacyImport {
   doc: CircuitSpec | null
@@ -64,8 +64,12 @@ function join(inputs: Value[][]): Value[] {
   const first = inputs.map((readings) => readings[0])
   return [place(first), ...inputs.flatMap((readings, i) => readings.slice(1).map((r) => place(first.map((v, k) => (k === i ? r : v)))))]
 }
-const hint = (at: { position: { x: number; y: number; z: number }; rotation: { y: number } }): Hint =>
-  ({ x: at.position.x, y: at.position.y, z: at.position.z, rotation: at.rotation.y, origin: 'user' })
+interface Placed { position: { x: number; y: number; z: number }; rotation: { y: number } }
+const AXES = ['x', 'y', 'z'] as const
+const hint = (at: Placed): Hint => ({ x: at.position.x, y: at.position.y, z: at.position.z, rotation: at.rotation.y, origin: 'user' })
+const placeable = ({ position }: Placed): boolean => AXES.every((axis) => Number.isFinite(position[axis]))
+const shown = (value: unknown): string => (value === undefined ? 'missing' : typeof value === 'number' ? String(value) : JSON.stringify(value))
+const whereAt = ({ position }: Placed): string => AXES.map((axis) => `${axis} ${shown(position[axis])}`).join(', ')
 
 /** A saved name camel-cased into `[A-Za-z][A-Za-z0-9]*`, then numbered from 2 until it is free. */
 function rename(raw: string, prefix: string, taken: Set<string>): { name: string; why: string } {
@@ -267,9 +271,13 @@ export function fromLegacyCircuit(saved: SerializedCircuit): LegacyImport {
   const outs = legacy.outputNodes.map((n) => port(n, 'output'))
   const parts: Part[] = legacy.gates.map((g, i) => ({ id: `p${i + 1}`, chip: g.chipName }))
   const partOf = new Map(legacy.gates.map((gate, index) => [gate.id, { gate, index, id: parts[index].id }]))
-  legacy.gates.forEach((g, i) => (sidecar.hints['3d'][parts[i].id] = hint(g)))
-  legacy.inputNodes.forEach((n, i) => (sidecar.hints['3d'][`in:${ins[i].name}`] = hint(n)))
-  legacy.outputNodes.forEach((n, i) => (sidecar.hints['3d'][`out:${outs[i].name}`] = hint(n)))
+  const addHint = (id: NodeId, at: Placed, what: string, on: { partId?: PartId; pin?: string }): void => {
+    if (placeable(at)) sidecar.hints['3d'][id] = hint(at)
+    else note('position-dropped', `${what} is at ${whereAt(at)}: a position needs three finite numbers, so it imports without a hint`, on)
+  }
+  legacy.gates.forEach((g, i) => addHint(parts[i].id, g, `The gate "${g.id}" (${parts[i].id})`, { partId: parts[i].id }))
+  legacy.inputNodes.forEach((n, i) => addHint(`in:${ins[i].name}`, n, `The input "${n.name}" (${n.id})`, { pin: ins[i].name }))
+  legacy.outputNodes.forEach((n, i) => addHint(`out:${outs[i].name}`, n, `The output "${n.name}" (${n.id})`, { pin: outs[i].name }))
 
   const resolve = tracer(legacy, ins, partOf)
 

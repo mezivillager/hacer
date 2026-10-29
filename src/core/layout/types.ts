@@ -17,11 +17,11 @@ export interface LayoutOptions {
 export interface LayoutInputs extends LayoutOptions {
   /** An earlier result on this surface: advisory, never a source of truth (ADR-0020 §2). */
   previous?: Placements
-  /** The sidecar's `hints[surface]`: a hinted node sits at its hint and is never moved. */
+  /** The sidecar's `hints[surface]`: a hinted node sits at its hint, rounded to the lattice's precision, and is never moved. */
   hints?: Partial<Record<NodeId, Hint>>
 }
 
-/** `layer` and `index` are the lattice cell the node occupies; a hinted node's is the cell nearest its hint. */
+/** `layer` and `index` are the lattice cell the node occupies; a hinted node's is the cell nearest its hint rounded to the lattice's precision. */
 export interface NodePlacement {
   x: number
   y: number
