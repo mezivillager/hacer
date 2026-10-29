@@ -836,8 +836,8 @@ function protectedPath({ files }) {
 
 const WITNESS = 'expect('
 const DISABLING_MARKERS = ['.skip(', '.only(', 'passWithNoTests']
-/** An `expect(` behind a comment marker checks nothing, so it neither counts nor offsets a removed one. */
-const COMMENTED = /^\s*(?:\/\/|\/\*|\*)/
+/** A line opening with `*` continues a comment the hunk may not show; it keeps none open, as a shell `*)` pattern starts so too. */
+const STAR_LINE = /^\s*\*/
 
 /** A file of tests by its name; e2e helpers, snapshots and fixtures are not. */
 const isWitnessFile = (p) => /\.(test|spec)\.[^/.]+$/.test(p) && classifyFile(p).kind === 'test'
@@ -849,6 +849,54 @@ function patchSides(patch) {
   const lines = patch.split('\n')
   const side = (mark) => lines.filter((line) => line.startsWith(mark)).map((line) => line.slice(1))
   return { added: side('+'), removed: side('-') }
+}
+
+/** A line's text outside comments, given whether a block comment is open at its start. */
+function stripComments(line, open) {
+  let comment = open
+  let carries = true
+  let code = ''
+  let i = 0
+  while (i < line.length) {
+    if (comment) {
+      const end = line.indexOf('*/', i)
+      if (end === -1) break
+      i = end + 2
+      comment = false
+    } else if (line.startsWith('//', i)) {
+      break
+    } else if (line.startsWith('/*', i)) {
+      comment = true
+      // Only an opener before any code stays open past its line: a `/*` inside a string or regex spanning lines must not.
+      carries = code.trim() === ''
+      i += 2
+    } else if (`'"\``.includes(line[i])) {
+      let j = i + 1
+      while (j < line.length && line[j] !== line[i]) j += line[j] === '\\' ? 2 : 1
+      code += line.slice(i, j + 1)
+      i = j + 1
+    } else {
+      code += line[i]
+      i += 1
+    }
+  }
+  return { code, open: comment && carries }
+}
+
+/** One side's (`+` or `-`) trimmed lines with an `expect(` outside comments; context lines carry a block comment across. */
+function assertionLines(patch, mark) {
+  const lines = []
+  let open = false
+  for (const line of patch.split('\n')) {
+    if (line.startsWith('@@')) open = false
+    if (!line.startsWith(mark) && !line.startsWith(' ')) continue
+    const text = line.slice(1)
+    const continued = !open && STAR_LINE.test(text)
+    const read = stripComments(text, open || continued)
+    open = read.open && !continued
+    if (line.startsWith(mark) && read.code.includes(WITNESS)) lines.push(text.trim())
+  }
+  return lines
 }
 
 /** `src/nodes/Foo.scene.test.tsx` → `src/nodes/Foo`: the directory and the name before the first dot. */
@@ -866,10 +914,14 @@ function wentWithSubject(test, files) {
  */
 export function testWitnessLoss(files) {
   const shown = files.flatMap((file) => (typeof file.patch === 'string' ? [{ file, ...patchSides(file.patch) }] : []))
-  const asserting = (lines) => lines.filter((line) => line.includes(WITNESS) && !COMMENTED.test(line)).map((line) => line.trim())
   const witnesses = shown
     .filter(({ file }) => isWitnessFile(file.filename))
-    .map(({ file, added, removed }) => ({ filename: file.filename, status: file.status, removed: asserting(removed), added: asserting(added) }))
+    .map(({ file }) => ({
+      filename: file.filename,
+      status: file.status,
+      removed: assertionLines(file.patch, '-'),
+      added: assertionLines(file.patch, '+'),
+    }))
   const weakened = witnesses
     .filter((w) => w.status !== 'removed')
     .map((w) => ({ filename: w.filename, removed: occurrences(w.removed, WITNESS), added: occurrences(w.added, WITNESS) }))
@@ -932,18 +984,27 @@ const take = (counts, line) => {
  */
 function assertionMoves(witnesses) {
   const spare = new Map(witnesses.map((w) => [w, tally(w.added)]))
+  const answered = new Map(witnesses.map((w) => [w, []]))
   const kept = witnesses
     .filter((w) => w.status !== 'removed')
     .map((w) => ({ w, lines: w.removed.filter((line) => !take(spare.get(w), line)) }))
-  return kept.map(({ w, lines }) => {
+  const split = kept.map(({ w, lines }) => {
     const moved = []
     const lost = []
     for (const line of lines) {
-      if (witnesses.some((other) => other !== w && take(spare.get(other), line))) moved.push(line)
-      else lost.push(line)
+      const to = witnesses.find((other) => other !== w && take(spare.get(other), line))
+      if (to) {
+        moved.push(line)
+        answered.get(to).push(line)
+      } else {
+        lost.push(line)
+      }
     }
-    const [removed, added, out] = [w.removed, w.added, moved].map((side) => occurrences(side, WITNESS))
-    return { filename: w.filename, removed, added, moved: out, net: removed - added - out, lost }
+    return { w, moved, lost }
+  })
+  return split.map(({ w, moved, lost }) => {
+    const [removed, added, out, received] = [w.removed, w.added, moved, answered.get(w)].map((side) => occurrences(side, WITNESS))
+    return { filename: w.filename, removed, added, moved: out, received, net: removed - (added - received) - out, lost }
   })
 }
 
@@ -957,8 +1018,9 @@ function refactorTests({ title, files }) {
   const code = (text) => `\`${text}\``
   const finding = (level, message) => ({ rule: 'refactor-tests', level, message: `refactor PR — ${message}` })
   const fails = [
-    ['existing tests lose assertions', moves.filter((m) => m.net > 0).map(({ filename, removed, added, moved, net }) =>
-      `${code(filename)} loses ${plural(net, '`expect(` call')} (${removed} removed, ${added} added, ${moved} moved to another test file)`)],
+    ['existing tests lose assertions', moves.filter((m) => m.net > 0).map(({ filename, removed, added, moved, received, net }) =>
+      `${code(filename)} loses ${plural(net, '`expect(` call')} (${removed} removed, ${added} added` +
+        `${received > 0 ? `, ${received} of them answering a move from another test file` : ''}, ${moved} moved to another test file)`)],
     ['test files removed, or renamed out of test naming, while their subject stays', removedTests.map(code)],
     ['test files the API sent without a patch, so their assertions cannot be counted', unshown.map(code)],
   ]
