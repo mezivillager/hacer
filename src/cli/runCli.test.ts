@@ -188,6 +188,15 @@ describe('runCli run-tst', () => {
     })
   })
 
+  it("run-tst prints no output-list header after a command that ends with '!'", () => {
+    const files = {
+      'Not.hdl': project1HdlSources.Not,
+      'Not.tst': 'load Not.hdl, output-list in out; set in 0, eval, output! output-list out; set in 1, eval, output;',
+    }
+    const out = runCli(['run-tst', 'Not.hdl', 'Not.tst'], reader(files))
+    expect(out).toEqual({ exitCode: 0, stdout: '|in |out|\n| 0 | 1 |\n', stderr: '' })
+  })
+
   it('exits 1 with the rows so far and the error on stderr when the script fails to run', () => {
     const broken = 'CHIP Xor {\n  IN a, b;\n  OUT out;\n  PARTS:\n  Nope(a=a, out=out);\n}'
     const out = runCli(['run-tst', 'Xor.hdl', 'Xor.tst'], reader({ 'Xor.hdl': broken }))
