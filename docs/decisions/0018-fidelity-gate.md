@@ -32,6 +32,13 @@ its own issue (#269), not here.
    from it, an ADR before its status becomes Accepted. A PR that changes semantics under
    `src/core/**` or `src/simulation/**` gets one before merge. The verdict is advisory except when
    it reports an oracle divergence, which is a `sev:critical` bug.
+   *Amended 2026-10-30 (#1057, R889), from the inbox panel's approval of HRN-023 on #935: a semantic
+   core PR's fidelity verdict before merge is not waived by a coordinator's ruling, and neither the
+   verifier's nor the builder's reference runs stand in for it. A waiver is the judge's, as a
+   `docs/harness/judge-inbox.md` entry (R889), or the owner's. This section covers the list `ha-next`
+   step 4 names (evaluator, HDL compiler, test engine, builtins, clocking); a change under
+   `src/core/**` or `src/simulation/**` to tests or docs only is outside it. An exception to this
+   section comes as an inbox entry with its evidence, never as a run's ruling.*
 3. **Shipped behaviour in a domain is conformance-tested against that domain's ground truth.**
    Today the ground truth is the official nand2tetris `.tst`/`.cmp` vectors run by
    `src/core/testing/`. A new domain (clocked logic in 0.6, the Hack computer in 0.7, anything
