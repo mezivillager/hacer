@@ -102,8 +102,10 @@ function walk(): Walk {
   }
 }
 
+/** A piece with a place: a source, or a 0 that names where it is read. A bus wire names the place of a 0 that has none. */
+const placed = (p: Piece): boolean => p.source !== null || Boolean(p.lost)
 /** A value a wire would change: an empty one reads as a 0 at a bus pin, and a 0 with no place takes the wire's source. */
-const changeable = (v: Value): boolean => v.length === 0 || v.some((p) => p.source === null && p.lost === undefined)
+const changeable = (v: Value): boolean => v.length === 0 || !v.every(placed)
 /** Every reading of each key, kept across walks; `met` is set when a key's readings meet a loop or a changeable value. */
 function everyReading(): { trace: Walk; met: boolean } {
   const kept = new Map<string, Value[] | null>()
@@ -238,7 +240,7 @@ export function tracer(legacy: DeserializedCircuit, ins: Port[], partOf: Parts, 
       const wires = into(bus, pinId)
       if (wires.length === 0) return [floating(1, pin)]
       const readings = wires.flatMap((w) => (bit < Math.min(w.width ?? 1, width) ? resolve(w.from, trace, bit, 1) : [[]]).map((v) =>
-        v.length === 0 ? floating(1, pin) : v.map((p) => (p.source || p.lost ? p : { ...p, lost: placeOf(w.from) }))))
+        v.length === 0 ? floating(1, pin) : v.map((p) => (placed(p) ? p : { ...p, lost: placeOf(w.from) }))))
       const selfLoop = (v: Value): boolean => v.some((p) => p.lost === self)
       return readings.some(selfLoop) && isDriven(bus, pinId, width, bit) ? readings.map((v) => (selfLoop(v) ? floating(1, pin) : v)) : readings
     })
