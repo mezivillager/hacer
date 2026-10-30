@@ -960,14 +960,17 @@ describe('the refactor rule (#942)', () => {
       patched('src/b.test.tsx', ["-  render(<p>don't</p>); expect(b).toBe(1); render(<p>won't</p>)"]),
       patched('src/c.test.ts', ["-  const re = /['\"]/; expect(c).toBe('z')"]),
       patched('src/d.test.ts', ['-  const re = /`/; expect(d).toBe(`z`)']),
+      patched('src/e.test.tsx', ["-  render(<p>the '90s</p>); expect(e).toBe('z')", "-  render(<p>'tis</p>); expect(e).toBe('z')"]),
     ]
+    const names = ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts', 'e.test.tsx']
     expect(testWitnessLoss(files).weakened).toEqual(
-      ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts'].map((name) => ({ filename: `src/${name}`, removed: 1, added: 0 })),
+      names.map((name) => ({ filename: `src/${name}`, removed: name === 'e.test.tsx' ? 2 : 1, added: 0 })),
     )
     const result = refactor(files)
     expect(result.verdict).toBe('FAIL')
     const failed = failures(result).join('\n')
-    for (const name of ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts']) {
+    expect(failed).toContain('`src/e.test.tsx` loses 2 `expect(` calls (2 removed, 0 added')
+    for (const name of names.slice(0, 4)) {
       expect(failed).toContain(`\`src/${name}\` loses 1 \`expect(\` call (1 removed, 0 added`)
     }
   })
