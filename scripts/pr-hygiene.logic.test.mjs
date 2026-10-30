@@ -896,6 +896,84 @@ describe('the refactor rule (#942)', () => {
     ]
     expect(levels(refactor(both))).toEqual(['warn'])
   })
+
+  it('an unchanged assertion wrapped in an added block comment counts as a lost witness', () => {
+    const files = [
+      patched('src/a.test.ts', ['+  /*', '   expect(a).toBe(1)', '+  */']),
+      patched('src/b.test.ts', ['-  /*', '   expect(b).toBe(2)', '-  */', '-  expect(b).toBe(2)']),
+      patched('src/c.test.ts', ['   /*', '   expect(c).toBe(3)', '   */', '   expect(d).toBe(4)', '+  expect(e).toBe(5)']),
+    ]
+    const loss = testWitnessLoss(files)
+    expect(loss.weakened).toEqual([{ filename: 'src/a.test.ts', removed: 1, added: 0 }])
+    expect(loss.witnesses.map(({ removed, added }) => ({ removed, added }))).toEqual([
+      { removed: ['expect(a).toBe(1)'], added: [] },
+      { removed: ['expect(b).toBe(2)'], added: ['expect(b).toBe(2)'] },
+      { removed: [], added: ['expect(e).toBe(5)'] },
+    ])
+    const result = refactor(files)
+    expect(result.verdict).toBe('FAIL')
+    expect(failures(result).join('\n')).toContain('`src/a.test.ts` loses 1 `expect(` call (1 removed, 0 added, 0 moved')
+    expect(warnings(result)).toHaveLength(1)
+    expect(warnings(result)[0]).toContain('`src/a.test.ts`: 1 assertion line removed')
+    expect(warnings(result)[0]).toContain('`expect(a).toBe(1)`')
+    expect(found(result).map((f) => f.message).join('\n')).not.toMatch(/[bc]\.test\.ts/)
+  })
+
+  it('a commented expect on a live line counts once', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(a).toBe(1)', '-  expect(b).toBe(2)', '+  expect(a).toBe(1) /* expect(b).toBe(2) */']),
+      patched('src/b.test.ts', ['-  expect(c).toBe(3)', '-  expect(d).toBe(4)', '+  expect(c).toBe(3) // expect(d).toBe(4)']),
+      patched('src/c.test.ts', ['-  expect(e).toBe(5) /* expect(f).toBe(6) */', '+  expect(e).toBe(5)']),
+      patched('src/d.test.ts', ['-  expect(g).toBe(7); expect(h).toBe(8) // expect(i)', '+  expect(g).toBe(7)', '+  expect(h).toBe(8)']),
+    ]
+    expect(testWitnessLoss(files).weakened).toEqual([
+      { filename: 'src/a.test.ts', removed: 2, added: 1 },
+      { filename: 'src/b.test.ts', removed: 2, added: 1 },
+    ])
+    const failed = failures(refactor(files)).join('\n')
+    expect(failed).toContain('`src/a.test.ts` loses 1 `expect(` call (2 removed, 1 added, 0 moved')
+    expect(failed).toContain('`src/b.test.ts` loses 1 `expect(` call (2 removed, 1 added, 0 moved')
+    expect(failed).not.toMatch(/[cd]\.test\.ts/)
+  })
+
+  it('an expect( inside a string literal is not a witness', () => {
+    const files = [
+      patched('src/a.test.ts', ['-  expect(a).toBe(1)', '+  const s = `expect(a).toBe(1)`']),
+      patched('src/b.test.ts', ['-  expect(b).toBe(2)', "+  log('expect(b).toBe(2)', \"expect(b)\")"]),
+      patched('src/c.test.ts', ["-  expect(c).toBe('expect(')", '+  expect(c).toBe(3)']),
+      patched('src/d.test.ts', ["-  it('says \\'expect(d)\\'', () => expect(d).toBe(4))", "+  it('says \\'expect(d)\\'', () => expect(d).toBe(5))"]),
+    ]
+    const loss = testWitnessLoss(files)
+    expect(loss.weakened).toEqual([
+      { filename: 'src/a.test.ts', removed: 1, added: 0 },
+      { filename: 'src/b.test.ts', removed: 1, added: 0 },
+    ])
+    expect(loss.witnesses.map((w) => w.added)).toEqual([[], [], ['expect(c).toBe(3)'], ["it('says \\'expect(d)\\'', () => expect(d).toBe(5))"]])
+    const failed = failures(refactor(files)).join('\n')
+    for (const name of ['a', 'b']) expect(failed).toContain(`\`src/${name}.test.ts\` loses 1 \`expect(\` call (1 removed, 0 added`)
+    expect(failed).not.toMatch(/[cd]\.test\.ts/)
+  })
+
+  it('a quote inside a regex literal or JSX text does not open a string', () => {
+    const files = [
+      patched('src/a.test.tsx', ["-const re = /'/; expect(a).toBe('z')"]),
+      patched('src/b.test.tsx', ["-  render(<p>don't</p>); expect(b).toBe(1); render(<p>won't</p>)"]),
+      patched('src/c.test.ts', ["-  const re = /['\"]/; expect(c).toBe('z')"]),
+      patched('src/d.test.ts', ['-  const re = /`/; expect(d).toBe(`z`)']),
+      patched('src/e.test.tsx', ["-  render(<p>the '90s</p>); expect(e).toBe('z')", "-  render(<p>'tis</p>); expect(e).toBe('z')"]),
+    ]
+    const names = ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts', 'e.test.tsx']
+    expect(testWitnessLoss(files).weakened).toEqual(
+      names.map((name) => ({ filename: `src/${name}`, removed: name === 'e.test.tsx' ? 2 : 1, added: 0 })),
+    )
+    const result = refactor(files)
+    expect(result.verdict).toBe('FAIL')
+    const failed = failures(result).join('\n')
+    expect(failed).toContain('`src/e.test.tsx` loses 2 `expect(` calls (2 removed, 0 added')
+    for (const name of names.slice(0, 4)) {
+      expect(failed).toContain(`\`src/${name}\` loses 1 \`expect(\` call (1 removed, 0 added`)
+    }
+  })
 })
 
 describe('nextPageUrl', () => {
