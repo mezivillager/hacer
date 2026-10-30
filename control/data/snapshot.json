@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T16:18:06.170Z",
+  "generatedAt": "2026-10-30T16:40:37.073Z",
   "head": {
-    "sha": "b7da593d7924c26931e35213aeca75e7f2a2cab7",
-    "date": "2026-10-30T16:11:36+03:00",
-    "subject": "docs(harness): record the fix-round change's ledger for #1078"
+    "sha": "d30e861f8b7f298d51a09122db4aed8b8f8544d7",
+    "date": "2026-10-30T19:39:39+03:00",
+    "subject": "docs(harness): record the test-placement change's ledger for #1080"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-30T16:18:06.170Z",
+      "fetchedAt": "2026-10-30T16:40:37.073Z",
       "status": "ok"
     }
   },
@@ -2426,17 +2426,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#1055"
-      },
-      {
-        "number": 1080,
-        "title": "ha-prompt-it: a red extends the test that already covers the behaviour",
-        "labels": [],
-        "blocking": [],
-        "project": null,
-        "rank": null,
-        "lane": null,
-        "pickable": false,
-        "reason": "unshaped"
       }
     ],
     "byProject": {
@@ -2586,8 +2575,7 @@
         569
       ],
       "unfiled": [
-        572,
-        1080
+        572
       ],
       "polish": [
         802,
@@ -2758,6 +2746,29 @@
       }
     ],
     "merged": [
+      {
+        "number": 1081,
+        "title": "docs(skills): ha-prompt-it — a red extends the test that already covers the behaviour (#1080)",
+        "url": "https://github.com/mezivillager/hacer/pull/1081",
+        "author": "mezivillager",
+        "labels": [],
+        "headRefName": "docs/1080-redundant-tests",
+        "isDraft": false,
+        "createdAt": "2026-10-30T16:36:30Z",
+        "mergedAt": "2026-10-30T16:39:39Z",
+        "closes": [
+          1080
+        ],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator (docs-only risk:0 exception; VERIFIER-TIER: sonnet pr=1081 because=none)",
+            "at": "2026-10-30T16:37:09Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1081#issuecomment-6528030162"
+          }
+        ]
+      },
       {
         "number": 1079,
         "title": "docs(skills): ha-prompt-it — fix rounds get fresh eyes on every fix wave (#1078)",
@@ -4296,33 +4307,6 @@
         "mergedAt": "2026-10-22T06:40:52Z",
         "closes": [],
         "verdicts": []
-      },
-      {
-        "number": 923,
-        "title": "test(conformance): differential harness calls runCli and installs web-ide from its lockfile",
-        "url": "https://github.com/mezivillager/hacer/pull/923",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "test/918-harness-runtst",
-        "isDraft": false,
-        "createdAt": "2026-10-22T05:55:31Z",
-        "mergedAt": "2026-10-22T06:07:52Z",
-        "closes": [
-          918
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Sonnet (claude-sonnet-5-5)",
-            "at": "2026-10-22T06:06:59Z",
-            "url": "https://github.com/mezivillager/hacer/pull/923#issuecomment-6334008170"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4632,9 +4616,9 @@
         "file": "docs/harness/sessions/2026-10-30.md",
         "date": "2026-10-30",
         "kind": "record",
-        "title": "Session record — 2026-10-30: fix rounds get fresh eyes on every fix wave (#1078)",
+        "title": "Session record — 2026-10-30: fix rounds get fresh eyes on every fix wave (#1078); a red extends the test that already covers the behaviour (#1080)",
         "status": null,
-        "lines": 91
+        "lines": 179
       }
     ]
   },
@@ -6458,7 +6442,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 25
+        "merges": 24
       },
       {
         "date": "2026-10-23",
@@ -6474,20 +6458,20 @@
       },
       {
         "date": "2026-10-30",
-        "merges": 4
+        "merges": 5
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-16T16:18:06.170Z",
-      "merged": 112,
+      "since": "2026-10-16T16:40:37.073Z",
+      "merged": 113,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 0.5
       },
       "blockedOnce": {
         "count": 1,
-        "of": 108,
+        "of": 109,
         "prs": [
           959
         ]
@@ -6499,8 +6483,8 @@
           "without": []
         },
         "nonCode": {
-          "merged": 44,
-          "withVerdict": 40,
+          "merged": 45,
+          "withVerdict": 41,
           "without": [
             913,
             925,
@@ -11876,7 +11860,7 @@
       },
       {
         "date": "2026-10-30",
-        "at": "2026-10-30T15:16:26.572Z",
+        "at": "2026-10-30T16:18:06.170Z",
         "byProject": {
           "foundation": [
             1054,
@@ -12042,17 +12026,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "b7da593d7924c26931e35213aeca75e7f2a2cab7",
+        "sha": "d30e861f8b7f298d51a09122db4aed8b8f8544d7",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-30T13:15:21Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/41061195803/job/124081074391",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/41091909132/job/124187682074",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
