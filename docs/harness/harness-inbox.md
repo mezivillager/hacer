@@ -1320,7 +1320,7 @@ A failing command in `.husky/pre-commit` stops the commit, whichever directory `
 
 ### HRN-031 · The ledger took no row in two runs whose records name eleven things that went wrong or slow: ledger §3 at close, or make §3 the ledger's input
 - **Date:** 2026-10-29 · **Kind:** policy · **Retro run:** 2026-10-29
-- **Status:** proposed
+- **Status:** filed (#1073)
 - **Evidence:**
   - The rule: `ha-next` §6 (`.claude/skills/ha-next/SKILL.md`), "Retro — one line, every time",
     appends to `docs/harness/ledger.md` "if anything in the loop was wrong or slow". README § *How this
@@ -1354,7 +1354,7 @@ A failing command in `.husky/pre-commit` stops the commit, whichever directory `
 
 ### HRN-032 · `inbox.mjs set` writes a status with its note, as the file's grammar already reads it, so a decided status needs no hand edit
 - **Date:** 2026-10-29 · **Kind:** mechanise · **Retro run:** 2026-10-29
-- **Status:** proposed
+- **Status:** filed (#1074)
 - **Evidence:**
   - Three records name it, five entries in all: 2026-10-22's second part §3 (JDG-001 and JDG-003), its
     third part §3 (JDG-005) and 2026-10-23 §3 (JDG-011 and JDG-012). Each line was set bare and its note
@@ -1392,7 +1392,7 @@ note after a `filed`, `declined` or `deferred` form, so no decided status needs 
 
 ### HRN-033 · The differential grades too: HACER's grading of each vector must pass or fail as the reference does, so a divergence such as D1 fails `test:differential`
 - **Date:** 2026-10-29 · **Kind:** mechanise · **Retro run:** 2026-10-29
-- **Status:** proposed
+- **Status:** filed (#1075)
 - **Evidence:**
   - D1 (#1006, `sev:critical`): `runTest` bound each `.cmp` column by header text in
     `src/core/testing/engine.ts` from `babd3e36` (2026-06-20) on, so a correct HalfAdder failed its
