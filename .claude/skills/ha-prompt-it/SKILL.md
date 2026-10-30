@@ -289,7 +289,8 @@ every success criterion has a red in a milestone's hoisted contract; milestone
 boundaries and their `review:` marks follow Phase 3's triggers; the shared fixtures,
 helpers and interfaces a later milestone builds on are built first and named; names
 follow the naming rule; waves' `Writes` sets are disjoint; the verbatim test code
-tests what the plan builds. Findings return MUST-FIX / SHOULD-FIX / NIT and are
+tests what the plan builds and places each red as *where a test goes* says.
+Findings return MUST-FIX / SHOULD-FIX / NIT and are
 ruled like the spec review's, in the ledger.
 
 **The plan is not a gate.** Present its path and the review verdict in one line and
@@ -426,14 +427,21 @@ milestone, rule and proceed, ledger every ruling, never stall.
   red, the one test file holding its red→green pair; a file outside that set needs a ruling first —
   a module outside the branch's Writes is Mezi's call or a ledgered PR-body follow-up, a shared
   module for a duplication fix a coordinator ruling. Measured facts: the finding texts and the
-  delta-read's Part A/B results so far. Parallel with: nothing else on that branch. Tests: the
-  narrowest test per finding — run failing first, its failing line ledgered before the fix hunk; the
-  test freeze stands, so the pair is a new or a named test, never an adapted assertion — and the
-  full suite once per wave. Report: per finding, the hunk; its closing evidence — a red→green pair
-  for a behavioural change, the suite staying green for a behaviour-preserving reuse, simplification
-  or efficiency fix or a prose cut (a removal), a captured baseline (the exact command and its
-  before/after output) for a prose correction (a PR-body claim, CHANGELOG or docs content); the
-  files touched with the finding id that justifies each; the one-line explanation that goes in the
+  delta-read's Part A/B results so far. Parallel with: nothing else on that branch.
+  Tests: the narrowest red per finding that needs one — the search of *where a test
+  goes* first, then tighten, a row of a named table, a sibling in the named file, or a
+  new file, in that order, additive only, never an adapted assertion; the coordinator
+  names the table or file when the finding makes it plain,
+  the implementer's search otherwise; run failing first, its failing line ledgered before the
+  fix hunk — and the full suite once per wave. Report: per finding, the hunk; its closing
+  evidence — a red→green pair for a behavioural change, the suite staying green for a
+  behaviour-preserving reuse, simplification or efficiency fix or a prose cut (a removal), a
+  captured baseline (the exact command and its before/after output) for a prose correction (a
+  PR-body claim, CHANGELOG or docs content); the files touched with the finding id that
+  justifies each; the step *where a test goes* took, the nearest existing test (`path::name` in
+  pytest, `path > describe > name` in JS) and why the earlier steps did not fit — more than one
+  new node (a row counts) for one finding said and justified, and each consolidation candidate
+  named as a pair; the one-line explanation that goes in the
   PR body, and in the commit message until the squash, never a new comment block; the
   `diff-size-report` output; and the callers of every changed symbol (`command grep -r` or
   `rg -uuu`, never the bare grep shim; gitnexus `impact` only when its index is at the wave's HEAD)
@@ -445,13 +453,16 @@ milestone, rule and proceed, ledger every ruling, never stall.
   whenever the wave touched it, the rulings (a decision the ledger records is reported as a
   decision, never as a defect), and the branch read-only for knock-on effects; Writes: its report,
   `<run folder>/fix-round-<r>-wave-<n>-review.md`, and a progress file beside it; Measured facts:
-  base and head, Part C's output, each closed finding's red failing line or baseline, the suite's
-  summary line; Parallel with: nothing on that branch; Tests: `none — read-only`; Report: seven
-  headings in this order — **Mapping** (every hunk to a finding id or unmapped; each claimed finding
-  closed or not), **Callers** (the implementer's list verified), then the whole-branch review's
+  base and head, Part C's output, each closed finding's red failing line or baseline, the
+  wave's `steps`, the suite's summary line; Parallel with: nothing on that branch; Tests:
+  `none — read-only`; Report: seven headings in this order — **Mapping** (every hunk to a
+  finding id or unmapped; each claimed finding closed or not), **Callers** (the
+  implementer's list verified), then the whole-branch review's
   passes **2 Proof**, **3 Correctness and safety** (including whether a fix claimed as
-  behaviour-preserving preserved behaviour), **4 Reuse** (logic the wave wrote twice — across its
-  lanes or against the repository — and any helper it re-implemented), **8 Comment rule**, **9 Size
+  behaviour-preserving preserved behaviour), **4 Reuse** (logic the wave wrote twice — across
+  its lanes or against the repository — any helper it re-implemented, and a test that
+  re-proves a condition an existing test proves or re-creates an arrangement it already
+  builds, as the whole-branch pass 4 reads), **8 Comment rule**, **9 Size
   check**; every finding with blocker / should-fix / nit and a cause tag (below). **Bound: 30
   minutes** — a background wait started at dispatch ends when the report file appears or at 1,800 s;
   on expiry the reviewer is stopped and dispatched once more with its Read cut to the diff file, the
@@ -492,7 +503,9 @@ milestone, rule and proceed, ledger every ruling, never stall.
   and how: converged, cap, bound). Each fix wave records one line with the labelled fields `round`,
   `wave`, `findings`, `commits` (old→new when amended), `size` (Part C), `suite` (which ran; summary
   line), `reds` (each fix red's failing line — the red commit stays), `partA` (addressed / open),
-  `partB` (unmapped hunks; the caller list read), `delta` (verdict; wall time). Round numbers
+  `partB` (unmapped hunks; the caller list read), `delta` (verdict; wall time), `steps` (per red:
+  its finding id, tighten / row / sibling / new file, its nearest existing test, and `candidate`
+  when the Report named a consolidation pair). Round numbers
   continue across sessions on the same PR: a later session reads the count from the ledger. **Every
   finding raised after the first fix wave, by any seat, bot or human, carries one cause tag in its
   ruling:** `fix:<round.wave>`, `pre-existing`, `new-scope` or `unknown`; the fix-introduced share
@@ -500,7 +513,13 @@ milestone, rule and proceed, ledger every ruling, never stall.
   times; a round after the last Gate 3 puts its verdict line in the push or merge report and in the
   PR body. The seat is re-judged after two measured runs — total delta-review minutes per run,
   rounds per run, the fix-introduced share, and whether any delta review returned a blocker — in the
-  coordinator's re-judge note, kept outside this repository.
+  coordinator's re-judge note, kept outside this repository. The test-placement rule is
+  re-judged after two runs with at least 30 fix-wave test nodes in the repository the
+  coordinator's re-judge note names, after their PRs merge, by a
+  data lane running the saved duplication scan over the wave diffs and commits the ledger
+  records — new nodes (functions and rows), the duplicate labels with a permitted sibling
+  labelled as such, whether a row was available at the parent, lines — in the coordinator's
+  test-placement re-judge note, kept outside this repository.
 - **`/simplify` only on request, never as a stage.** The built-in skill's four cleanup agents are
   passes 4 to 7 without the contract, and its session applies their edits itself: no verification
   pass, no test run, no record outside the chat; with no upstream it diffs against `main`, and with
@@ -520,11 +539,12 @@ milestone, rule and proceed, ledger every ruling, never stall.
 - **The whole-branch review — one fresh reviewer, nine named passes, one report shape.** Never
   skipped, in any tier; it runs before the definition of done, after `/simplify` when that was
   asked for. Dispatch ONE `subagent_type: reviewer` with a six-slot brief: Read names the contract
-  (the spec), the rulings, the plan where the tier has one, the ledger's parked findings and
-  deferrals, and in Standard each milestone no reviewer saw and the plan review's findings ruled
-  no-change or deferred, with the rulings; Measured facts carry base and head, the
-  `diff-size-report <base> <head>` output, every red's recorded failing line and the result file
-  of the last full suite run before dispatch (after `/simplify` when it ran); Writes is the report
+  (the spec), the rulings, the plan where the tier has one, the ledger's parked findings
+  and deferrals, the fix waves' ledger lines, and in Standard each milestone no reviewer
+  saw and the plan review's findings ruled no-change or deferred, with the rulings;
+  Measured facts carry base and head, the `diff-size-report <base> <head>` output, every
+  red's recorded failing line and step and the result file of the last full suite run
+  before dispatch (after `/simplify` when it ran); Writes is the report
   file the brief names, only; Tests is `none — read-only` (the suite runs to a file before the
   review, never inside it). The reviewer reads the rulings before the diff, so a decision the
   ledger records is reported as a decision, never as a defect: that is the one thing a reviewer
@@ -546,7 +566,23 @@ milestone, rule and proceed, ledger every ruling, never stall.
      rollback; backward compatibility; and the named risk classes of Phase 3's trigger (ii).
   4. **Reuse** — new code that re-implements what the repository already has (grep the shared and
      utility modules and the files adjacent to the change), naming the existing helper to call
-     instead; and logic the branch wrote twice across its lanes.
+     instead; and logic the branch wrote twice across its lanes. Also a test that re-creates
+     an arrangement a reachable fixture, helper or existing test already builds, or re-proves
+     a condition an existing test proves for the same function (same given, when and then) —
+     naming the row, the tightening or the sibling it should have been: data-only differences
+     are a row, a different *then* is a legitimate sibling, an old *then* plus more is
+     subsumption, and the new test is trimmed to the new condition while the old test stays.
+     A consolidation candidate an implementer's Report or the ledger's `steps` names, or one
+     this pass finds, is a duplication finding; its fix, in the next wave, is a
+     behaviour-preserving reuse fix — the shared arrangement extracted into a helper beside
+     the tests, or the same-shape siblings folded into one table, every input, expected value
+     and assertion kept and each folded test's name kept as its row id — proved by the suite
+     staying green and limited to tests this branch added; a test on the base is folded only
+     under a ruling. Checks, all read-only: the test-pathspec `git diff --numstat` with each
+     non-zero-deletion file read hunk by hunk against the freeze's list, the freeze's
+     added-line grep, nodes per finding from the fix waves' ledger lines (in this
+     brief's Read), the search of *where a test goes* per new test, normalized test-name
+     collisions in a file; a clone detector may seed the pass but never is the check.
   5. **Simplification** — redundant or derivable state, copy-paste with slight variation, deep
      nesting, dead code left behind; naming the simpler form that does the same job.
   6. **Efficiency** — redundant computation or repeated I/O, independent operations run
@@ -590,17 +626,77 @@ milestone, rule and proceed, ledger every ruling, never stall.
   before the implementation is a vacuous passer: name it at the gate with the
   reason; never alter it to manufacture a red. Present every red with its failure
   line AND the single change that flips it — a red whose flipping change you
-  cannot name in one clause is testing something the plan does not build. Red
+  cannot name in one clause is testing something the plan does not build. Present
+  with each red the step *where a test goes* took — tighten, row, sibling with its
+  nearest existing test, or new file with the reason; a red whose arrangement
+  re-creates one a reachable fixture builds is rewritten before the gate, and a
+  vacuous passer that duplicates an existing passing test is dropped, not kept. Red
   tests follow the comment rule too — no docstring unless the setup is unusual, no
   provenance comment; a red's provenance goes in its commit message, and its failing
-  line in the ledger. The red commit stays through the final squash (Phase 4) as its own
+  line and its step under *where a test goes* (`candidate` included) in the ledger. The
+  red commit stays through the final squash (Phase 4) as its own
   `test(<scope>):` commit, because the verifier checks it out. A fix wave's red is committed alone
   as `test(<scope>):` before the fix, because the verifier checks the commit sequence.
+- **Where a test goes.** Before writing a red for a condition — a milestone's or a fix wave's —
+  search the tests, fixtures and helpers the module's test file can reach (its own file, the
+  class or `describe` that groups the function, the `conftest` or setup files, the shared test
+  helpers) for the changed symbol and for the distinctive expected value (`command grep -n` or
+  `rg -uuu`). An existing test that runs, passes and already proves the condition is reported
+  with its node id — in a fix wave as the finding's premise contradicted, for the coordinator's
+  no-change ruling; for a milestone red at Gate 2 as already proven — and no red is written.
+  Otherwise take the first step that fits, additive only: **(0)
+  tighten** — an assertion added to the existing test that claims this condition but asserts it only
+  partly; **(1) row** — a row appended to an existing `parametrize` / `test.each` / `it.each` /
+  `test.for` / `describe.each` table that exercises the same function with the same setup and the same
+  assertion shape, with a behaviour-named id (the `ids=` list or title template grows with the rows;
+  when several tables cover the function, the one whose rows share the new row's setup; a row whose
+  expected value an existing row contradicts is a decision change, not a row); **(2) sibling** — a new
+  test in the module's existing test file, in the class or `describe` that groups the function: a new
+  condition of an existing function, a new function of the module, or a same-shape case whose neighbours
+  are not parametrized (never converted while writing a red); built from the fixtures and helpers the
+  file can reach — when the nearest test builds its arrangement inline, the sibling copies it and the
+  Report names the pair as a consolidation candidate; a case whose arrangement no reachable fixture
+  builds gets a new fixture or helper beside its test, in the same file; a sibling that covers several
+  data cases is one table where the file already has tables, and separate tests where it has none
+  (a first table in such a file is a style change the Report names); **(3) new file** — only when
+  the unit has no test file at the right level, or the fixture the case needs is autouse or
+  module-wide and would have to behave differently (it is not edited without a coordinator ruling:
+  a new fixture beside it, or a new file, with the reason). One condition, one test, usually one
+  red per finding (a red that tightens one test and adds a condition is two steps, labelled
+  separately), at the lowest level that can fail; names and ids describe the behaviour, never the
+  finding. Readability wins inside a test body (duplicate a line before you obscure a scenario;
+  share mechanics through fixtures and helpers); the rule never forces a test that asserts two
+  conditions, and never a forced row. The plan's verbatim test code follows this bullet, and a
+  brief that asks for or checks a red carries this bullet's text, not only its name.
 - **Test files freeze at green.** An assertion that looks wrong is a BLOCKED
   report, not an adaptation. A ruling that changes the contract lands as an honest
   red→green pair in working history and in the ledger; the final squash folds it into
   the logical commit it changes, announced in the ledger — never a quiet rewrite that
-  pretends the contract always said so.
+  pretends the contract always said so. A red — a milestone's or a fix wave's —
+  extends existing tests additively (where a test goes, above) and never changes
+  what an existing test demands beyond step (0)'s added assertion — no edited
+  assertion, input or expected value, matcher, row or id, shared fixture, helper
+  or parametrized body other than that assertion, and no deleted row or test —
+  except under a ruling below. Every removed line in a test file (test modules,
+  `conftest` and fixture files, test helpers) is either the trailing comma,
+  closing bracket, import or formatter re-flow of an appended row, or covered by a
+  ruling: a decision change, a prose cut, a duplication fix or the consolidation
+  pass — its fold or its shared-helper refactor (no input, expected value or
+  assertion changed; the suite stays green), or a finding about the test itself
+  landing as its own red→green pair; anything else is a freeze violation. An added
+  line that changes what an existing test sees or runs counts the same way: a
+  skip, xfail or only marker, an autouse or shadowing fixture, a `setUp` or
+  `beforeEach` line, a line inside a parametrized or `describe.each` body other
+  than step (0)'s assertion. Editing a shared fixture is a coordinator ruling (the
+  fix brief's shared-module rule), proved by every consumer staying green. Cheap
+  check: `git diff --numstat <base> <head> -- <test pathspecs>`, each pathspec
+  starting with `*` (Python: `'*test_*.py' '*_test.py' '*conftest.py'`; JS:
+  `'*.test.*' '*.spec.*' '*__tests__/*' '*__mocks__/*'` plus the repo's setup
+  files); every file with a non-zero second column is read hunk by hunk against
+  that list; and `git diff -U0 <base> <head> -- <test pathspecs> | command grep
+  -nE '^\+.*(skip|xfail|\.only|autouse|fixture|setUp|beforeEach|parametrize|\.each)'`
+  lists the added lines that can change what an existing test sees, each read
+  against the same list.
 - **Red-first is the mutation; a flip is the rare exception.** A test committed
   failing and turned green by the implementation has already proved it can
   fail: it is never mutation-checked again — not at the gate, not in a review,
@@ -708,7 +804,9 @@ repository already has — into one implementation. It reads the lanes' diffs si
 by side: a clone detector finds only near-literal copies (measured 2026-09-28:
 `npx jscpd` missed a planted duplicate whose only change was a renamed parameter),
 so it may seed the pass but never is the check. It refactors production code and
-shared test helpers, never an assertion, and runs the milestone's suite before and
+shared test helpers, and folds same-shape tests this branch added into tables, each
+folded test's name kept as its row id, never changing an assertion, an input or an
+expected value, and runs the milestone's suite before and
 after (to a file, summary line). A pass that finds nothing says what it compared. A fix wave's lanes
 never trigger this pass: the fix-diff delta reviewer reads their integrated diff (Phase 3, fix
 rounds).
@@ -852,7 +950,8 @@ suite=store` is the useful move.
   the behaviour shipped (the behaviours, and the production lines each needs); what could be removed or simplified
   without losing quality or robustness (each cut with file:line and a line estimate); above 400 changed lines or 20
   files in a category, whether it splits into separately reviewable changes; at a test:prod ratio above 2:1, the
-  properties proven more than once; after the diff has grown more than 50% since the first review, a consolidation
+  properties proven more than once, citing pass 4's duplication findings by id rather than raising them again;
+  after the diff has grown more than 50% since the first review, a consolidation
   pass. Prose above 25% of added production lines or 15% of added test lines, in a category with at least 200 added
   lines, is a should-fix "justify or cut"; a prompt may override the defaults with a reason (hacer's tree
   measures 15–17% production prose and 8% in tests, 2026-10-01). When `diff-size-report` is absent, report
