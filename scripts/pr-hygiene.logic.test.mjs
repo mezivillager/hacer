@@ -953,6 +953,24 @@ describe('the refactor rule (#942)', () => {
     for (const name of ['a', 'b']) expect(failed).toContain(`\`src/${name}.test.ts\` loses 1 \`expect(\` call (1 removed, 0 added`)
     expect(failed).not.toMatch(/[cd]\.test\.ts/)
   })
+
+  it('a quote inside a regex literal or JSX text does not open a string', () => {
+    const files = [
+      patched('src/a.test.tsx', ["-const re = /'/; expect(a).toBe('z')"]),
+      patched('src/b.test.tsx', ["-  render(<p>don't</p>); expect(b).toBe(1); render(<p>won't</p>)"]),
+      patched('src/c.test.ts', ["-  const re = /['\"]/; expect(c).toBe('z')"]),
+      patched('src/d.test.ts', ['-  const re = /`/; expect(d).toBe(`z`)']),
+    ]
+    expect(testWitnessLoss(files).weakened).toEqual(
+      ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts'].map((name) => ({ filename: `src/${name}`, removed: 1, added: 0 })),
+    )
+    const result = refactor(files)
+    expect(result.verdict).toBe('FAIL')
+    const failed = failures(result).join('\n')
+    for (const name of ['a.test.tsx', 'b.test.tsx', 'c.test.ts', 'd.test.ts']) {
+      expect(failed).toContain(`\`src/${name}\` loses 1 \`expect(\` call (1 removed, 0 added`)
+    }
+  })
 })
 
 describe('nextPageUrl', () => {
