@@ -420,7 +420,7 @@ reused.
 
 ### JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?
 - **Date:** 2026-10-29 · **Kind:** decision · **Raised by:** #1017; PR #1019's verifier (issue comment 6375716270 on PR #1019)
-- **Status:** proposed
+- **Status:** filed (#1017), A widened to the load-after-! check by the judge on #1039
 - **Evidence:**
   - Why the judge: `.claude/skills/ha-next/SKILL.md` (§ "Queue up", last paragraph) says "a `bot-filed` issue becomes `agent-ready` only by the owner, or by the judge when the loop measured its defect". `docs/harness/issue-form.md` (Security boundary) and `docs/harness/judge-brief.md` §3 item 5 say the same, and JDG-001 settled that the judge alone labels such an issue.
   - Loop-measured, not outside content: the #1007 builder found it checking every consumer of `TSTScript.commands` (#1017's Notes), and PR #1019's Opus verifier reproduced it against the reference. Author `mezivillager`, created 2026-10-23T21:48Z (`gh issue view 1017`).
@@ -442,7 +442,7 @@ reused.
 
 ### JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?
 - **Date:** 2026-10-29 · **Kind:** decision · **Raised by:** #1018; PR #1016's verifier (issue comment 6375412078 on PR #1016)
-- **Status:** proposed
+- **Status:** filed (#1018), A amended by the judge on #1040
 - **Evidence:**
   - Why the judge: `.claude/skills/ha-next/SKILL.md` (§ "Queue up", last paragraph) says "a `bot-filed` issue becomes `agent-ready` only by the owner, or by the judge when the loop measured its defect". `docs/harness/issue-form.md` (Security boundary) and `docs/harness/judge-brief.md` §3 item 5 say the same; JDG-001 settled that the judge alone labels such an issue.
   - Loop-measured, not outside content: PR #1016's Opus verifier found both behaviours (its nit 1 and its edge case "a `.cmp` with 3 columns for a 4-entry output list"); #1018 says it is a "follow-up of PR #1016's verifier". Author `mezivillager`, created 2026-10-23T21:49Z, three seconds after #1016 merged (`gh issue view 1018`, `gh pr view 1016`).
@@ -464,7 +464,7 @@ reused.
 
 ### JDG-015 · Is #1058 (`hacer test`, `testChip` and the MCP `hacer_hdl` tool grade `.cmp` cells as guessed numbers, not as text; `bot-filed`, `sev:high`, `risk:1`) made `agent-ready`?
 - **Date:** 2026-10-30 · **Kind:** decision · **Raised by:** #1058; the ADR-0018 §5 fidelity digest of 2026-10-30 (verdict comments 6510320161 on PR #1016 and 6510323057 on PR #1048)
-- **Status:** proposed
+- **Status:** filed (#1058), A amended by the judge on #1067; blocked by #1055
 - **Evidence:**
   - Why the judge: `.claude/skills/ha-next/SKILL.md` (§ "Queue up", last paragraph) says "a `bot-filed` issue becomes `agent-ready` only by the owner, or by the judge when the loop measured its defect". `docs/harness/issue-form.md` (Security boundary) and `docs/harness/judge-brief.md` §3 item 5 say the same; JDG-001 settled that the judge alone labels such an issue.
   - Loop-measured, not outside content: the digest's fidelity reviewer was checking #1016's and #1048's claim to grade "as the reference does". It ran six shapes through `runCli` and `testChip` under tsx against the web IDE at the differential pin `52611ad` (both verdict comments, "Ground truth"). Author `mezivillager`, created 2026-10-29T22:42:56Z, five minutes before the two verdict comments (`gh issue view 1058`).
