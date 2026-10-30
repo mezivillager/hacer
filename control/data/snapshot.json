@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T00:42:14.423Z",
+  "generatedAt": "2026-10-30T00:55:13.840Z",
   "head": {
-    "sha": "d05c72879df35c0fd0d51d215937d0f16b8c51f0",
-    "date": "2026-10-30T03:01:16+03:00",
-    "subject": "docs(harness): a reproduced defect a PR introduces blocks unless a nit shows it is out of contract"
+    "sha": "1777e75d7246d2816c96b67885b169b7d316311a",
+    "date": "2026-10-30T03:54:12+03:00",
+    "subject": "docs(harness): move the session record to its own PR (400-line budget)"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-30T00:42:14.423Z",
+      "fetchedAt": "2026-10-30T00:55:13.840Z",
       "status": "ok"
     }
   },
@@ -545,7 +545,6 @@
     "dormant": {
       "dormant": false,
       "agentPrs": [
-        1076,
         1071,
         514
       ]
@@ -2716,22 +2715,6 @@
   "prs": {
     "open": [
       {
-        "number": 1076,
-        "title": "docs(harness): the loop to 90% records",
-        "url": "https://github.com/mezivillager/hacer/pull/1076",
-        "author": "mezivillager",
-        "labels": [
-          "project:harness",
-          "risk:0"
-        ],
-        "headRefName": "docs/2026-10-29-run-records",
-        "isDraft": false,
-        "createdAt": "2026-10-30T00:40:52Z",
-        "mergedAt": null,
-        "closes": [],
-        "verdicts": []
-      },
-      {
         "number": 1071,
         "title": "chore(pr-hygiene): read context lines and count only live expect( in the refactor rule",
         "url": "https://github.com/mezivillager/hacer/pull/1071",
@@ -2889,6 +2872,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 1076,
+        "title": "docs(harness): the loop to 90% rulings and statuses",
+        "url": "https://github.com/mezivillager/hacer/pull/1076",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-29-run-records",
+        "isDraft": false,
+        "createdAt": "2026-10-30T00:40:52Z",
+        "mergedAt": "2026-10-30T00:54:13Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-30T00:53:38Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1076#issuecomment-6512195645"
+          }
+        ]
+      },
       {
         "number": 1070,
         "title": "docs(harness): a reproduced defect a PR introduces blocks unless a nit shows it is out of contract",
@@ -4436,34 +4443,6 @@
             "model": "Opus (claude-opus-5-5)",
             "at": "2026-10-22T06:02:07Z",
             "url": "https://github.com/mezivillager/hacer/pull/921#issuecomment-6333940290"
-          }
-        ]
-      },
-      {
-        "number": 920,
-        "title": "fix(core): refuse a BUILTIN body whose pins differ from the builtin it names (#919)",
-        "url": "https://github.com/mezivillager/hacer/pull/920",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "fidelity",
-          "project:foundation"
-        ],
-        "headRefName": "fix/919-builtin-pins",
-        "isDraft": false,
-        "createdAt": "2026-10-22T05:21:20Z",
-        "mergedAt": "2026-10-22T05:32:30Z",
-        "closes": [
-          919
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T05:31:35Z",
-            "url": "https://github.com/mezivillager/hacer/pull/920#issuecomment-6333529993"
           }
         ]
       }
@@ -6767,7 +6746,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 28
+        "merges": 27
       },
       {
         "date": "2026-10-23",
@@ -6783,13 +6762,13 @@
       },
       {
         "date": "2026-10-30",
-        "merges": 1
+        "merges": 2
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-16T00:42:14.423Z",
-      "merged": 121,
+      "since": "2026-10-16T00:55:13.840Z",
+      "merged": 119,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 0.6
@@ -6804,20 +6783,18 @@
       },
       "coverage": {
         "code": {
-          "merged": 73,
-          "withVerdict": 73,
+          "merged": 72,
+          "withVerdict": 72,
           "without": []
         },
         "nonCode": {
-          "merged": 48,
-          "withVerdict": 37,
+          "merged": 47,
+          "withVerdict": 38,
           "without": [
             755,
             758,
             760,
-            761,
             762,
-            763,
             775,
             913,
             925,
@@ -12193,7 +12170,7 @@
       },
       {
         "date": "2026-10-30",
-        "at": "2026-10-30T00:02:04.213Z",
+        "at": "2026-10-30T00:42:14.423Z",
         "byProject": {
           "foundation": [
             1054,
@@ -12233,6 +12210,9 @@
             1051,
             1052,
             1072,
+            1073,
+            1074,
+            1075,
             154,
             156,
             270,
@@ -12362,17 +12342,14 @@
     "items": [
       {
         "pr": null,
-        "sha": "d05c72879df35c0fd0d51d215937d0f16b8c51f0",
+        "sha": "1777e75d7246d2816c96b67885b169b7d316311a",
         "check": "ci",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-30T00:04:33Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40976980492/job/123807319126",
-        "line": "LAYER-RATCHET: 68 known violations (36 production edges · 25 test-only · 7 cycle edges in 3 cycles) · 6 engine globals suppressed · 0 new",
-        "verdict": "PASS",
-        "fields": {
-          "known": 68,
-          "new": 0
-        },
+        "conclusion": null,
+        "completedAt": null,
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40982577710/job/123825906463",
+        "line": null,
+        "verdict": null,
+        "fields": {},
         "disagrees": false
       },
       {
@@ -12735,48 +12712,6 @@
           "known": 68,
           "new": 0
         },
-        "disagrees": false
-      },
-      {
-        "pr": 1076,
-        "sha": "ba6ce1d28ae3c98a7e214ce3de848eb4685990bd",
-        "check": "pr-hygiene",
-        "conclusion": "FAILURE",
-        "completedAt": "2026-10-30T00:41:08Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40981209619/job/123821447045",
-        "line": "HYGIENE: FAIL reviewable=411 test=0 excluded=0 files=5 issue=docs-only",
-        "verdict": "FAIL",
-        "fields": {
-          "reviewable": 411,
-          "test": 0,
-          "excluded": 0,
-          "files": 5,
-          "issue": "docs-only"
-        },
-        "disagrees": false
-      },
-      {
-        "pr": 1076,
-        "sha": "ba6ce1d28ae3c98a7e214ce3de848eb4685990bd",
-        "check": "browser-qa",
-        "conclusion": "SUCCESS",
-        "completedAt": "2026-10-30T00:41:07Z",
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40981209825/job/123821446290",
-        "line": "BROWSER-QA: skipped (no critical paths)",
-        "verdict": "SKIPPED",
-        "fields": {},
-        "disagrees": false
-      },
-      {
-        "pr": 1076,
-        "sha": "ba6ce1d28ae3c98a7e214ce3de848eb4685990bd",
-        "check": "ci",
-        "conclusion": null,
-        "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40981207514/job/123821438948",
-        "line": null,
-        "verdict": null,
-        "fields": {},
         "disagrees": false
       }
     ]
@@ -19075,6 +19010,147 @@
         "amends": null,
         "assumes": null,
         "costIfWrong": "one batch panel decides four entries that per-entry panels would have weighed separately;"
+      },
+      {
+        "id": "R918",
+        "kind": "ruling",
+        "title": "the run stops at weekly 90% or at the weekly reset 2026-10-30T03:00Z, whichever comes first; no new chain at 88% or above, or after 01:15Z; the records start at 89% or by 02:15Z",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:12",
+        "buildsOn": [
+          "R906",
+          "R903"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the owner meant the loop to carry across the reset, and restarts it once; or a chain started"
+      },
+      {
+        "id": "R919",
+        "kind": "ruling",
+        "title": "repository work holds until the `ha/` workspace is back where it was in the owner's Documents folder; agents already in flight finish their step and push, no new chain starts into the moved copy, and nothing is moved, cloned or deleted by the loop",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:23",
+        "buildsOn": "none",
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the run idles for the rest of the budget the owner allotted; the alternative risked his"
+      },
+      {
+        "id": "R920",
+        "kind": "ruling",
+        "title": "\"delete any stale copies\" is done as a move to the Trash, never `rm`; stale means iCloud Drive's own copies of items that also exist in the restored Documents (`codelab`, `duro`) plus the two emptied holder folders named for the machine; the container's `docs` folder and the video file are left in place and named to the owner",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:37",
+        "buildsOn": [
+          "R919"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the owner empties the Trash himself, or tells me the two leftovers should go too."
+      },
+      {
+        "id": "R921",
+        "kind": "ruling",
+        "title": "supersedes R920's method: the loop moves nothing more out of iCloud Drive; the stale copies are deleted by the owner in Finder, or left",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:45",
+        "buildsOn": [
+          "R920"
+        ],
+        "amends": [
+          "R920"
+        ],
+        "assumes": null,
+        "costIfWrong": "1.3 GB of stale data sits in iCloud Drive until the owner deletes it; nothing is lost."
+      },
+      {
+        "id": "R922",
+        "kind": "ruling",
+        "title": "#1017 is taken in the free slot ahead of #930, the top pick, while the Grok seat is busy",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:56",
+        "buildsOn": [
+          "R844",
+          "R889"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the HRN-020..026 batch waits one review longer; the spine fix lands sooner."
+      },
+      {
+        "id": "R923",
+        "kind": "ruling",
+        "title": "PR #1045 (#1017) merges without a separate fidelity review",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:66",
+        "buildsOn": [
+          "R854"
+        ],
+        "amends": [
+          "R854"
+        ],
+        "assumes": null,
+        "costIfWrong": "a `!` script shape outside the seven cases prints or grades differently from the reference."
+      },
+      {
+        "id": "R924",
+        "kind": "ruling",
+        "title": "PR #1048 (#1018) merges without a separate fidelity review; its one new divergence is filed, not fixed in the PR",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:78",
+        "buildsOn": [
+          "R854"
+        ],
+        "amends": [
+          "R854"
+        ],
+        "assumes": null,
+        "costIfWrong": "a learner's script that outputs a long-named internal bus by its bare name fails at row 0"
+      },
+      {
+        "id": "R925",
+        "kind": "ruling",
+        "title": "from the panel's decision on #935 onward, this run waives no fidelity review; the §5 digest runs now over the nine waived PRs; R923 and R924 stand as made before the decision",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:95",
+        "buildsOn": [
+          "R854",
+          "R844"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "about 200k tokens for the digest, and one more serial review on any core PR before 03:00Z; if"
+      },
+      {
+        "id": "R926",
+        "kind": "ruling",
+        "title": "amends R918's time margins: no new chain after 00:45Z, the records start by 01:45Z, and the run hard-stops at 02:45Z with anything unfinished marked owed; the 90% line stands",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:108",
+        "buildsOn": [
+          "R918"
+        ],
+        "amends": [
+          "R918"
+        ],
+        "assumes": null,
+        "costIfWrong": "up to half an hour of the owner's budget goes unused before the reset; the alternative risks"
+      },
+      {
+        "id": "R927",
+        "kind": "ruling",
+        "title": "no new build chain after 00:00Z; the remaining slots before the close go to the two open verifications and, if a slot frees before 00:45Z, to the #1063 batch review (HRN-031..033) and the #1062 review (FID-037), whose panels need no fidelity reviewer",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:119",
+        "buildsOn": [
+          "R926"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "one more foundation fix lands next run instead of tonight; the panels' decisions on the retro's"
+      },
+      {
+        "id": "R928",
+        "kind": "ruling",
+        "title": "PR #1071 (#1047) stays open at the close after two BLOCKs; no third fix cycle tonight, and the next run resumes it with a tokenizer instead of quote heuristics",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:128",
+        "buildsOn": [
+          "R926"
+        ],
+        "amends": null,
+        "assumes": null,
+        "costIfWrong": "the refactor rule's three gaps stay open one more run; the PR's own tests and the twelve-PR"
       }
     ],
     "edges": [
@@ -19117,6 +19193,12 @@
         "kind": "amends",
         "anchor": "§4",
         "source": "docs/decisions/rulings/2026-10-22-hacer-judge.md:8"
+      },
+      {
+        "from": "R925",
+        "to": "ADR-0018",
+        "kind": "amends",
+        "source": "docs/decisions/0018-fidelity-gate.md:5"
       },
       {
         "from": "R769",
@@ -21037,6 +21119,108 @@
         "source": "docs/decisions/rulings/2026-10-23-hacer-loop-to-12.md:137"
       },
       {
+        "from": "R918",
+        "to": "R906",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:13"
+      },
+      {
+        "from": "R918",
+        "to": "R903",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:13"
+      },
+      {
+        "from": "R920",
+        "to": "R919",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:38"
+      },
+      {
+        "from": "R921",
+        "to": "R920",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:46"
+      },
+      {
+        "from": "R921",
+        "to": "R920",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:47"
+      },
+      {
+        "from": "R922",
+        "to": "R844",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:57"
+      },
+      {
+        "from": "R922",
+        "to": "R889",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:57"
+      },
+      {
+        "from": "R923",
+        "to": "R854",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:67"
+      },
+      {
+        "from": "R923",
+        "to": "R854",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:68"
+      },
+      {
+        "from": "R924",
+        "to": "R854",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:79"
+      },
+      {
+        "from": "R924",
+        "to": "R854",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:80"
+      },
+      {
+        "from": "R925",
+        "to": "R854",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:96"
+      },
+      {
+        "from": "R925",
+        "to": "R844",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:96"
+      },
+      {
+        "from": "R926",
+        "to": "R918",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:109"
+      },
+      {
+        "from": "R926",
+        "to": "R918",
+        "kind": "amends",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:110"
+      },
+      {
+        "from": "R927",
+        "to": "R926",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:120"
+      },
+      {
+        "from": "R928",
+        "to": "R926",
+        "kind": "builds-on",
+        "source": "docs/decisions/rulings/2026-10-29-hacer-loop-to-90.md:129"
+      },
+      {
         "from": "L046",
         "to": "R310",
         "kind": "introduced-by",
@@ -21133,7 +21317,8 @@
         "id": "#1018",
         "kind": "github",
         "citedBy": [
-          "ADR-0005"
+          "ADR-0005",
+          "R924"
         ]
       },
       {
@@ -21504,7 +21689,8 @@
         "id": "#1057",
         "kind": "github",
         "citedBy": [
-          "ADR-0018"
+          "ADR-0018",
+          "R925"
         ]
       },
       {
@@ -21514,7 +21700,8 @@
           "ADR-0018",
           "R885",
           "R886",
-          "R917"
+          "R917",
+          "R925"
         ]
       },
       {
@@ -25014,14 +25201,16 @@
         "id": "#956",
         "kind": "github",
         "citedBy": [
-          "R886"
+          "R886",
+          "R925"
         ]
       },
       {
         "id": "#957",
         "kind": "github",
         "citedBy": [
-          "R887"
+          "R887",
+          "R925"
         ]
       },
       {
@@ -25118,7 +25307,8 @@
         "id": "#987",
         "kind": "github",
         "citedBy": [
-          "R899"
+          "R899",
+          "R925"
         ]
       },
       {
@@ -25217,7 +25407,8 @@
         "kind": "github",
         "citedBy": [
           "R911",
-          "R912"
+          "R912",
+          "R925"
         ]
       },
       {
@@ -25231,7 +25422,8 @@
         "id": "#1019",
         "kind": "github",
         "citedBy": [
-          "R912"
+          "R912",
+          "R925"
         ]
       },
       {
@@ -25245,21 +25437,25 @@
         "id": "#1017",
         "kind": "github",
         "citedBy": [
-          "R912"
+          "R912",
+          "R922",
+          "R923"
         ]
       },
       {
         "id": "#1027",
         "kind": "github",
         "citedBy": [
-          "R913"
+          "R913",
+          "R925"
         ]
       },
       {
         "id": "#1028",
         "kind": "github",
         "citedBy": [
-          "R914"
+          "R914",
+          "R925"
         ]
       },
       {
@@ -25267,7 +25463,8 @@
         "kind": "github",
         "citedBy": [
           "R915",
-          "R917"
+          "R917",
+          "R922"
         ]
       },
       {
@@ -25335,6 +25532,86 @@
         "kind": "github",
         "citedBy": [
           "R917"
+        ]
+      },
+      {
+        "id": "#1024",
+        "kind": "github",
+        "citedBy": [
+          "R919"
+        ]
+      },
+      {
+        "id": "#1039",
+        "kind": "github",
+        "citedBy": [
+          "R922"
+        ]
+      },
+      {
+        "id": "#1040",
+        "kind": "github",
+        "citedBy": [
+          "R922",
+          "R924"
+        ]
+      },
+      {
+        "id": "#1045",
+        "kind": "github",
+        "citedBy": [
+          "R923",
+          "R925"
+        ]
+      },
+      {
+        "id": "#1048",
+        "kind": "github",
+        "citedBy": [
+          "R924",
+          "R925"
+        ]
+      },
+      {
+        "id": "#1063",
+        "kind": "github",
+        "citedBy": [
+          "R927"
+        ]
+      },
+      {
+        "id": "#1062",
+        "kind": "github",
+        "citedBy": [
+          "R927"
+        ]
+      },
+      {
+        "id": "#1055",
+        "kind": "github",
+        "citedBy": [
+          "R927"
+        ]
+      },
+      {
+        "id": "#1043",
+        "kind": "github",
+        "citedBy": [
+          "R927"
+        ]
+      },
+      {
+        "id": "#1071",
+        "kind": "github",
+        "citedBy": [
+          "R928"
+        ]
+      },
+      {
+        "id": "#1047",
+        "kind": "github",
+        "citedBy": [
+          "R928"
         ]
       },
       {
