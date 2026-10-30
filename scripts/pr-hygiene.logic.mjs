@@ -852,12 +852,8 @@ function patchSides(patch) {
   return { added: side('+'), removed: side('-') }
 }
 
-/** After one of these, or at the start of a line, a `/` opens a regex literal; after anything else it divides. */
-const REGEX_AFTER = '(,=:[!&|?{};'
-const opensRegex = (code) => {
-  const last = code.trimEnd().at(-1)
-  return last === undefined || REGEX_AFTER.includes(last)
-}
+/** Code that a string or regex literal can follow: a line's start, an operator, an opening bracket or a keyword. */
+const LITERAL_AFTER = /(?:^|=>|[(,=:[!&|?{};+\-*%<~^]|\b(?:return|typeof|case|in|of|await|yield|throw|else|void|delete))\s*$/
 
 /** Where a regex literal opened at `start` ends, past its closing `/`, or just past `start` when it does not close on the line. */
 function regexEnd(line, start) {
@@ -890,12 +886,12 @@ function stripComments(line, open) {
       // Only an opener before any code stays open past its line: a `/*` inside a string or regex spanning lines must not.
       carries = code.trim() === ''
       i += 2
-    } else if (line[i] === '/' && opensRegex(code)) {
+    } else if (line[i] === '/' && LITERAL_AFTER.test(code)) {
       const end = regexEnd(line, i)
       code += line.slice(i, end)
       i = end
-    } else if (`'"\``.includes(line[i]) && !/[\w/]/.test(line[i - 1] ?? '')) {
-      // A quote right after a word character or a `/` belongs to JSX text or a regex, not to a string.
+    } else if (`'"\``.includes(line[i]) && LITERAL_AFTER.test(code)) {
+      // Any other quote is JSX text's or a regex's: `<p>don't</p>`, `/'/`.
       let j = i + 1
       while (j < line.length && line[j] !== line[i]) j += line[j] === '\\' ? 2 : 1
       // A string still open at the line's end may be a regex's quote or a multi-line template: keep its text.
