@@ -58,8 +58,9 @@ global superpowers equivalents wherever both exist.
 > **GATE 2 — each milestone's red contract.** He approves the committed failing
 > tests before green work begins.
 > **GATE 3 — each milestone's completion.** He reviews the evidence — the test
-> output, the milestone's `diff-size-report` output and the milestone review's verdicts
-> where a review ran (else the ledger's `review:` line with its trigger check) — before the
+> output, the milestone's `diff-size-report` output and the milestone review's verdicts where a
+> review ran (else the ledger's `review:` line with its trigger check), the round's
+> delta-review verdicts and wall times — before the
 > next milestone starts.
 > **GATE 4 — the merge, and anything that speaks to people.** Canonical
 > statement in Standing rules.
@@ -81,9 +82,10 @@ never pushed on its own.
 
 **Merging is Gate 4.** A push to `main` runs `.github/workflows/release.yml` (semantic-release cuts
 a version and a changelog from the conventional-commit types) and `.github/workflows/deploy.yml`
-(GitHub Pages). Merge is therefore a release and a deployment: it waits for the
-verifier's PASS, then goes on green through `node scripts/merge-on-green.mjs <pr>`;
-any other merge needs its own explicit go, every time, however Gate 1 was answered.
+(GitHub Pages). Merge is therefore a release and a deployment: it waits for the round to close green
+(Phase 3, fix rounds) and for a verifier PASS on the PR's latest fix-wave head, then goes on green
+through `node scripts/merge-on-green.mjs <pr>`; any other merge needs its own explicit go, every
+time, however Gate 1 was answered.
 
 **Delegated gates.** When Mezi hands a task over to run autonomously — the
 `autonomous` skill (`~/.claude/skills/autonomous/`) does this for a whole queue —
@@ -115,19 +117,20 @@ the answer.
   rule applies once the red contract is committed (Mezi 2026-09-28, narrowing
   his 2026-09-22 "no implementer agents"): the lane split — the lanes and
   their `Writes` sets — is declared in the ledger before dispatch, since there
-  is no plan to declare it. The spec reviewer (plus a
-  delta reviewer for a contract revision after Gate 1) and the whole-branch
-  reviewer are the only review seats. **AGENTS.md Step 1 is still a hard
-  gate:** anything with 3+ implementation steps gets a `docs/specs/` design
-  approved before code, at every tier above one-liner.
+  is no plan to declare it. The spec reviewer (plus a delta reviewer for a contract revision after
+  Gate 1), the whole-branch reviewer and a fix-diff delta reviewer after each fix wave are the only
+  review seats the run dispatches unasked; the PR-level verifier is not a tier seat (Phase 3).
+  **AGENTS.md Step 1 is still a hard gate:** anything with 3+ implementation steps gets a
+  `docs/specs/` design approved before code, at every tier above one-liner.
 - **Standard** — several milestones, no new seam: Phase 1 and Gate 1 as in Full,
   without the staffing table; the plan with milestones, waves, each milestone's
   `review:` mark and the read-only plan review (Phase 2); Gates 2 and 3 at every
   milestone boundary, and a milestone reviewer only where a trigger fires (Phase 3)
   — a milestone that touches a named risk class buys its reviewer through trigger
   (ii); Phase 4 in full. The spec reviewer (plus a delta reviewer for a contract
-  revision after Gate 1), the plan reviewer, the whole-branch reviewer and a
-  triggered milestone reviewer are the only review seats the run dispatches unasked.
+  revision after Gate 1), the plan reviewer, the whole-branch reviewer, a triggered milestone
+  reviewer and a fix-diff delta reviewer after each fix wave are the only review seats the run
+  dispatches unasked; the PR-level verifier is not a tier seat (Phase 3).
   A Standard run re-sizes when it changes class (Phase 3). Standing rules bind in
   full.
 - **Full** — a new seam at any size, or when Mezi asks for it: the whole pipeline
@@ -214,12 +217,13 @@ after stakeholder changes, 21 minutes each). Dispatch a fresh reviewer
 (`subagent_type: prompt-reviewer`) that attacks only the change: it receives
 the changed items, their success criteria, the code they touch and the
 previous review's findings, plus the full current contract read-only, to catch
-knock-on effects on the items that did not change. When the changed items meet
-the fidelity condition above, the delta review carries the fidelity check for
-them. A full fresh-eyes re-review runs instead when the revision changes the
-goal or more than a third of the contract's items. The initial fresh-eyes
-review is unchanged, and so is the fix-round rule: a fix round ends with the
-coordinator's delta-read, never a re-review agent.
+knock-on effects on the items that did not change. When the changed items meet the fidelity
+condition above, the delta review carries the fidelity check for them. A fix-diff delta review
+carries the fidelity check the same way when the fix meets the condition; its verdicts go inside the
+report and the coordinator queues the proposals. A full fresh-eyes re-review runs instead when the
+revision changes the goal or more than a third of the contract's items. The initial fresh-eyes
+review is unchanged; a fix round ends with the coordinator's delta-read and a fix-diff delta review
+(Phase 3, fix rounds).
 
 **The spec is the prompt.** Save it as `docs/specs/YYYY-MM-DD-<topic>.md` — one
 artifact, not two. Its contract section is the authority every later ruling
@@ -238,9 +242,9 @@ that does work without touching it is blocked once, and after every compaction
 the whole file is pushed back to the session. The spec is never the binding — approved at
 Gate 1, then mostly static. **If `topic-bind --show` reports a live binding**
 (an autonomous run bound its `state.md` at arm time), keep it and link the <!-- allow-missing-path -->
-session record from the bound file's Paths instead of re-binding. A binding it
-reports as `complete` belongs to a finished run: bind the day's session record
-instead.
+session record from the bound file's Paths instead of re-binding. A binding it reports as `complete`
+belongs to a finished run: bind the day's session record instead. A later day's session record
+continues the fix-round count from the previous day's record for the same PR.
 
 ## Phase 2 — The plan.
 
@@ -346,17 +350,20 @@ milestone, rule and proceed, ledger every ruling, never stall.
   semantics under `src/core/**` or `src/simulation/**` (the fidelity condition, ADR-0018); the
   store's mutation surface (`circuitActions` and the store slices); or an issue labelled `risk:2`;
   (iii) the unreviewed diff — every change since the head the ledger recorded when the last
-  milestone review's fix round closed, or since the branch base when none has run; the coordinator
-  ledgers HEAD when that fix round closes — exceeds 400 lines added plus removed, or 20 files, in
-  any one category of `diff-size-report <that head> HEAD`; (iv) the spec or Mezi asks for it. A
-  milestone review in Standard is handed that whole unreviewed diff, not only this milestone's, so
-  nothing before it counts toward (iii) again. On the last milestone a fired trigger is met by the
-  whole-branch review. Otherwise the ledger records `review: no` with the trigger check, (iii)'s
-  numbers included, and Gate 3 presents that line with the evidence and no review verdict; the
-  whole-branch review covers the milestone.
+  milestone review's round closed (converged, or at the cap or the bound; a milestone review that
+  opened no round records its reviewed HEAD), or since the branch base when none has run; a fix-diff
+  delta review covers only its fix diff and never moves this head — exceeds 400 lines added plus
+  removed,
+  or 20 files, in any one category of `diff-size-report <that head> HEAD`; (iv) the spec or Mezi
+  asks for it. A milestone review in Standard is handed that whole unreviewed diff, not only this
+  milestone's, so nothing before it counts toward (iii) again. On the last milestone a fired trigger
+  is met by the whole-branch review. Otherwise the ledger records `review: no` with the trigger
+  check, (iii)'s numbers included, and Gate 3 presents that line with the evidence and no review
+  verdict; the whole-branch review covers the milestone.
   In every tier the PR-level `hacer-verifier` (`docs/harness/verifier-brief.md`) runs on every PR
   Phase 4 opens, and its PASS is what merge-on-green waits for — `scripts/merge-on-green.mjs` checks
-  CI only, so the PASS stays the coordinator's precondition. It is not one of a tier's review seats.
+  CI only, so the PASS on the latest fix-wave head and a round closed green stay the coordinator's
+  preconditions. It is not one of a tier's review seats.
   Inside Phase 3 its brief is the milestone reviewer's brief for a harness ticket when a milestone
   review runs; a Standard harness ticket with no fired trigger meets the verifier only at the PR.
   When `docs/harness/verifier-brief.md` is the reviewer's brief, the coordinator appends the
@@ -371,15 +378,129 @@ milestone, rule and proceed, ledger every ruling, never stall.
   review; and the next Gate 3 says so — under delegation, present, ledger, proceed. Work that newly
   touches a named risk class changes that milestone's mark through (ii), not the tier. A tier Mezi
   names mid-run takes effect from the next milestone the same way.
-- **Every fix round ends with the coordinator's delta-read, never a re-review
-  agent:** the fix diff against the findings list, each finding marked addressed
-  or open, the implementer resumed for what is still open. The next fresh eyes
-  are the milestone review or the whole-branch review. A behavioural fix carries
-  code and its red test; a prose cut or a behaviour-preserving simplification carries
-  none, the suite staying green being its evidence. The explanation is one line per
-  finding in the PR body, and in the commit message until the squash (Phase 4), never
-  a new comment block, and the delta-read runs `diff-size-report` on the fix diff
-  (`--direct <old> <new>` across an amend).
+- **Fix rounds.** Every fix round ends with the coordinator's delta-read and then fresh eyes on the
+  fix diff (2026-10-30; replaces the 2026-09-22 delta-read-only rule). A *round* opens when the
+  coordinator rules fix on the findings of one review event — a review seat (milestone, whole-branch
+  or cross-stack), a multi-review of parallel reviewers (one event), the PR-level verifier's
+  verdict, a PR bot's or a human's comment batch ruled together, a Devin iteration, a fix Mezi asks
+  for, or — after a review has read the code — a red CI run, repo gate, browser test or DevTools
+  diagnostics run whose fix changes code (one event per failing run; inside a fix wave, part of that
+  wave; a formatter's own output excepted). Not a review event: `/simplify` on request, plan-review
+  findings, spec-review folds, and a fix-diff delta review (below) — whatever of it is ruled fix
+  goes to the
+  next wave of the same round. All findings ruled fix in the event go to **one fix wave**; nits ride
+  only in a wave already going (a duplication nit is never parked and opens one), and after a round
+  closes there is no nit-only wave — remaining nits are ledgered no-change or owed. **Who fixes:**
+  the implementer that wrote the code, continued — a seat by `SendMessage` to the agent id the
+  ledger recorded at dispatch (stopping an agent under "no parked agents" does not make it gone) —
+  with a six-slot fix brief (below) as the message; a fresh dispatch only when it cannot be
+  continued: a new coordinator session or no agent id in the ledger. When the green work ran
+  in-session (Light without lanes; judgment-heavy work kept in-session in any tier) the coordinator
+  is that work's implementer for its fix waves: it makes the fixes and reverts, writes the Report
+  with callers, and runs the Tests to files — besides `/simplify` on request, the one case where the
+  coordinator makes fixes itself; its suites are among those "no coordinator-run suites" allows. A
+  continued seat works in the integration checkout when it is the wave's only writer, in its lane
+  worktree rebased on the integration head when the wave runs lanes; lanes within a wave only when
+  the round's findings split into disjoint Writes and after one author committed all the round's
+  reds in one commit; a fix wave's lanes never trigger the consolidation pass — the delta reviewer
+  reads the integrated diff. **The delta-read has three parts:** (A) each finding marked addressed
+  or open; (B) the regression read — every hunk mapped to the finding id it serves, an unmapped hunk
+  reverted (by the implementer, before Part C) or kept with the reason ledgered, and the
+  implementer's caller list read against the diff; (C) `diff-size-report` on the fix diff
+  (`--direct <old> <new>` across an amend; `git diff --no-index --numstat` by category for files
+  outside git, prose share owed). Then the coordinator writes the round's cumulative diff to
+  `<run folder>/fix-round-<r>-wave-<n>.diff` — `git diff <pre-round base> <HEAD after the wave>`
+  whether the wave committed or amended, taken before any rebase, fold or squash, the integrated
+  diff after the last lane merge; `diff -u <pre-round copy> <file>` for a file outside git, copied
+  to `<run folder>/pre-round-<r>/` when the round opened — and dispatches the fix-diff delta
+  reviewer (below). A round closes when it converges or exits at the cap or the bound; the
+  coordinator ledgers its HEAD. A fix-diff delta review covers only its fix diff and never moves
+  trigger (iii)'s head. In hacer `<run folder>` is `${TMPDIR:-/tmp}/hacer-review-fix/<branch>/`; the
+  ranges, verdicts and finding ids go in the session record; `docs/harness/sessions/` is excluded
+  from the fix diff, from Part B and from the delta review
+  (`git diff … ':(exclude)docs/harness/sessions/*'`), and ledger lines are committed in their own
+  `docs(harness):` commit.
+- **A fix brief bounds the diff.** The six slots, as a dispatch or as the continue message. Read:
+  the findings by id and the rulings they touch, and the Goal line "fix diff only — minimal diff, no
+  refactor or cleanup mixed in". Writes: the files the findings name plus, per finding that needs a
+  red, the one test file holding its red→green pair; a file outside that set needs a ruling first —
+  a module outside the branch's Writes is Mezi's call or a ledgered PR-body follow-up, a shared
+  module for a duplication fix a coordinator ruling. Measured facts: the finding texts and the
+  delta-read's Part A/B results so far. Parallel with: nothing else on that branch. Tests: the
+  narrowest test per finding — run failing first, its failing line ledgered before the fix hunk; the
+  test freeze stands, so the pair is a new or a named test, never an adapted assertion — and the
+  full suite once per wave. Report: per finding, the hunk; its closing evidence — a red→green pair
+  for a behavioural change, the suite staying green for a behaviour-preserving reuse, simplification
+  or efficiency fix or a prose cut (a removal), a captured baseline (the exact command and its
+  before/after output) for a prose correction (a PR-body claim, CHANGELOG or docs content); the
+  files touched with the finding id that justifies each; the one-line explanation that goes in the
+  PR body, and in the commit message until the squash, never a new comment block; the
+  `diff-size-report` output; and the callers of every changed symbol (`command grep -r` or
+  `rg -uuu`, never the bare grep shim; gitnexus `impact` only when its index is at the wave's HEAD)
+  with what the change does to each.
+- **Converge: fresh eyes on every fix wave, over the fix diff only.** Dispatch
+  `subagent_type: reviewer` with the six slots — Read: the Goal line "fix-diff delta review: the fix
+  diff only, never the branch", the diff file, the findings the wave claims to close, the round's
+  full findings list, the previous delta review's findings when there is one, the PR-body text
+  whenever the wave touched it, the rulings (a decision the ledger records is reported as a
+  decision, never as a defect), and the branch read-only for knock-on effects; Writes: its report,
+  `<run folder>/fix-round-<r>-wave-<n>-review.md`, and a progress file beside it; Measured facts:
+  base and head, Part C's output, each closed finding's red failing line or baseline, the suite's
+  summary line; Parallel with: nothing on that branch; Tests: `none — read-only`; Report: seven
+  headings in this order — **Mapping** (every hunk to a finding id or unmapped; each claimed finding
+  closed or not), **Callers** (the implementer's list verified), then the whole-branch review's
+  passes **2 Proof**, **3 Correctness and safety** (including whether a fix claimed as
+  behaviour-preserving preserved behaviour), **4 Reuse** (logic the wave wrote twice — across its
+  lanes or against the repository — and any helper it re-implemented), **8 Comment rule**, **9 Size
+  check**; every finding with blocker / should-fix / nit and a cause tag (below). **Bound: 30
+  minutes** — a background wait started at dispatch ends when the report file appears or at 1,800 s;
+  on expiry the reviewer is stopped and dispatched once more with its Read cut to the diff file, the
+  claimed findings and the rulings, that dispatch counting toward the cap (when the third review
+  expires the round exits at the bound); a second expiry ledgers the wave "fresh eyes owed" and says
+  so at the next gate and, as a follow-up line, in the PR body. **Routing by cause.** A blocker or
+  should-fix the fix diff caused — a defect in its hunks, or code or text it made false — goes to
+  the next wave of the same round, tagged `fix:<round.wave>`, and so does any never-parked finding,
+  whatever caused it: a blocker, a duplication finding at any severity, a should-fix of the comment
+  rule or the size check, and so does a blocker or should-fix of this round's event that Part A or the
+  Mapping shows not closed. A fix-caused nit and a sibling of the fixed site (tagged `pre-existing`)
+  ride that wave when one runs. The rest is parked for the next review that runs — the next
+  milestone review (Full, or Standard when a trigger fires), else the whole-branch review — and
+  named in its brief; in the whole-branch round and in every round after it (bots, humans, Devin
+  iterations, the verifier, a fix Mezi asks for in Phase 4 or later) nothing is parked: each finding
+  is fixed in the next wave, ruled no-change with the reason, made a ledgered PR-body follow-up when
+  its fix lies outside the branch's Writes (unless Mezi widens them), or sent to a contract revision
+  when an altitude change alters contracted behaviour. A delta reviewer that disputes a ledgered
+  ruling is re-ruled once, with the reason — a ruling Mezi made goes to Mezi; a rejected dispute
+  does not hold the round open. **A round converges** when a delta review returns nothing that goes
+  to the next wave by these rules: no fix-caused blocker or should-fix, no never-parked finding, no
+  claimed blocker or should-fix left open and, in the whole-branch round and after, no finding ruled
+  fix; a
+  fix-caused nit, a sibling, or a
+  finding parked, ruled no-change, made a follow-up, sent to a contract revision or rejected as a
+  dispute does not hold it open. **Cap: three delta reviews per round.** After the third, an open
+  should-fix that is not never-parked is ledgered owed and listed in the PR body's Follow-ups; an
+  open blocker or never-parked finding stops that PR's outward actions — push, PR update, re-push,
+  merge — and its next milestone until Mezi rules, under delegation and under `publish: on-green`
+  alike; other queue items continue and it is surfaced at once. **A round closes green** when it
+  converged, or exited at the cap or the bound with no open blocker or never-parked finding, the
+  owed items named in the PR body and at the next gate. A fix wave is pushed, re-pushed, put in a PR
+  update or merged only after its round closed green, and then under the workspace's Gate 4 and
+  publish decision. A review event on a merged PR opens no round on it: the fix is a new branch and
+  PR (issue first where the workspace requires one), its findings tagged `fix:<pr>#<round.wave>`.
+- **The ledger makes the cascade measurable.** Every implementer's agent id (or lane session id) is
+  recorded at dispatch. Each round records `round:`, `pre-round base:` and `closed at:` (its HEAD
+  and how: converged, cap, bound). Each fix wave records one line with the labelled fields `round`,
+  `wave`, `findings`, `commits` (old→new when amended), `size` (Part C), `suite` (which ran; summary
+  line), `reds` (each fix red's failing line — the red commit stays), `partA` (addressed / open),
+  `partB` (unmapped hunks; the caller list read), `delta` (verdict; wall time). Round numbers
+  continue across sessions on the same PR: a later session reads the count from the ledger. **Every
+  finding raised after the first fix wave, by any seat, bot or human, carries one cause tag in its
+  ruling:** `fix:<round.wave>`, `pre-existing`, `new-scope` or `unknown`; the fix-introduced share
+  is count(`fix:*`) / count(tagged). Gate 3 presents the round's delta-review verdicts and wall
+  times; a round after the last Gate 3 puts its verdict line in the push or merge report and in the
+  PR body. The seat is re-judged after two measured runs — total delta-review minutes per run,
+  rounds per run, the fix-introduced share, and whether any delta review returned a blocker — in the
+  coordinator's re-judge note, kept outside this repository.
 - **`/simplify` only on request, never as a stage.** The built-in skill's four cleanup agents are
   passes 4 to 7 without the contract, and its session applies their edits itself: no verification
   pass, no test run, no record outside the chat; with no upstream it diffs against `main`, and with
@@ -443,25 +564,27 @@ milestone, rule and proceed, ledger every ruling, never stall.
   what it compared; the report ends with what could not be verified; the final message is the two
   verdicts (contract and quality) and the counts per pass, in at most six lines, the report file
   holding the rest. The coordinator rules on every finding, fix or no-change with the reason,
-  ledgered, and three dispositions follow from the passes themselves: a reuse, simplification or
-  efficiency fix that preserves behaviour carries no red test and is proved by the suite staying
-  green; an altitude finding whose general change alters behaviour the contract names is a
-  contract revision — the delta review, never a quiet rewrite; a finding whose fix lives in a
-  module outside the branch's Writes is a ledgered follow-up for the PR body unless Mezi widens
-  Writes for that fix — never fixed silently. Duplication (pass 4's findings and pass 5's
-  copy-paste) and the should-fixes of the comment rule and the size check are fixed before
-  closing, never parked; a duplication fix that needs a shared module widens Writes, ledgered as a
-  ruling. The fix wave ends with the coordinator's delta-read, as every fix round does — no
-  re-review agent.
+  ledgered and resurfaced at the next gate, and three dispositions follow from the passes
+  themselves: a reuse, simplification or efficiency fix that preserves behaviour carries no red test
+  and is proved by the suite staying green; an altitude finding whose general change alters
+  behaviour the contract names is a contract revision — the delta review, never a quiet rewrite; a
+  finding whose fix lives in a module outside the branch's Writes is a ledgered follow-up for the PR
+  body unless Mezi widens Writes for that fix — never fixed silently. Duplication (pass 4's findings
+  and pass 5's copy-paste) and the should-fixes of the comment rule and the size check are fixed
+  before closing, never parked; a duplication fix that needs a shared module widens Writes, ledgered
+  as a ruling. The whole-branch review's fix round runs as every fix round does — the delta-read,
+  then the fix-diff delta review — until the round closes (Phase 3, fix rounds); nothing is parked
+  here.
 - **No parked agents, no coordinator-run suites.** An agent whose handback you
   have read is resumed or stopped in that same turn — an agent waiting on a
   `SendMessage` is dead wall time. The coordinator reads reports and diffs, not
   transcripts, and runs no suite itself: its context is the run's latency
-  multiplier. The exceptions are the integration run after a lane merge
-  (lane condition 4, below), which goes to a file — exit code checked, summary
-  line read, never through a pipe — and a `/simplify` run on request (Phase 3). Scripted checks (probes, smoke calls, comparators) belong to a data lane
-  (`subagent_type: data-lane`) as well; a coordinator runs one only when it is a
-  single command whose output goes to a file and only its summary line is read.
+  multiplier. A coordinator's only suites are the integration run after a lane merge (to a file — exit code checked,
+  summary line read, never through a pipe), a `/simplify` run on request and the fix waves of green work it wrote
+  in-session (Phase 3, fix rounds); every other run belongs to a lane or a verification agent
+  (`subagent_type: data-lane`). A fix-diff delta review is bounded at 30 minutes (Phase 3, fix rounds). Scripted checks
+  (probes, smoke calls, comparators) belong to a data lane as well; a coordinator runs one
+  only when it is a single command whose output goes to a file and only its summary line is read.
 
 - **Red tests are COMMITTED** before any green work exists. A test that passes
   before the implementation is a vacuous passer: name it at the gate with the
@@ -470,8 +593,9 @@ milestone, rule and proceed, ledger every ruling, never stall.
   cannot name in one clause is testing something the plan does not build. Red
   tests follow the comment rule too — no docstring unless the setup is unusual, no
   provenance comment; a red's provenance goes in its commit message, and its failing
-  line in the ledger. The red commit stays through the final squash (Phase 4) as its
-  own `test(<scope>):` commit, because the verifier checks it out.
+  line in the ledger. The red commit stays through the final squash (Phase 4) as its own
+  `test(<scope>):` commit, because the verifier checks it out. A fix wave's red is committed alone
+  as `test(<scope>):` before the fix, because the verifier checks the commit sequence.
 - **Test files freeze at green.** An assertion that looks wrong is a BLOCKED
   report, not an adaptation. A ruling that changes the contract lands as an honest
   red→green pair in working history and in the ledger; the final squash folds it into
@@ -585,13 +709,15 @@ by side: a clone detector finds only near-literal copies (measured 2026-09-28:
 `npx jscpd` missed a planted duplicate whose only change was a renamed parameter),
 so it may seed the pass but never is the check. It refactors production code and
 shared test helpers, never an assertion, and runs the milestone's suite before and
-after (to a file, summary line). A pass that finds nothing says what it compared.
+after (to a file, summary line). A pass that finds nothing says what it compared. A fix wave's lanes
+never trigger this pass: the fix-diff delta reviewer reads their integrated diff (Phase 3, fix
+rounds).
 
 **Suite runs at integration** go to a file in the run folder: check the exit
-code, then read the summary line from the file — never the full output, never
-through a pipe. This and the suite after a `/simplify` run on request are the only suites a
-coordinator runs itself; every other run belongs to a lane or a verification agent
-(`subagent_type: data-lane`).
+code, then read the summary line from the file — never the full output, never through a pipe. A
+coordinator's only suites are the integration run after a lane merge, a `/simplify` run on request
+and the fix waves of green work it wrote in-session (Phase 3, fix rounds); every other run belongs
+to a lane or a verification agent (`subagent_type: data-lane`).
 
 Cap at **three or four implementer lanes**: the limit is how many lanes' evidence
 I can verify before the next wave lands. **Always parallel:** read-only fan-out
@@ -648,8 +774,10 @@ suite=store` is the useful move.
   the branch into a handful of logical commits — one per milestone or coherent change, each red kept as its own
   `test(<scope>):` commit before the green it proves (`test` cuts no release; the verifier checks it out), every fix
   folded into the commit it fixes — with messages that describe the change, never the review process.
-  `scripts/merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on `main` and its conventional type is its
-  release line. First `git branch backup/<topic>-pre-squash HEAD`; after the rewrite
+  `scripts/merge-on-green.mjs` merges with `--rebase`, so each kept commit lands on `main` and its conventional type is
+  its release line. A fix wave's commits on an open PR are conventional commits typed by what they change (`fix`,
+  `refactor`, `test`, `docs`), each a release line under the rebase merge; never folded once the PR is open (a rewrite
+  is Gate 4). First `git branch backup/<topic>-pre-squash HEAD`; after the rewrite
   `git diff --quiet backup/<topic>-pre-squash HEAD` must exit 0, or restore from the backup and ledger a finding,
   never push. Delete the backup branch once the push has landed. The ledger records old head → new head and each task
   hash → its new commit. A branch pushed earlier is rewritten only when every commit on `origin/<branch>` is this
@@ -659,9 +787,15 @@ suite=store` is the useful move.
   between. Once the PR is opened, a rewrite is Gate 4.
 - **Publish per the Gate 1 decision** — push the branch and open the PR under
   `on-green`, naming the definition-of-done commands you ran and their results, and
-  the branch's `diff-size-report` totals in one line (lines by category, prose share).
-  **Then stop:** the verifier's PASS comes first; after it, merge on green with
-  `node scripts/merge-on-green.mjs <pr>` (Gate 4).
+  the branch's `diff-size-report` totals in one line (lines by category, prose share), and a
+  Follow-ups section listing should-fixes left open at the cap; the verifier's nits the coordinator
+  files as follow-up issues are hacer's owed.
+  **Then stop:** the round closes green and a verifier PASS stands for the PR's latest fix-wave head
+  — a fix wave pushed after a PASS makes it stale, and the coordinator dispatches the verifier again
+  on the new head (a fresh verifier after a BLOCK; the coordinator's own verdict only for a `risk:0`
+  docs-only PR); merge-on-green's own rebase when `main` moved changes nothing the PR wrote and does
+  not stale the PASS; after that, merge on green with `node scripts/merge-on-green.mjs <pr>`
+  (Gate 4).
 - **Prune the worktree** once its PR is merged or closed:
   `git worktree remove ../hacer-wt-<topic> && git worktree prune`.
 
@@ -669,8 +803,9 @@ suite=store` is the useful move.
 
 > **GATE 4 — the merge, the release, and anything a person reads.** Merging to
 > `main` (or `beta`/`alpha`) cuts a semantic-release version and deploys Pages. A
-> merge on green through `node scripts/merge-on-green.mjs` after the verifier's
-> PASS needs no per-merge go (ADR-0013); any other merge needs an explicit go for
+> merge on green through `node scripts/merge-on-green.mjs` after the round closed green and the
+> verifier's PASS on the latest head needs no per-merge go (ADR-0013); any other merge needs an
+> explicit go for
 > that specific merge, every time. So does any message a human reads, and anything
 > destructive (a hard reset, deleting major files, rewriting published history
 > other than squashing this run's own branch before its PR is opened). A prior go
