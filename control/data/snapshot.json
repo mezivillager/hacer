@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T15:16:26.572Z",
+  "generatedAt": "2026-10-30T16:18:06.170Z",
   "head": {
     "sha": "b7da593d7924c26931e35213aeca75e7f2a2cab7",
     "date": "2026-10-30T16:11:36+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-30T15:16:26.572Z",
+      "fetchedAt": "2026-10-30T16:18:06.170Z",
       "status": "ok"
     }
   },
@@ -6479,7 +6479,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-16T15:16:26.572Z",
+      "since": "2026-10-16T16:18:06.170Z",
       "merged": 112,
       "openToMergeHours": {
         "median": 0.2,
@@ -11876,7 +11876,7 @@
       },
       {
         "date": "2026-10-30",
-        "at": "2026-10-30T14:18:12.970Z",
+        "at": "2026-10-30T15:16:26.572Z",
         "byProject": {
           "foundation": [
             1054,
@@ -12024,7 +12024,8 @@
             569
           ],
           "unfiled": [
-            572
+            572,
+            1080
           ],
           "polish": [
             802,
