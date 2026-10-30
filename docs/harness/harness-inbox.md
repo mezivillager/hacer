@@ -938,7 +938,7 @@ A `run-prs` count whose window is still open says so.
 
 ### HRN-020 · A PR's `Decisions:` line takes only decision ids or a bare `none`, so the inbox ids and the prose builders write make `lineage parse --github` report it malformed
 - **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** none (filed at the close of the 2026-10-21 coordinator run)
-- **Status:** proposed
+- **Status:** filed (#1049)
 - **Evidence:**
   - Measured at `origin/main` `74ee3461` on 2026-10-22, `node scripts/lineage.mjs parse --github`
     exits 1 with 78 `malformed` errors on 28 PRs and issues, each "in Decisions is not a decision id (ADR-NNNN,
@@ -981,7 +981,7 @@ knows what the `Decisions:` line may hold.
 
 ### HRN-021 · `merge-on-green` refuses a PR that has no `## Verifier verdict: PASS` the collector can read
 - **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** filed (#1050)
 - **Evidence:**
   - The rule: `verifier-brief.md` says the heading `## Verifier verdict: PASS | BLOCK` "is what a
     verdict collector counts, so a differently worded PASS/BLOCK is invisible to it". `ha-next`'s
@@ -1019,7 +1019,7 @@ A PR merges only when a verdict the collectors can count says PASS.
 
 ### HRN-022 · A test that runs a child process synchronously names its own limits, so a loaded laptop stops failing it
 - **Date:** 2026-10-22 · **Kind:** mechanise · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** filed (#1051)
 - **Evidence:**
   - L049's decision is "explicit per-test timeouts, sized from measurement, never the 5s default".
     #313 and #434 applied it to the seven tests they measured. Nothing applies it to a new test.
@@ -1058,7 +1058,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 
 ### HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** filed (#1057)
 - **Review:** own
 - **Evidence:**
   - The rule: ADR-0018 §2, "A PR that changes semantics under `src/core/**` or `src/simulation/**`
@@ -1094,7 +1094,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 
 ### HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** filed (#1069)
 - **Review:** own
 - **Evidence:**
   - The rule: `verifier-brief.md` § *Verdict rules* gives a BLOCK "only with `file:line` plus a
@@ -1132,7 +1132,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 
 ### HRN-025 · Four standing rules the 2026-10-21 run applied are not in the committed briefs: R865 and R868 contradict `inbox-panel-brief.md`, and L068 and L074 are in no brief
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** filed (#1052)
 - **Evidence:**
   - R868 runs PRD reviews with `--models opus:read-only,grok`. `inbox-panel-brief.md` §2 still
     launches `--models opus,grok` for every entry. L075 is `partly` for this reason: "The committed
@@ -1158,7 +1158,7 @@ A test that runs a child process has room on a loaded laptop, and a hung child c
 
 ### HRN-026 · README says dispatch stops while the meter will not read, and the 2026-10-21 run dispatched on estimates twice: restate the rule as practised, or follow it
 - **Date:** 2026-10-22 · **Kind:** policy · **Retro run:** 2026-10-22
-- **Status:** proposed
+- **Status:** declined (inbox panel, #930: option (b), README's rule stands and dispatch stops while the meter will not read; both cited failures were browser reads, which R891's status-line capture replaced, and option (a)'s estimate does not advance while the meter is dark)
 - **Evidence:**
   - The rule: README § *Budgets*, "Run length": "A meter that will not read is retried once; if it
     is still unreadable, dispatch stops and in-flight work finishes" (R741, R747).
