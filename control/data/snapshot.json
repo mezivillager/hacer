@@ -1,75 +1,75 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T00:55:13.840Z",
+  "generatedAt": "2026-10-30T01:02:32.871Z",
   "head": {
-    "sha": "1777e75d7246d2816c96b67885b169b7d316311a",
-    "date": "2026-10-30T03:54:12+03:00",
-    "subject": "docs(harness): move the session record to its own PR (400-line budget)"
+    "sha": "b62be00db4fd3cf4910f224290e26e4cb8b757ec",
+    "date": "2026-10-30T04:01:58+03:00",
+    "subject": "docs(harness): session record for the loop to 90% weekly usage"
   },
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-10-30T00:55:13.840Z",
+      "fetchedAt": "2026-10-30T01:02:32.871Z",
       "status": "ok"
     }
   },
@@ -103,12 +103,12 @@
         "lane": "process",
         "slug": "harness",
         "epicNumber": 138,
-        "open": 35,
+        "open": 32,
         "ready": 16,
-        "inProgress": 3,
+        "inProgress": 0,
         "needsHuman": 3,
         "staleClaims": [],
-        "agentReady": 20,
+        "agentReady": 17,
         "filedElsewhere": [
           151,
           1047
@@ -306,12 +306,12 @@
         "lane": "aux",
         "slug": "upkeep",
         "epicNumber": 146,
-        "open": 12,
+        "open": 8,
         "ready": 6,
-        "inProgress": 4,
+        "inProgress": 0,
         "needsHuman": 0,
         "staleClaims": [],
-        "agentReady": 11,
+        "agentReady": 7,
         "filedElsewhere": [],
         "next": {
           "number": 939,
@@ -2333,57 +2333,6 @@
         "reason": "blocked:#804,#803,#802"
       },
       {
-        "number": 930,
-        "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 935,
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 936,
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
         "number": 993,
         "title": "Owner: add `differential` to the required status checks of the `main-rules` ruleset (JDG-006)",
         "labels": [
@@ -2427,40 +2376,6 @@
         "lane": "process",
         "pickable": false,
         "reason": "unshaped"
-      },
-      {
-        "number": 1039,
-        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 1040,
-        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       },
       {
         "number": 1047,
@@ -2511,40 +2426,6 @@
         "lane": "feature",
         "pickable": false,
         "reason": "blocked:#1055"
-      },
-      {
-        "number": 1063,
-        "title": "Inbox review: HRN-031, HRN-032, HRN-033 · a batch of 3 harness entries",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "blocking": [],
-        "project": "upkeep",
-        "rank": 11,
-        "lane": "aux",
-        "pickable": false,
-        "reason": "claimed"
-      },
-      {
-        "number": 1067,
-        "title": "Judge review: JDG-015 · Is #1058 (`hacer test`, `testChip` and the MCP `hacer_hdl` tool grade `.cmp` cells as guessed numbers, not as text; `bot-filed`, `sev:high`, `risk:1`) made `agent-ready`?",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "blocking": [],
-        "project": "harness",
-        "rank": 2,
-        "lane": "process",
-        "pickable": false,
-        "reason": "claimed"
       }
     ],
     "byProject": {
@@ -2604,10 +2485,7 @@
         870,
         993,
         994,
-        1037,
-        1039,
-        1040,
-        1067
+        1037
       ],
       "mission-control": [
         1043,
@@ -2638,11 +2516,7 @@
         1010,
         1062,
         229,
-        256,
-        930,
-        935,
-        936,
-        1063
+        256
       ],
       "core": [
         179,
@@ -2872,6 +2746,30 @@
       }
     ],
     "merged": [
+      {
+        "number": 1077,
+        "title": "docs(harness): session record for the loop to 90% weekly usage",
+        "url": "https://github.com/mezivillager/hacer/pull/1077",
+        "author": "mezivillager",
+        "labels": [
+          "project:harness",
+          "risk:0"
+        ],
+        "headRefName": "docs/2026-10-29-session-record",
+        "isDraft": false,
+        "createdAt": "2026-10-30T00:58:10Z",
+        "mergedAt": "2026-10-30T01:01:59Z",
+        "closes": [],
+        "verdicts": [
+          {
+            "verdict": "PASS",
+            "round": 1,
+            "model": "coordinator Fable 5.1 (claude-fable-5-1)",
+            "at": "2026-10-30T00:59:18Z",
+            "url": "https://github.com/mezivillager/hacer/pull/1077#issuecomment-6512272269"
+          }
+        ]
+      },
       {
         "number": 1076,
         "title": "docs(harness): the loop to 90% rulings and statuses",
@@ -4418,33 +4316,6 @@
             "url": "https://github.com/mezivillager/hacer/pull/922#issuecomment-6334057561"
           }
         ]
-      },
-      {
-        "number": 921,
-        "title": "fix(core): refuse a definition that repeats a pin name (#912)",
-        "url": "https://github.com/mezivillager/hacer/pull/921",
-        "author": "mezivillager",
-        "labels": [
-          "released",
-          "risk:1",
-          "project:foundation"
-        ],
-        "headRefName": "fix/912-repeated-pin",
-        "isDraft": false,
-        "createdAt": "2026-10-22T05:49:15Z",
-        "mergedAt": "2026-10-22T06:14:01Z",
-        "closes": [
-          912
-        ],
-        "verdicts": [
-          {
-            "verdict": "PASS",
-            "round": 1,
-            "model": "Opus (claude-opus-5-5)",
-            "at": "2026-10-22T06:02:07Z",
-            "url": "https://github.com/mezivillager/hacer/pull/921#issuecomment-6333940290"
-          }
-        ]
       }
     ],
     "coverage": {
@@ -4458,58 +4329,6 @@
   },
   "claims": {
     "items": [
-      {
-        "number": 1039,
-        "ref": "refs/heads/claim/1039",
-        "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
-        "state": "OPEN",
-        "title": "Judge review: JDG-013 · Is #1017 (`hacer run-tst` prints an output-list header that comes after a `!`; `bot-filed`, `risk:1`) made `agent-ready`?",
-        "url": "https://github.com/mezivillager/hacer/issues/1039",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/judge-jdg-013",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T20:07:18Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1039#issuecomment-6507129825"
-        }
-      },
-      {
-        "number": 1040,
-        "ref": "refs/heads/claim/1040",
-        "sha": "cc797c921d3a34abe7114b69b5d67f3be34a8b8a",
-        "state": "OPEN",
-        "title": "Judge review: JDG-014 · Is #1018 (a `.cmp` header is never graded, and a `.cmp` shorter than the output list passes; `bot-filed`, `risk:1`) made `agent-ready`, with the two behaviours as separate criteria?",
-        "url": "https://github.com/mezivillager/hacer/issues/1040",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/judge-jdg-014",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T20:14:47Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1040#issuecomment-6507293419"
-        }
-      },
       {
         "number": 1047,
         "ref": "refs/heads/claim/1047",
@@ -4537,58 +4356,6 @@
         }
       },
       {
-        "number": 1063,
-        "ref": "refs/heads/claim/1063",
-        "sha": "c633a8565692320b19a1bcfe85290c31ec2135f9",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-031, HRN-032, HRN-033 · a batch of 3 harness entries",
-        "url": "https://github.com/mezivillager/hacer/issues/1063",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/inbox-batch-1063",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-30T00:01:14Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1063#issuecomment-6511440159"
-        }
-      },
-      {
-        "number": 1067,
-        "ref": "refs/heads/claim/1067",
-        "sha": "7b125976b2c522c70112d7bcc91cd7574ad3f0c4",
-        "state": "OPEN",
-        "title": "Judge review: JDG-015 · Is #1058 (`hacer test`, `testChip` and the MCP `hacer_hdl` tool grade `.cmp` cells as guessed numbers, not as text; `bot-filed`, `sev:high`, `risk:1`) made `agent-ready`?",
-        "url": "https://github.com/mezivillager/hacer/issues/1067",
-        "labels": [
-          "project:harness",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "judge-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/judge-jdg-015",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T23:16:46Z",
-          "url": "https://github.com/mezivillager/hacer/issues/1067#issuecomment-6510774091"
-        }
-      },
-      {
         "number": 470,
         "ref": "refs/heads/claim/470",
         "sha": "a5c1dac037de6dd435ab88414e270482976df51c",
@@ -4611,84 +4378,6 @@
           "author": "mezivillager",
           "at": "2026-09-25T06:02:35Z",
           "url": "https://github.com/mezivillager/hacer/issues/470#issuecomment-5827635352"
-        }
-      },
-      {
-        "number": 930,
-        "ref": "refs/heads/claim/930",
-        "sha": "624b0cee82d2b45e1e03e60d9420389a726d394f",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-020, HRN-021, HRN-022, HRN-025, HRN-026 · a batch of 5 harness entries",
-        "url": "https://github.com/mezivillager/hacer/issues/930",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/inbox-batch-930",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T20:55:57Z",
-          "url": "https://github.com/mezivillager/hacer/issues/930#issuecomment-6508125731"
-        }
-      },
-      {
-        "number": 935,
-        "ref": "refs/heads/claim/935",
-        "sha": "9a0cb09ddce57e0221c5e97b2ffe86c217c5781d",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-023 · ADR-0018's fidelity review before a core merge was waived 14 times by ruling in one run: write the waiver into the ADR, or stop waiving",
-        "url": "https://github.com/mezivillager/hacer/issues/935",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/inbox-hrn-023",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T21:49:35Z",
-          "url": "https://github.com/mezivillager/hacer/issues/935#issuecomment-6509125283"
-        }
-      },
-      {
-        "number": 936,
-        "ref": "refs/heads/claim/936",
-        "sha": "7290bdf7a3e149a9262291c9cc718234c64324c1",
-        "state": "OPEN",
-        "title": "Inbox review: HRN-024 · A defect the verifier reproduces in the PR's own new lines passes as a nit: say when it blocks, and whether that PASS can be overturned",
-        "url": "https://github.com/mezivillager/hacer/issues/936",
-        "labels": [
-          "project:upkeep",
-          "agent-ready",
-          "in-progress",
-          "risk:0",
-          "inbox-review"
-        ],
-        "onClosedIssue": false,
-        "claim": {
-          "claimedBy": "claude-local",
-          "intent": "building",
-          "session": "2026-10-29-hacer-loop-to-90",
-          "branch": "chore/inbox-hrn-024",
-          "handoff": "none",
-          "author": "mezivillager",
-          "at": "2026-10-29T23:05:37Z",
-          "url": "https://github.com/mezivillager/hacer/issues/936#issuecomment-6510601946"
         }
       }
     ],
@@ -4923,6 +4612,14 @@
         "title": "Session record — 2026-10-23: the coordinator loop to 12% weekly usage, the spine's fidelity verdict, the two Project 2 oracle fixes, and Project 2 on the grading path",
         "status": null,
         "lines": 225
+      },
+      {
+        "file": "docs/harness/sessions/2026-10-29.md",
+        "date": "2026-10-29",
+        "kind": "record",
+        "title": "Session record — 2026-10-29: the coordinator loop to 90% weekly usage, stopped by the weekly reset: the two bot-filed oracle gaps, the fidelity digest, and a workspace moved by iCloud",
+        "status": null,
+        "lines": 269
       }
     ]
   },
@@ -6746,7 +6443,7 @@
     "mergesPerDay": [
       {
         "date": "2026-10-22",
-        "merges": 27
+        "merges": 26
       },
       {
         "date": "2026-10-23",
@@ -6762,13 +6459,13 @@
       },
       {
         "date": "2026-10-30",
-        "merges": 2
+        "merges": 3
       }
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-16T00:55:13.840Z",
-      "merged": 119,
+      "since": "2026-10-16T01:02:32.871Z",
+      "merged": 118,
       "openToMergeHours": {
         "median": 0.2,
         "p90": 0.6
@@ -6783,18 +6480,17 @@
       },
       "coverage": {
         "code": {
-          "merged": 72,
-          "withVerdict": 72,
+          "merged": 71,
+          "withVerdict": 71,
           "without": []
         },
         "nonCode": {
           "merged": 47,
-          "withVerdict": 38,
+          "withVerdict": 39,
           "without": [
             755,
             758,
             760,
-            762,
             775,
             913,
             925,
@@ -12342,11 +12038,11 @@
     "items": [
       {
         "pr": null,
-        "sha": "1777e75d7246d2816c96b67885b169b7d316311a",
+        "sha": "b62be00db4fd3cf4910f224290e26e4cb8b757ec",
         "check": "ci",
         "conclusion": null,
         "completedAt": null,
-        "url": "https://github.com/mezivillager/hacer/actions/runs/40982577710/job/123825906463",
+        "url": "https://github.com/mezivillager/hacer/actions/runs/40983375671/job/123828523048",
         "line": null,
         "verdict": null,
         "fields": {},
