@@ -124,3 +124,17 @@ runs into the records window that starts by 01:45Z. An inbox review runs about 4
 panel) and files issues rather than code, so it cannot leave an unverified PR open at the hard stop.
 Cost if wrong: one more foundation fix lands next run instead of tonight; the panels' decisions on the retro's
 three entries land tonight.
+
+## R928 — PR #1071 (#1047) stays open at the close after two BLOCKs; no third fix cycle tonight, and the next run resumes it with a tokenizer instead of quote heuristics
+Builds on: R926
+Coordinator, 2026-10-30T00:46Z; under R926 and the HRN-024 rule. The first verifier blocked a string-opener
+regression: a regex or JSX quote hid a live `expect(`. The fix widened the heuristics, and the fresh verifier
+(issuecomment-6512009468) found three new introduced defects in the same area: a closing or self-closing JSX
+tag's `/` read as a regex opener swallows a trailing comment (150 of 52,695 repo test lines would flip); `}`
+and keywords without whitespace open a string; and a lone quote after `,`, `:` or a word. Each cycle has moved
+the defect rather than removed it, and a third would end after R926's 00:45Z line with the records still to
+land. The direction for the next run: strip comments and strings with the TypeScript scanner already in
+`devDependencies` (the builder used it to check its own counts) instead of hand-written quote rules, or narrow
+criterion 3 to the one-line simple-string case the issue measured.
+Cost if wrong: the refactor rule's three gaps stay open one more run; the PR's own tests and the twelve-PR
+replay are green, so nothing on `main` regresses.
