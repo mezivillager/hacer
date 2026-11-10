@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-09T18:41:26.080Z",
+  "generatedAt": "2026-11-10T01:59:23.938Z",
   "head": {
     "sha": "d30e861f8b7f298d51a09122db4aed8b8f8544d7",
     "date": "2026-10-30T19:39:39+03:00",
@@ -9,67 +9,67 @@
   "freshness": {
     "portfolio": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "pickRule": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "tasks": {
       "source": "docs/portfolio.md · gh issue list --state open · git ls-remote origin refs/heads/claim/* · gh api graphql · gh pr list --state open · gh api graphql (claim history)",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "prs": {
       "source": "gh pr list --state open · gh pr list --state merged --limit 60",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "claims": {
       "source": "git ls-remote origin refs/heads/claim/* · gh api graphql",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "cloudLane": {
       "source": "docs/harness/sessions/cloud-queue-inbox.md",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "sessions": {
       "source": "docs/harness/sessions",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "ledger": {
       "source": "docs/harness/ledger.md",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "adrs": {
       "source": "docs/decisions",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "roadmap": {
       "source": "docs/roadmap/README.md",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "metrics": {
       "source": ".dependency-cruiser-known-violations.json · git log -- .dependency-cruiser-known-violations.json · gh release list · gh pr list --state merged --limit 60 · gh api graphql (flow) · conformance/vectors · vitest run src/scenarios/drivers/core.test.ts --reporter=json · git show origin/gh-pages:control/history",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "checks": {
       "source": "gh api graphql (check runs)",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     },
     "lineage": {
       "source": "node scripts/lineage.mjs graph --json",
-      "fetchedAt": "2026-11-09T18:41:26.080Z",
+      "fetchedAt": "2026-11-10T01:59:23.938Z",
       "status": "ok"
     }
   },
@@ -6463,7 +6463,7 @@
     ],
     "flow": {
       "days": 14,
-      "since": "2026-10-26T18:41:26.080Z",
+      "since": "2026-10-27T01:59:23.938Z",
       "merged": 18,
       "openToMergeHours": {
         "median": 0.2,
@@ -13463,7 +13463,7 @@
       },
       {
         "date": "2026-11-09",
-        "at": "2026-11-09T07:52:43.790Z",
+        "at": "2026-11-09T18:41:26.080Z",
         "byProject": {
           "foundation": [
             1054,
